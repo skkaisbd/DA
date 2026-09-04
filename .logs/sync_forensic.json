@@ -1,0 +1,468 @@
+{
+  "report": {
+    "A_marketing_to_warehouse": {
+      "orders": 559,
+      "lines": 601,
+      "linked_lines": 0,
+      "linked_pct": 0.0,
+      "pcs_total": 603.0,
+      "pcs_linked": 0,
+      "link_sources": {
+        "unlinked": 601
+      },
+      "orders_fully_linked": 0,
+      "orders_partial": 0,
+      "orders_unlinked": 559,
+      "unmapped_platform_skus": 83,
+      "fulfillment_queue": 0,
+      "ready_to_ship": 559,
+      "catalog_items": 11,
+      "catalog_items_with_map": 0,
+      "import_sessions": 1,
+      "top_unmapped": [
+        {
+          "platform_sku_id": "1736289266674467878",
+          "pcs": 74.0,
+          "orders": 74,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA WHITE, XL"
+        },
+        {
+          "platform_sku_id": "1736486378275701798",
+          "pcs": 39.0,
+          "orders": 39,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "BLACK, XL (LD 120 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736486378275832870",
+          "pcs": 24.0,
+          "orders": 24,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "BLACK, XXL (LD 130 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736486378274260006",
+          "pcs": 23.0,
+          "orders": 23,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA BLACK, XXL (LD 130 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736433209363694630",
+          "pcs": 23.0,
+          "orders": 23,
+          "name": "OUTFIT BOUTIQUE-Victoria Top Blouse Wanita Polo Linen Premium Atasan Wanita Korean Style Baju Kerja Wanita Casual Outfit Wanita Kekinian",
+          "variation": "BLACK, XL"
+        },
+        {
+          "platform_sku_id": "1736486378275570726",
+          "pcs": 19.0,
+          "orders": 19,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "BLACK, M (LD 110 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736289266674402342",
+          "pcs": 19.0,
+          "orders": 19,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA WHITE, M"
+        },
+        {
+          "platform_sku_id": "1736008442368066598",
+          "pcs": 18.0,
+          "orders": 18,
+          "name": "OUTFIT BOUTIQUE - RACHEL ONESET - Setelan celana kulot | setelan rayon premium | One set wanita kekinian | setelan rayon LD 110cm",
+          "variation": "MAHOGANY"
+        },
+        {
+          "platform_sku_id": "1736008442367869990",
+          "pcs": 18.0,
+          "orders": 18,
+          "name": "OUTFIT BOUTIQUE - RACHEL ONESET - Setelan celana kulot | setelan rayon premium | One set wanita kekinian | setelan rayon LD 110cm",
+          "variation": "BLACK"
+        },
+        {
+          "platform_sku_id": "1736486378273866790",
+          "pcs": 17.0,
+          "orders": 17,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA WHITE, XXL (LD 130 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736008442367935526",
+          "pcs": 15.0,
+          "orders": 15,
+          "name": "OUTFIT BOUTIQUE - RACHEL ONESET - Setelan celana kulot | setelan rayon premium | One set wanita kekinian | setelan rayon LD 110cm",
+          "variation": "BUTTER YELLOW"
+        },
+        {
+          "platform_sku_id": "1736433209363563558",
+          "pcs": 15.0,
+          "orders": 15,
+          "name": "OUTFIT BOUTIQUE-Victoria Top Blouse Wanita Polo Linen Premium Atasan Wanita Korean Style Baju Kerja Wanita Casual Outfit Wanita Kekinian",
+          "variation": "WHITE, XL"
+        },
+        {
+          "platform_sku_id": "1736486378275308582",
+          "pcs": 13.0,
+          "orders": 13,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "MAROON, XL (LD 120 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1731268865763410982",
+          "pcs": 13.0,
+          "orders": 13,
+          "name": "ONA DRESS - Midi Dress Salur Wanita Busui Kancing Simple Motif Garis Rib Melar Outfit Boutique",
+          "variation": "hitam"
+        },
+        {
+          "platform_sku_id": "1736486378274128934",
+          "pcs": 12.0,
+          "orders": 12,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA BLACK, XL (LD 120 CM), PAKAI KARET (SMOOK)"
+        },
+        {
+          "platform_sku_id": "1736433209363432486",
+          "pcs": 12.0,
+          "orders": 12,
+          "name": "OUTFIT BOUTIQUE-Victoria Top Blouse Wanita Polo Linen Premium Atasan Wanita Korean Style Baju Kerja Wanita Casual Outfit Wanita Kekinian",
+          "variation": "MAUVE, XL"
+        },
+        {
+          "platform_sku_id": "1736486378275439654",
+          "pcs": 12.0,
+          "orders": 12,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "MAROON, XXL (LD 130 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736008442368132134",
+          "pcs": 11.0,
+          "orders": 11,
+          "name": "OUTFIT BOUTIQUE - RACHEL ONESET - Setelan celana kulot | setelan rayon premium | One set wanita kekinian | setelan rayon LD 110cm",
+          "variation": "DUSTY"
+        },
+        {
+          "platform_sku_id": "1736486378274063398",
+          "pcs": 10.0,
+          "orders": 10,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA BLACK, XL (LD 120 CM), TANPA KARET"
+        },
+        {
+          "platform_sku_id": "1736486378275177510",
+          "pcs": 9.0,
+          "orders": 9,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "MAROON, M (LD 110 CM), PAKAI KARET"
+        },
+        {
+          "platform_sku_id": "1736008442368197670",
+          "pcs": 8.0,
+          "orders": 8,
+          "name": "OUTFIT BOUTIQUE - RACHEL ONESET - Setelan celana kulot | setelan rayon premium | One set wanita kekinian | setelan rayon LD 110cm",
+          "variation": "NUVGETT"
+        },
+        {
+          "platform_sku_id": "1736486378275767334",
+          "pcs": 8.0,
+          "orders": 8,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "BLACK, XXL (LD 130 CM), TANPA KARET"
+        },
+        {
+          "platform_sku_id": "1731268865763345446",
+          "pcs": 8.0,
+          "orders": 8,
+          "name": "ONA DRESS - Midi Dress Salur Wanita Busui Kancing Simple Motif Garis Rib Melar Outfit Boutique",
+          "variation": "magenta"
+        },
+        {
+          "platform_sku_id": "1736433209363956774",
+          "pcs": 8.0,
+          "orders": 8,
+          "name": "OUTFIT BOUTIQUE-Victoria Top Blouse Wanita Polo Linen Premium Atasan Wanita Korean Style Baju Kerja Wanita Casual Outfit Wanita Kekinian",
+          "variation": "DENIM, XL"
+        },
+        {
+          "platform_sku_id": "1736486378273604646",
+          "pcs": 7.0,
+          "orders": 7,
+          "name": "OUTFIT BOUTIQUE - Jennifer Blouse Atasan Wanita Polkadot Premium Korean Style Elegan",
+          "variation": "POLKA WHITE, M (LD 110 CM), PAKAI KARET (SMOOK)"
+        }
+      ]
+    },
+    "B_catalog_to_fg": {
+      "items": 11,
+      "linked": 10,
+      "dangling": 0,
+      "resolvable_by_sku": 0,
+      "no_link": 1,
+      "stock_cache_drift": 0,
+      "linked_without_stock_rows": 0,
+      "drift_sample": []
+    },
+    "C_variants_to_fg": {
+      "variants": 330,
+      "fg_materials": 330,
+      "materials_total": 342,
+      "with_fg_by_variant_id": 330,
+      "with_fg_by_sku": 0,
+      "orphan_variants": 0,
+      "fg_without_variant": 0,
+      "variants_with_fg_no_stock": 320
+    },
+    "D_opname_vs_master": {
+      "opname_collections": {},
+      "sessions": 0,
+      "lines": 0,
+      "unknown_material_id": 0,
+      "unknown_location_id": 0,
+      "stock_qty_schemas": 2,
+      "stock_dangling_material": 0,
+      "stock_dangling_location": 0,
+      "samples": []
+    },
+    "E_referential_integrity": {
+      "rules": [
+        {
+          "coll": "marketing_catalog_items",
+          "field": "catalog_id",
+          "target": "marketing_catalogs",
+          "docs": 11,
+          "filled": 11,
+          "dangling": 0,
+          "note": "item \u2192 katalog"
+        },
+        {
+          "coll": "marketing_catalog_items",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 11,
+          "filled": 11,
+          "dangling": 0,
+          "note": "item \u2192 toko"
+        },
+        {
+          "coll": "marketing_catalog_items",
+          "field": "fg_material_id",
+          "target": "rahaza_materials",
+          "docs": 11,
+          "filled": 10,
+          "dangling": 0,
+          "note": "item \u2192 FG"
+        },
+        {
+          "coll": "marketing_catalog_items",
+          "field": "variant_id",
+          "target": "rahaza_model_variants",
+          "docs": 11,
+          "filled": 10,
+          "dangling": 0,
+          "note": "item \u2192 varian"
+        },
+        {
+          "coll": "marketing_catalog_items",
+          "field": "model_id",
+          "target": "rahaza_models",
+          "docs": 11,
+          "filled": 10,
+          "dangling": 0,
+          "note": "item \u2192 model"
+        },
+        {
+          "coll": "marketing_orders",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 559,
+          "filled": 559,
+          "dangling": 0,
+          "note": "pesanan \u2192 toko"
+        },
+        {
+          "coll": "rahaza_material_stock",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 22,
+          "filled": 22,
+          "dangling": 0,
+          "note": "stok \u2192 material"
+        },
+        {
+          "coll": "rahaza_material_stock",
+          "field": "location_id",
+          "target": "rahaza_locations",
+          "docs": 22,
+          "filled": 22,
+          "dangling": 0,
+          "note": "stok \u2192 lokasi"
+        },
+        {
+          "coll": "rahaza_model_variants",
+          "field": "model_id",
+          "target": "rahaza_models",
+          "docs": 330,
+          "filled": 330,
+          "dangling": 0,
+          "note": "varian \u2192 model"
+        },
+        {
+          "coll": "rahaza_materials",
+          "field": "variant_id",
+          "target": "rahaza_model_variants",
+          "docs": 342,
+          "filled": 330,
+          "dangling": 0,
+          "note": "FG \u2192 varian"
+        },
+        {
+          "coll": "rahaza_materials",
+          "field": "model_id",
+          "target": "rahaza_models",
+          "docs": 342,
+          "filled": 330,
+          "dangling": 0,
+          "note": "FG \u2192 model"
+        },
+        {
+          "coll": "rahaza_stock_ledger",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 10,
+          "filled": 10,
+          "dangling": 0,
+          "note": "kartu stok \u2192 material"
+        },
+        {
+          "coll": "rahaza_material_movements",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 10,
+          "filled": 10,
+          "dangling": 0,
+          "note": "mutasi \u2192 material"
+        },
+        {
+          "coll": "rahaza_material_issues",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 2,
+          "filled": 0,
+          "dangling": 0,
+          "note": "pengeluaran \u2192 material"
+        },
+        {
+          "coll": "po_items",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 7,
+          "filled": 0,
+          "dangling": 0,
+          "note": "baris PO \u2192 material"
+        },
+        {
+          "coll": "production_job_items",
+          "field": "material_id",
+          "target": "rahaza_materials",
+          "docs": 4,
+          "filled": 0,
+          "dangling": 0,
+          "note": "job \u2192 material"
+        },
+        {
+          "coll": "marketing_sales_data",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 10,
+          "filled": 10,
+          "dangling": 0,
+          "note": "penjualan \u2192 toko"
+        },
+        {
+          "coll": "marketing_budgets",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 3,
+          "filled": 3,
+          "dangling": 0,
+          "note": "anggaran \u2192 toko"
+        },
+        {
+          "coll": "marketing_account_targets",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 3,
+          "filled": 3,
+          "dangling": 0,
+          "note": "target \u2192 toko"
+        },
+        {
+          "coll": "wh_delivery_notes",
+          "field": "account_id",
+          "target": "marketing_platform_accounts",
+          "docs": 2,
+          "filled": 0,
+          "dangling": 0,
+          "note": "surat jalan \u2192 toko"
+        }
+      ],
+      "broken": 0,
+      "empty_links": 4
+    }
+  },
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "text": "NOL dari 601 baris pesanan marketing tertaut ke master gudang. Tim gudang MUSTAHIL mencocokkan barang dari id \u2014 persis keluhan pemilik."
+    },
+    {
+      "severity": "CRITICAL",
+      "text": "559 pesanan perlu dikirim tetapi antrean gudang KOSONG (fulfillment_status tidak pernah diisi) \u2014 gudang tidak melihat pekerjaannya."
+    },
+    {
+      "severity": "CRITICAL",
+      "text": "83 SKU platform dipesan pembeli tetapi tidak dikenal master (marketing memakai platform_sku_id numerik, gudang memakai UUID/kode FG)."
+    },
+    {
+      "severity": "CRITICAL",
+      "text": "Tabel jembatan `marketing_catalog_items.platform_sku_ids` KOSONG \u2014 pemetaan SKU platform\u2192master belum pernah terjadi."
+    },
+    {
+      "severity": "MED",
+      "text": "Pemetaan SKU hanya tersedia di dalam sesi impor (per-sesi). Tidak ada layar master pemetaan SKU yang berdiri sendiri \u21d2 SKU dari sesi yang sudah dihapus mustahil dipetakan."
+    },
+    {
+      "severity": "HIGH",
+      "text": "1 item katalog tanpa tautan master FG \u21d2 stoknya tidak bisa dihitung."
+    },
+    {
+      "severity": "MED",
+      "text": "Belum ada satu pun sesi stock opname \u2014 sinkronisasi opname\u2194master belum bisa dibuktikan dengan data nyata (perlu 1 sesi uji)."
+    },
+    {
+      "severity": "MED",
+      "text": "Koleksi stok memakai 2 skema kuantitas berbeda \u2014 pembacaan mentah (bukan lewat core.stock_schema) akan salah hitung."
+    },
+    {
+      "severity": "MED",
+      "text": "rahaza_material_issues.material_id kosong di SELURUH 2 dokumen (pengeluaran \u2192 material)."
+    },
+    {
+      "severity": "MED",
+      "text": "po_items.material_id kosong di SELURUH 7 dokumen (baris PO \u2192 material)."
+    },
+    {
+      "severity": "MED",
+      "text": "production_job_items.material_id kosong di SELURUH 4 dokumen (job \u2192 material)."
+    },
+    {
+      "severity": "MED",
+      "text": "wh_delivery_notes.account_id kosong di SELURUH 2 dokumen (surat jalan \u2192 toko)."
+    }
+  ]
+}

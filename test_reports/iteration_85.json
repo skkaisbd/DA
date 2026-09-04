@@ -1,0 +1,26 @@
+{
+  "summary": "Tested W5 (Surat Jalan CMT PDF) and W3 (Stock Thresholds / Alert Stok) end-to-end. 13/13 backend API tests pass. Full UI flow validated: Surat Jalan button + column picker dialog on 'Terima FG dari CMT' opens with 7/10 columns pre-checked (No, Serial No, SKU, Nama Produk, Size, Warna, Qty Kirim); QC columns (Qty Terima, Qty Reject, Keterangan) unchecked by default; No & Qty Kirim marked 'wajib'. PDF export API works for default + narrow cols; SJ-CMT number is idempotent per receipt; error handling correct (400 missing id, 404 unknown id, 401 no auth). Ambang Stok tab shows 333 materials with 4 summary cards + empty warning + filters + apply-all + selective use-suggestion buttons. Filling 6000 on ACC-BTN-12 (stok 5000) then saving increased 'Sudah punya ambang' to 1 and 'Stok kritis' to 1; alert appeared correctly on Alert & Reorder as '1 Kritis' with detail 'Stok Kancing bulat plastik (5000 pcs) di bawah ambang 6000 pcs — kurang 1000'; notice + goto-thresholds link present. Data cleaned up (thresholds restored to 0/0, missing_threshold back to 333/333).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "wh-smart (Alert & Reorder)", "issues": ["Direct hash navigation to '#wh-smart' from another warehouse route does not switch view — URL stays as previously active hash (e.g. #wh-master) when the sidebar 'Alert & Reorder' link is clicked. Not a functional bug (sidebar works via click), but the review-request's claim of 'hash route #wh-smart' is misleading. Consider aligning hash to actual route."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_w3_w5_features.py", "/app/test_reports/pytest/w3_w5_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PdfColumnPicker defaults for cmt-delivery-note (SJ_DEFAULT_COLS) correctly enforce owner rule: QC-related columns must be manually opted-in.",
+    "backend/core/cmt_delivery_note.ensure_number() confirmed idempotent via PDF text extraction (same SJ-CMT number across 2 calls).",
+    "StockThresholdsModule uses a single global 'threshold-save' button, not per-row. Not a bug, but review request suggested per-row testid convention; document accordingly.",
+    "warehouse/alerts metadata correctly exposes materials_missing_threshold + materials_total; UI 'wh-smart-threshold-notice' renders honestly."
+  ],
+  "updated_files": ["/app/backend/tests/test_w3_w5_features.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% of testable flows"},
+  "test_credentials": "admin@garment.com / Admin@123",
+  "seed_data_creation": "None. Threshold on ACC-BTN-12 was temporarily set to 6000 for W3-3/W3-4 verification then reset to 0 (verified summary returned to 0/333/0/0). One cmt_delivery_notes doc was created for receipt CMT-RCV-00001 during PDF idempotency test — this is expected per review-request guidance ('itu wajar, jangan dihapus manual').",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Global save button is `threshold-save` (single button reflecting pending changes count e.g. 'Simpan (1)'), NOT per-row `threshold-save-<KODE>`. When navigating warehouse sub-modules programmatically prefer clicking sidebar text (e.g., page.get_by_text('Alert & Reorder')) rather than setting `location.hash='#wh-smart'` — hash routing to smart module is unreliable when already inside warehouse portal."
+}

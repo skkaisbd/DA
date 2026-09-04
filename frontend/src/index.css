@@ -1,0 +1,1820 @@
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  PT Rahaza ERP — Design Tokens & Theme System (Tahap 0 Foundation)        ║
+   ║  Based on /app/design_guidelines.md                                       ║
+   ║  Dual theme: Night (Galaxy Glass) + Light (Lavender Clean)                ║
+   ║  Default: follow system preference                                        ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide Emergent badge if injected by proxy */
+#emergent-badge,
+a[href*="emergent.sh"][href*="utm_source=emergent-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UNIVERSAL TOKENS (light & dark share these)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  :root {
+    /* Font families — Industrial/technical aesthetic for production ERP */
+    --font-display: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Radius scale */
+    --radius-xs: 10px;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius: 0.75rem; /* shadcn compat */
+
+    /* Spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-1: 150ms;
+    --dur-2: 200ms;
+    --dur-3: 240ms;
+
+    /* Glass specs */
+    --glass-blur: 24px;
+    --glass-blur-strong: 28px;
+    --glass-sat: 1.25;
+    --glass-bright: 1.05;
+
+    /* z-index scale */
+    --z-dropdown: 100;
+    --z-modal: 200;
+    --z-toast: 300;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NIGHT MODE — Galaxy Glass (default when .dark present)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  :root,
+  .dark {
+    /* Shadcn semantic */
+    --background: 225 45% 7%;
+    --foreground: 224 30% 97%;
+    --card: 225 40% 10%;
+    --card-foreground: 224 30% 97%;
+    --popover: 225 42% 9%;
+    --popover-foreground: 224 30% 97%;
+    --primary: 222 100% 65%;
+    --primary-foreground: 225 45% 7%;
+    --secondary: 225 30% 14%;
+    --secondary-foreground: 224 30% 97%;
+    --muted: 225 28% 14%;
+    --muted-foreground: 222 16% 68%;
+    --accent: 195 82% 58%;
+    --accent-foreground: 225 45% 7%;
+    --destructive: 350 85% 65%;
+    --destructive-foreground: 224 30% 97%;
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
+    --ring: 222 100% 65%;
+    --success: 150 74% 55%;
+    --warning: 38 90% 62%;
+    --info: 195 82% 58%;
+
+    /* Chart palette */
+    --chart-1: 222 100% 65%;
+    --chart-2: 195 82% 58%;
+    --chart-3: 150 74% 55%;
+    --chart-4: 38 90% 62%;
+    --chart-5: 280 70% 68%;
+
+    /* Sidebar */
+    --sidebar-background: 225 45% 6%;
+    --sidebar-foreground: 224 25% 88%;
+    --sidebar-primary: 222 100% 65%;
+    --sidebar-primary-foreground: 225 45% 7%;
+    --sidebar-accent: 225 30% 14%;
+    --sidebar-accent-foreground: 224 30% 97%;
+    --sidebar-border: 222 20% 16%;
+    --sidebar-ring: 222 100% 65%;
+
+    /* Glass surfaces */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-hover: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --card-surface: rgba(255, 255, 255, 0.05);
+    --card-surface-hover: rgba(255, 255, 255, 0.08);
+    --input-surface: rgba(255, 255, 255, 0.05);
+    --popover-surface: rgba(14, 18, 38, 0.95);
+    --nav-pill-bg: rgba(255, 255, 255, 0.06);
+    --nav-pill-active: rgba(255, 255, 255, 0.10);
+
+    /* Text overrides */
+    --text-heading: #F4F6FB;
+    --text-body: #B9C0D4;
+    --text-muted: #6F7890;
+    --overlay-bg: rgba(0, 0, 0, 0.65);
+    --chart-grid: rgba(255, 255, 255, 0.07);
+
+    /* Primary glow for buttons/active state */
+    --primary-glow: rgba(79, 124, 255, 0.35);
+
+    /* Shadows */
+    --shadow-soft: 0 18px 60px rgba(0, 0, 0, 0.55);
+    --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.45);
+    --shadow-glow-blue: 0 0 0 1px rgba(79, 124, 255, 0.18), 0 0 28px rgba(79, 124, 255, 0.22);
+    --shadow-glow-mint: 0 0 0 1px rgba(61, 220, 132, 0.14), 0 0 26px rgba(61, 220, 132, 0.18);
+
+    /* Ambient galaxy background */
+    --ambient-gradient:
+      radial-gradient(900px circle at 12% 8%, rgba(79, 124, 255, 0.22), transparent 55%),
+      radial-gradient(700px circle at 88% 18%, rgba(47, 183, 255, 0.14), transparent 60%),
+      radial-gradient(900px circle at 60% 110%, rgba(61, 220, 132, 0.08), transparent 55%),
+      linear-gradient(180deg, #0A0F1F 0%, #070B16 100%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT MODE — Lavender Clean (Ref B inspiration)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  .light {
+    /* Shadcn semantic */
+    --background: 240 30% 97%;
+    --foreground: 232 52% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 232 52% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 232 52% 10%;
+    /* Primary = LAVENDER (match "Lavender Clean" theme name) */
+    --primary: 258 60% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 24% 94%;
+    --secondary-foreground: 232 52% 10%;
+    --muted: 240 20% 94%;
+    --muted-foreground: 226 16% 44%;
+    --accent: 82 82% 70%;
+    --accent-foreground: 232 52% 10%;
+    --destructive: 0 66% 57%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 232 24% 90%;
+    --input: 232 24% 90%;
+    --ring: 258 60% 58%;
+    --success: 154 52% 46%;
+    --warning: 35 72% 55%;
+    --info: 195 82% 55%;
+
+    /* Chart palette — lavender + mint + lime accents */
+    --chart-1: 258 60% 58%;
+    --chart-2: 82 82% 70%;
+    --chart-3: 158 55% 82%;
+    --chart-4: 35 72% 55%;
+    --chart-5: 199 78% 68%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 232 45% 18%;
+    --sidebar-primary: 258 60% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 24% 94%;
+    --sidebar-accent-foreground: 232 52% 10%;
+    --sidebar-border: 232 24% 92%;
+    --sidebar-ring: 258 60% 58%;
+
+    /* Glass surfaces — LIGHT MODE (perbaikan 2026-07-27, laporan owner:
+       "tabel/kartu terlihat seperti tidak ada background, warnanya nyaru
+       dengan latar sehingga sulit dibaca").
+       Sebabnya: permukaan kartu memakai putih SEMI-TRANSPARAN (0.82) di atas
+       latar terang, jadi kontras kartu↔latar hampir nol dan efek backdrop-blur
+       tidak menolong. Sekarang permukaan kartu & input dibuat SOLID putih dan
+       garis tepinya dipertegas supaya batas kartu selalu terlihat. */
+    --glass-bg: #FFFFFF;
+    --glass-bg-hover: #FBFBFE;
+    --glass-border: rgba(15, 23, 42, 0.14);
+    --card-surface: #FFFFFF;
+    --card-surface-hover: #FAFAFE;
+    --input-surface: #FFFFFF;
+    --popover-surface: rgba(255, 255, 255, 0.98);
+    --nav-pill-bg: rgba(124, 106, 224, 0.06);
+    /* Lavender-tint pill active for light mode */
+    --nav-pill-active: rgba(124, 106, 224, 0.14);
+
+    --text-heading: #0E1226;
+    --text-body: #343B59;
+    --text-muted: #6F7890;
+    --overlay-bg: rgba(15, 23, 42, 0.45);
+    --chart-grid: rgba(15, 23, 42, 0.06);
+
+    /* Primary glow (lavender soft) */
+    --primary-glow: rgba(124, 106, 224, 0.24);
+
+    /* Shadows — soft & layered dengan tint lavender */
+    --shadow-soft: 0 10px 30px rgba(76, 58, 160, 0.12);
+    /* Bayangan kartu dipertegas + garis tepi 1px di dalam bayangan supaya kartu
+       tetap terbaca sebagai "kartu" walau berdiri di atas latar terang. */
+    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 20px rgba(76, 58, 160, 0.10);
+    --shadow-glow-blue: 0 0 0 1px rgba(124, 106, 224, 0.18), 0 10px 24px rgba(124, 106, 224, 0.22);
+    --shadow-glow-mint: 0 0 0 1px rgba(198, 243, 106, 0.45), 0 10px 28px rgba(198, 243, 106, 0.28);
+
+    /* Ambient lavender background (Ref B) */
+    --ambient-gradient:
+      radial-gradient(900px circle at 18% 10%, rgba(191, 247, 227, 0.55), transparent 55%),
+      radial-gradient(700px circle at 85% 18%, rgba(198, 243, 106, 0.22), transparent 60%),
+      radial-gradient(650px circle at 50% 90%, rgba(183, 167, 236, 0.22), transparent 60%),
+      linear-gradient(180deg, #F6F6FB 0%, #EEF0F8 100%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLASSIC MODE — Visual Studio (IDE-like, light gray surfaces + blue accents)
+   Applied via `.classic` class on <html>. Replaces Galaxy/Lavender ambient.
+   Light-touch: keeps existing portal layout, only recolors tokens & icons.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  .classic {
+    /* ── Shadcn semantic tokens — VS Light palette ─────────────────── */
+    --background: 220 15% 96%;        /* #F3F3F3 neutral IDE gray */
+    --foreground: 220 10% 15%;        /* #1E1E22 near black */
+    --card: 0 0% 100%;                /* #FFFFFF panel surfaces */
+    --card-foreground: 220 10% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 10% 15%;
+    --primary: 207 90% 42%;           /* #0C6CCE VS blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 90%;         /* #E1E4E9 secondary button gray */
+    --secondary-foreground: 220 10% 15%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 8% 42%;   /* #666972 muted text */
+    --accent: 207 90% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 358 70% 50%;       /* #CC3A3A */
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 14% 83%;            /* #CCCEDB hairline */
+    --input: 220 14% 83%;
+    --ring: 207 90% 42%;
+    --success: 140 62% 36%;           /* #23944A */
+    --warning: 38 92% 46%;            /* #E39A0C */
+    --info: 207 90% 42%;
+
+    /* Chart palette — classic VS accents */
+    --chart-1: 207 90% 42%;           /* blue */
+    --chart-2: 140 62% 36%;           /* green */
+    --chart-3: 38 92% 46%;            /* amber */
+    --chart-4: 358 70% 50%;           /* red */
+    --chart-5: 265 45% 52%;           /* purple */
+
+    /* Sidebar — pure white panel, grey on hover */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 10% 20%;
+    --sidebar-primary: 207 90% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 207 80% 93%;    /* #DCEEFB light blue hover */
+    --sidebar-accent-foreground: 220 10% 15%;
+    --sidebar-border: 220 14% 85%;
+    --sidebar-ring: 207 90% 42%;
+
+    /* "Glass" surfaces — in Classic they become solid light gray (no blur) */
+    --glass-bg: rgba(255, 255, 255, 1.0);
+    --glass-bg-hover: #E4EEF9;        /* classic VS row hover blue-tint */
+    --glass-border: #CCCEDB;          /* solid 1px hairline */
+    --card-surface: #FFFFFF;
+    --card-surface-hover: #F9FAFC;
+    --input-surface: #FFFFFF;
+    --popover-surface: #FFFFFF;
+    --nav-pill-bg: #ECEEF2;           /* toolbar strip */
+    --nav-pill-active: #CCE4F7;       /* VS selected tab blue */
+
+    /* Text tokens */
+    --text-heading: #1E1E22;
+    --text-body: #333740;
+    --text-muted: #666972;
+    --overlay-bg: rgba(30, 30, 34, 0.38);
+    --chart-grid: rgba(30, 30, 34, 0.08);
+
+    /* Primary glow — in Classic reduce to subtle inner ring */
+    --primary-glow: rgba(12, 108, 206, 0.18);
+
+    /* Shadows — tight, low, classic desktop feel */
+    --shadow-soft: 0 2px 6px rgba(30, 30, 34, 0.10), 0 1px 2px rgba(30, 30, 34, 0.06);
+    --shadow-card: 0 1px 3px rgba(30, 30, 34, 0.08);
+    --shadow-glow-blue: 0 0 0 1px rgba(12, 108, 206, 0.25), 0 2px 6px rgba(12, 108, 206, 0.12);
+    --shadow-glow-mint: 0 0 0 1px rgba(35, 148, 74, 0.25), 0 2px 6px rgba(35, 148, 74, 0.12);
+
+    /* No ambient gradient — classic uses a flat IDE surface */
+    --ambient-gradient: linear-gradient(180deg, #F3F3F3 0%, #ECEEF2 100%);
+
+    /* Classic-only override: reduce radius for denser IDE feel */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 12px;
+    --radius: 0.375rem;
+
+    /* Reduce glass blur (classic has no frosted glass) */
+    --glass-blur: 0px;
+    --glass-blur-strong: 0px;
+
+    /* Classic typography: Segoe UI stack (VS canonical font) */
+    --font-display: 'Segoe UI', 'SegoeUI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --font-ui:      'Segoe UI', 'SegoeUI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:    'Consolas', 'Courier New', 'JetBrains Mono', ui-monospace, monospace;
+
+    /* ── Classic colorful icon palette (VS-inspired) ─────────────────
+       Used by html.classic .lucide-* rules below. High specificity so
+       they override any parent text-color classes (Tailwind 010 < html.classic 021). */
+    --cls-ic-blue:    #2B7CD3;
+    --cls-ic-blue-2:  #1B578C;
+    --cls-ic-navy:    #1E5288;
+    --cls-ic-cyan:    #0A9BA8;
+    --cls-ic-green:   #2E9C4A;
+    --cls-ic-orange:  #E8770E;
+    --cls-ic-gold:    #D4A017;
+    --cls-ic-amber:   #E39A0C;
+    --cls-ic-red:     #C73535;
+    --cls-ic-purple:  #6B5FB3;
+    --cls-ic-brown:   #A8651F;
+    --cls-ic-grey:    #5E6470;
+  }
+}
+
+/* Classic ambient reset — disable starfield/noise overlays on classic theme */
+html.classic .starfield { opacity: 0 !important; }
+html.classic .noise-overlay::after { opacity: 0 !important; }
+html.classic body {
+  background-image: none;
+  background-color: hsl(var(--background));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLASSIC COLORFUL ICON TINTS (Visual Studio style)
+   Scoped with html.classic (specificity 021) to override Tailwind text-* (010)
+   but active-selection background still provides a strong visual indicator.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Default neutral tint for any non-mapped lucide icon in Classic */
+html.classic svg[class*="lucide-"] { color: var(--cls-ic-grey); }
+
+/* Blue group — data, files, tables, dashboards */
+html.classic .lucide-file-text,
+html.classic .lucide-file,
+html.classic .lucide-file-down,
+html.classic .lucide-files,
+html.classic .lucide-save,
+html.classic .lucide-database,
+html.classic .lucide-server,
+html.classic .lucide-hard-drive,
+html.classic .lucide-bar-chart,
+html.classic .lucide-bar-chart-2,
+html.classic .lucide-bar-chart-3,
+html.classic .lucide-bar-chart-4,
+html.classic .lucide-line-chart,
+html.classic .lucide-layout-dashboard,
+html.classic .lucide-layout-grid,
+html.classic .lucide-list-checks,
+html.classic .lucide-clipboard-list,
+html.classic .lucide-clipboard,
+html.classic .lucide-arrow-down-to-line,
+html.classic .lucide-download,
+html.classic .lucide-upload,
+html.classic .lucide-command,
+html.classic .lucide-terminal { color: var(--cls-ic-blue); }
+
+/* Navy group — pivot/reports/deeper docs */
+html.classic .lucide-book-open,
+html.classic .lucide-pie-chart { color: var(--cls-ic-navy); }
+
+/* Green group — money in, positive, check, play, growth */
+html.classic .lucide-dollar-sign,
+html.classic .lucide-trending-up,
+html.classic .lucide-check,
+html.classic .lucide-check-circle,
+html.classic .lucide-check-circle-2,
+html.classic .lucide-circle-check-big,
+html.classic .lucide-circle-check,
+html.classic .lucide-play,
+html.classic .lucide-play-circle { color: var(--cls-ic-green); }
+
+/* Orange group — credit, alerts, notifications */
+html.classic .lucide-credit-card,
+html.classic .lucide-bell,
+html.classic .lucide-bell-ring { color: var(--cls-ic-orange); }
+
+/* Amber group — activity, warning, pencil/edit */
+html.classic .lucide-activity,
+html.classic .lucide-alert-triangle,
+html.classic .lucide-alert-circle,
+html.classic .lucide-triangle-alert,
+html.classic .lucide-circle-alert,
+html.classic .lucide-pencil,
+html.classic .lucide-edit,
+html.classic .lucide-edit-2,
+html.classic .lucide-edit-3 { color: var(--cls-ic-amber); }
+
+/* Red group — stop, destructive, logout, security, location pin */
+html.classic .lucide-x,
+html.classic .lucide-x-circle,
+html.classic .lucide-circle-x,
+html.classic .lucide-log-out,
+html.classic .lucide-shield,
+html.classic .lucide-shield-check,
+html.classic .lucide-shield-alert,
+html.classic .lucide-map-pin,
+html.classic .lucide-trash,
+html.classic .lucide-trash-2,
+html.classic .lucide-stop-circle { color: var(--cls-ic-red); }
+
+/* Purple group — people & premium */
+html.classic .lucide-users,
+html.classic .lucide-user,
+html.classic .lucide-user-cog,
+html.classic .lucide-gem { color: var(--cls-ic-purple); }
+
+/* Brown group — physical goods, warehouse, shipping */
+html.classic .lucide-package,
+html.classic .lucide-package-open,
+html.classic .lucide-package-2,
+html.classic .lucide-warehouse,
+html.classic .lucide-archive,
+html.classic .lucide-truck,
+html.classic .lucide-box { color: var(--cls-ic-brown); }
+
+/* Cyan group — time */
+html.classic .lucide-clock,
+html.classic .lucide-timer { color: var(--cls-ic-cyan); }
+
+/* Green (clipboard-check) overrides brown for QC pass */
+html.classic .lucide-clipboard-check { color: var(--cls-ic-green); }
+
+/* Factory/Wrench stay neutral grey to match VS "tool" icons */
+html.classic .lucide-factory,
+html.classic .lucide-wrench,
+html.classic .lucide-settings,
+html.classic .lucide-sliders,
+html.classic .lucide-menu { color: var(--cls-ic-grey); }
+
+/* Search — keep subtle blue for focus affordance */
+html.classic .lucide-search { color: var(--cls-ic-blue-2); }
+
+/* When parent container has explicit "active/selected" class, let icon
+   inherit white-on-blue for readability on VS selected rows/pills.  */
+html.classic [data-active="true"] svg[class*="lucide-"],
+html.classic [aria-current="page"] svg[class*="lucide-"],
+html.classic .classic-active-icon svg[class*="lucide-"] { color: #ffffff !important; }
+
+/* Classic: make the primary "brand R" tile look like a VS project icon */
+html.classic button[data-testid="portal-back-btn"] > div:first-child {
+  background-color: hsl(var(--primary));
+  color: #ffffff;
+  border-color: hsl(var(--primary));
+  border-radius: 4px;
+}
+
+/* Classic: tighter focus ring (VS uses thin solid ring, not glow) */
+html.classic *:focus-visible {
+  outline: 1px solid hsl(var(--ring));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(12, 108, 206, 0.25);
+  border-radius: 3px;
+}
+
+/* Classic scrollbar — thin, VS-style */
+html.classic ::-webkit-scrollbar { width: 12px; height: 12px; }
+html.classic ::-webkit-scrollbar-track { background: #F3F3F3; }
+html.classic ::-webkit-scrollbar-thumb {
+  background: #C2C3C9;
+  border: 2px solid #F3F3F3;
+  border-radius: 6px;
+}
+html.classic ::-webkit-scrollbar-thumb:hover { background: #A6A7AE; }
+
+/* Classic: make shadcn Badge / small chips look like VS tag pills */
+html.classic [data-slot="badge"],
+html.classic .badge {
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LEGACY ERP CHROME — SAP / Windows 9x / Oracle Forms style
+   Heavy-classic look: square corners, 3D bevels, sunken inputs, hairline
+   grids, folder-tab pills, title-bar strips, menu-bar topbar, status bar.
+   Scoped to html.classic only.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Kill all Tailwind `rounded-*` corners in classic — maximum 2px radius.
+   `:where()` used to keep specificity low so targeted overrides still win. */
+html.classic :where(
+  [class*="rounded-"],
+  [class*="rounded"]
+) {
+  border-radius: 2px !important;
+}
+html.classic :where([class*="rounded-full"]) {
+  /* keep avatars/circular indicators but flatten pills later via scoped rule */
+  border-radius: 9999px !important;
+}
+
+/* Force rounded-full elements that are actually nav pills / header tabs back to square */
+html.classic header nav[data-testid="section-pill-nav"] { border-radius: 0 !important; }
+html.classic header nav[data-testid="section-pill-nav"] > button { border-radius: 2px 2px 0 0 !important; }
+
+/* Typography — tighten for dense legacy ERP density */
+html.classic {
+  --font-ui:      'Tahoma', 'Segoe UI', 'MS Sans Serif', system-ui, sans-serif;
+  --font-display: 'Tahoma', 'Segoe UI', 'MS Sans Serif', system-ui, sans-serif;
+}
+html.classic body { font-size: 13px; line-height: 1.4; }
+html.classic h1 { font-size: 1.5rem;  letter-spacing: -0.01em; font-weight: 700; }
+html.classic h2 { font-size: 1.25rem; letter-spacing: -0.005em; font-weight: 700; }
+html.classic h3 { font-size: 1.05rem; letter-spacing: 0; font-weight: 700; }
+html.classic h4 { font-size: 0.95rem; letter-spacing: 0; font-weight: 700; }
+
+/* ── TOP BAR → Windows/SAP menu bar style (flat grey, hairline bottom) ── */
+html.classic header.sticky {
+  background: linear-gradient(180deg, #F4F4F5 0%, #E8EAED 100%) !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid #8F8F8F !important;
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.4), 0 1px 0 rgba(0,0,0,0.04);
+}
+
+/* Section pills → folder tabs (bottom connected to content area) */
+html.classic [data-testid="section-pill-nav"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  gap: 2px !important;
+}
+html.classic [data-testid^="section-pill-"] {
+  border: 1px solid #8F8F8F !important;
+  border-bottom: none !important;
+  background: linear-gradient(180deg, #F9F9F9 0%, #DCDEE3 100%) !important;
+  color: #1E1E22 !important;
+  padding: 4px 14px !important;
+  margin-bottom: -1px !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  min-height: 26px;
+}
+html.classic [data-testid^="section-pill-"][aria-pressed="true"] {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #FFFFFF !important;
+  color: #0C4B8E !important;
+  font-weight: 600 !important;
+  z-index: 1;
+  position: relative;
+  box-shadow: 0 -2px 0 #0C6CCE inset !important; /* blue top accent on active tab */
+}
+html.classic [data-testid^="section-pill-"] span { color: inherit !important; }
+
+/* Global Search field → sunken 3D inset */
+html.classic header .relative > div:has(> input[data-testid="topbar-global-search-input"]) {
+  background: #FFFFFF !important;
+  border: 1px solid #7B7B7B !important;
+  border-radius: 0 !important;
+  box-shadow: inset 1px 1px 0 rgba(0,0,0,0.08), inset -1px -1px 0 rgba(255,255,255,0.6) !important;
+  padding: 2px 6px !important;
+}
+
+/* Logout / Theme / Cmd+K icon buttons → raised 3D chrome */
+html.classic header button[data-testid="topbar-logout-btn"],
+html.classic header button[data-testid="topbar-cmdk-trigger"],
+html.classic header button[data-testid="theme-toggle-btn"],
+html.classic header button[data-testid="mobile-menu-btn"] {
+  background: linear-gradient(180deg, #F9F9F9 0%, #D0D3D8 100%) !important;
+  border: 1px solid #8F8F8F !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -1px 0 rgba(0,0,0,0.08), 0 1px 0 rgba(0,0,0,0.04) !important;
+  color: #1E1E22 !important;
+}
+html.classic header button[data-testid="topbar-logout-btn"]:hover,
+html.classic header button[data-testid="topbar-cmdk-trigger"]:hover,
+html.classic header button[data-testid="theme-toggle-btn"]:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #DCE6F2 100%) !important;
+  border-color: #4E84C6 !important;
+}
+html.classic header button[data-testid="topbar-logout-btn"]:active,
+html.classic header button[data-testid="topbar-cmdk-trigger"]:active,
+html.classic header button[data-testid="theme-toggle-btn"]:active {
+  background: linear-gradient(180deg, #C2C5CA 0%, #DCDEE3 100%) !important;
+  box-shadow: inset 1px 1px 0 rgba(0,0,0,0.15), inset -1px -1px 0 rgba(255,255,255,0.4) !important;
+}
+
+/* ── SIDEBAR → classic tree/menu panel ── */
+html.classic aside[data-testid="portal-sidebar"] > div {
+  background: #F6F6F8 !important;
+  border-right: 1px solid #8F8F8F !important;
+  backdrop-filter: none !important;
+}
+html.classic aside [data-testid="sidebar-active-section"] {
+  color: #0C4B8E !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+}
+html.classic aside nav[data-testid="sidebar-items"] > div > button {
+  border-radius: 0 !important;
+  border-left: 3px solid transparent !important;
+  padding: 4px 10px !important;
+  font-size: 13px !important;
+  min-height: 26px;
+}
+html.classic aside nav[data-testid="sidebar-items"] > div > button:hover {
+  background: #DCE6F5 !important; /* classic Windows selection hover */
+  color: #1E1E22 !important;
+}
+html.classic aside nav[data-testid="sidebar-items"] > div > button[class*="bg-[var(--nav-pill-active)]"] {
+  background: #316AC5 !important;
+  color: #FFFFFF !important;
+  border-left-color: #0C4B8E !important;
+}
+html.classic aside nav[data-testid="sidebar-items"] > div > button[class*="bg-[var(--nav-pill-active)]"] svg[class*="lucide-"] {
+  color: #FFFFFF !important;
+}
+html.classic aside nav[data-testid="sidebar-items"] > div > button[class*="bg-[var(--nav-pill-active)]"] > span[aria-hidden="true"] {
+  background: transparent !important;
+  width: 0 !important;
+}
+
+/* ── CONTENT AREA → Windows app surface ── */
+html.classic main {
+  background: #ECEEF2 !important;
+}
+
+/* ── CARDS / GlassPanel / any elevated surface → raised panel with hairline ── */
+html.classic main [class*="bg-[var(--card-surface)]"],
+html.classic main [class*="card-surface"],
+html.classic [class*="backdrop-blur"][class*="border"],
+html.classic .glass-panel {
+  background: #FFFFFF !important;
+  border: 1px solid #9B9B9B !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 1px 0 rgba(0,0,0,0.04) !important;
+  backdrop-filter: none !important;
+}
+
+/* Hero / page header card → classic SAP title-bar strip (blue gradient) */
+html.classic main > div > div:first-child [class*="rounded-"]:first-child:has(h1, h2):not([data-testid="topbar-back-btn"]) {
+  position: relative;
+  padding-top: 32px !important;
+  overflow: hidden;
+}
+html.classic main section:has(> h1),
+html.classic main [class*="bg-gradient"]:has(h1) {
+  background: linear-gradient(180deg, #0C6CCE 0%, #0958A5 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #0C4B8E !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 0 rgba(0,0,0,0.1) !important;
+  padding: 14px 18px !important;
+}
+html.classic main section:has(> h1) h1,
+html.classic main section:has(> h1) h2,
+html.classic main section:has(> h1) p {
+  color: #FFFFFF !important;
+}
+html.classic main section:has(> h1) [class*="text-foreground\\/"] {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* ── StatTile / small kpi cards → classic 3D inset panels ── */
+html.classic main [class*="grid"] > [class*="rounded-"][class*="bg-"]:has(> div[class*="text-"]) {
+  background: #FFFFFF !important;
+  border: 1px solid #9B9B9B !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 0 rgba(0,0,0,0.06) !important;
+}
+
+/* ── TABLES → dense SAP grid with hairline borders ── */
+html.classic table {
+  border-collapse: collapse !important;
+  font-size: 12px !important;
+}
+html.classic table th,
+html.classic table thead tr th {
+  background: linear-gradient(180deg, #F4F4F5 0%, #DCDEE3 100%) !important;
+  border: 1px solid #9B9B9B !important;
+  color: #1E1E22 !important;
+  font-weight: 700 !important;
+  padding: 4px 8px !important;
+  text-align: left;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+html.classic table td,
+html.classic table tbody tr td {
+  border: 1px solid #D6D8DB !important;
+  padding: 3px 8px !important;
+  background: #FFFFFF;
+}
+html.classic table tbody tr:nth-child(even) td {
+  background: #F6F7F9; /* zebra stripe */
+}
+html.classic table tbody tr:hover td {
+  background: #DCE6F5 !important;
+}
+html.classic table tbody tr[data-state="selected"] td,
+html.classic table tbody tr[aria-selected="true"] td {
+  background: #316AC5 !important;
+  color: #FFFFFF !important;
+}
+
+/* ── FORM INPUTS → classic sunken fields ── */
+html.classic input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="submit"]):not([type="reset"]):not([type="button"]),
+html.classic select,
+html.classic textarea {
+  background: #FFFFFF !important;
+  border: 1px solid #7B7B7B !important;
+  border-radius: 1px !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0,0,0,0.10),
+    inset -1px -1px 0 rgba(255,255,255,0.6) !important;
+  padding: 3px 6px !important;
+  font-size: 13px !important;
+  color: #1E1E22 !important;
+  backdrop-filter: none !important;
+}
+html.classic input:focus,
+html.classic select:focus,
+html.classic textarea:focus {
+  border-color: #0C6CCE !important;
+  outline: none !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0,0,0,0.10),
+    inset -1px -1px 0 rgba(255,255,255,0.6),
+    0 0 0 2px rgba(12, 108, 206, 0.18) !important;
+}
+
+/* ── ACTION BUTTONS (primary / secondary / outline) → raised bevel ── */
+/* Primary (solid blue brand button) */
+html.classic main button[class*="bg-primary"]:not([class*="bg-primary/"]),
+html.classic [role="dialog"] button[class*="bg-primary"]:not([class*="bg-primary/"]) {
+  background: linear-gradient(180deg, #2B7CD3 0%, #0A5CAC 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #0C4B8E !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -1px 0 rgba(0,0,0,0.15),
+    0 1px 0 rgba(0,0,0,0.08) !important;
+  font-weight: 600 !important;
+  padding: 4px 14px !important;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.18);
+}
+html.classic main button[class*="bg-primary"]:hover {
+  background: linear-gradient(180deg, #4A95E0 0%, #0C6CCE 100%) !important;
+}
+html.classic main button[class*="bg-primary"]:active {
+  background: linear-gradient(180deg, #0A5CAC 0%, #2B7CD3 100%) !important;
+  box-shadow:
+    inset 1px 1px 0 rgba(0,0,0,0.22),
+    inset -1px -1px 0 rgba(255,255,255,0.15) !important;
+}
+
+/* Secondary / outline / ghost buttons → 3D grey chrome (except sidebar nav) */
+html.classic main button[class*="border"]:not([class*="bg-primary"]):not([class*="bg-gradient"]):not([data-testid^="nav-item-"]):not([data-testid^="section-pill-"]),
+html.classic main button[class*="bg-secondary"],
+html.classic [role="dialog"] button[class*="border"]:not([class*="bg-primary"]) {
+  background: linear-gradient(180deg, #F9F9F9 0%, #D0D3D8 100%) !important;
+  color: #1E1E22 !important;
+  border: 1px solid #8F8F8F !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(0,0,0,0.08),
+    0 1px 0 rgba(0,0,0,0.04) !important;
+  padding: 4px 12px !important;
+  font-weight: 500 !important;
+}
+html.classic main button[class*="border"]:not([class*="bg-primary"]):hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #DCE6F2 100%) !important;
+  border-color: #4E84C6 !important;
+}
+
+/* Destructive buttons */
+html.classic main button[class*="bg-destructive"]:not([class*="bg-destructive/"]) {
+  background: linear-gradient(180deg, #E05050 0%, #A32020 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #7A1414 !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -1px 0 rgba(0,0,0,0.2),
+    0 1px 0 rgba(0,0,0,0.08) !important;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+}
+
+/* ── DIALOG / MODAL → classic Windows dialog with blue title bar ── */
+html.classic [role="dialog"] {
+  background: #F0F0F3 !important;
+  border: 1px solid #5B5B5B !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    0 4px 20px rgba(0,0,0,0.35) !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+}
+html.classic [role="dialog"] > * {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+html.classic [role="dialog"] > *:first-child {
+  background: linear-gradient(180deg, #0C6CCE 0%, #0958A5 100%) !important;
+  color: #FFFFFF !important;
+  padding: 8px 14px !important;
+  margin: 0 !important;
+  border-bottom: 1px solid #0C4B8E !important;
+  border-radius: 0 !important;
+}
+html.classic [role="dialog"] h2,
+html.classic [role="dialog"] [class*="DialogTitle"],
+html.classic [role="dialog"] [class*="dialog-title"] {
+  color: #FFFFFF !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+}
+
+/* ── BADGE / STATUS CHIP → square tag pills ── */
+html.classic [class*="bg-"][class*="rounded-"]:not(button):is(span) {
+  border-radius: 2px !important;
+  border: 1px solid rgba(0,0,0,0.15) !important;
+  padding: 1px 6px !important;
+  font-weight: 600 !important;
+  font-size: 10px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── STATUS BAR (bottom) — classic Windows app status bar ── */
+html.classic body::after {
+  content: attr(data-classic-status, '');
+}
+html.classic [data-testid^="portal-shell-"] > div[class*="flex-1 min-h-0"] {
+  /* Add bottom padding so the fake status bar has room */
+  padding-bottom: 22px;
+  position: relative;
+}
+html.classic [data-testid^="portal-shell-"] > div[class*="flex-1 min-h-0"]::after {
+  content: "Ready · PT Rahaza Global Indonesia · Classic Mode";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 22px;
+  line-height: 22px;
+  padding: 0 12px;
+  font-size: 11px;
+  color: #1E1E22;
+  background: linear-gradient(180deg, #F4F4F5 0%, #DCDEE3 100%);
+  border-top: 1px solid #8F8F8F;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html.classic [data-testid^="portal-shell-"] > div[class*="flex-1 min-h-0"]::before {
+  /* left "disk" indicator dot */
+  content: "●";
+  position: absolute;
+  left: 6px; bottom: 3px;
+  color: #2E9C4A;
+  font-size: 10px;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ── DROPDOWN / POPOVER / COMMAND menus → classic grey context menu ── */
+html.classic [role="menu"],
+html.classic [role="listbox"],
+html.classic [data-radix-popper-content-wrapper] > * {
+  background: #F6F6F8 !important;
+  border: 1px solid #5B5B5B !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.8),
+    2px 2px 6px rgba(0,0,0,0.2) !important;
+  backdrop-filter: none !important;
+}
+html.classic [role="menuitem"]:hover,
+html.classic [role="option"][data-selected="true"],
+html.classic [role="option"]:hover {
+  background: #316AC5 !important;
+  color: #FFFFFF !important;
+}
+
+/* ── ENSURE the portal-back R tile stays classic square with shadow bevel ── */
+html.classic button[data-testid="portal-back-btn"] > div:first-child {
+  background: linear-gradient(180deg, #2B7CD3 0%, #0A5CAC 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #0C4B8E !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -1px 0 rgba(0,0,0,0.15) !important;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+}
+
+/* ── PORTAL SELECTOR CARDS (landing page) ── */
+html.classic [data-testid="portal-selector-page"] [class*="rounded-"][class*="bg-"] {
+  background: #FFFFFF !important;
+  border: 1px solid #9B9B9B !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 1px 0 rgba(0,0,0,0.04) !important;
+}
+html.classic [data-testid="portal-selector-page"] [class*="rounded-"][class*="bg-"]:hover {
+  border-color: #4E84C6 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 0 0 1px #4E84C6 !important;
+}
+
+/* Portal icon badge on selector cards → raised blue tile */
+html.classic [data-testid="portal-selector-page"] [class*="grid"] [class*="bg-"][class*="rounded-"]:has(> svg) {
+  background: linear-gradient(180deg, #2B7CD3 0%, #0A5CAC 100%) !important;
+  border: 1px solid #0C4B8E !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+html.classic [data-testid="portal-selector-page"] [class*="grid"] [class*="bg-"][class*="rounded-"]:has(> svg) svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE — body, typography, global
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui);
+    background-image: var(--ambient-gradient);
+    background-attachment: fixed;
+    background-size: cover;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .font-display { font-family: var(--font-display); }
+  .font-ui      { font-family: var(--font-ui); }
+  code, .font-mono { font-family: var(--font-mono); }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+    color: hsl(var(--foreground));
+  }
+
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* ── Native form elements: follow theme (prevents pure-white bg in dark/modal) ─ */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="submit"]):not([type="reset"]):not([type="button"]),
+  select,
+  textarea {
+    background-color: var(--input-surface);
+    color: hsl(var(--foreground));
+    color-scheme: light dark;
+  }
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="submit"]):not([type="reset"]):not([type="button"]),
+  .dark select,
+  .dark textarea {
+    color-scheme: dark;
+    background-color: hsl(222 20% 16%) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+  .dark select option,
+  .dark select optgroup {
+    background-color: hsl(222 20% 14%);
+    color: hsl(var(--foreground));
+  }
+  .light input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="submit"]):not([type="reset"]):not([type="button"]),
+  .light select,
+  .light textarea {
+    color-scheme: light;
+  }
+  input::placeholder, textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.7;
+  }
+  /* Autofill fix — prevents harsh yellow in both themes */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: hsl(var(--foreground));
+    -webkit-box-shadow: 0 0 0 1000px var(--input-surface) inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOISE TEXTURE OVERLAY — premium grain
+   ═══════════════════════════════════════════════════════════════════════════ */
+.noise-overlay {
+  position: relative;
+}
+.noise-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.light .noise-overlay::after {
+  opacity: 0.02;
+  mix-blend-mode: multiply;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STARFIELD (NIGHT ONLY) — CSS-only, no photo, perf-safe
+   ═══════════════════════════════════════════════════════════════════════════ */
+.starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+.dark .starfield {
+  opacity: 1;
+}
+.light .starfield {
+  opacity: 0;
+}
+.starfield::before,
+.starfield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1.5px 1.5px at 65% 15%, rgba(180,200,255,0.7), transparent),
+    radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 10% 85%, rgba(200,210,255,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 55% 45%, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 88% 88%, rgba(200,230,255,0.55), transparent),
+    radial-gradient(1px 1px at 30% 55%, rgba(255,255,255,0.35), transparent);
+  background-size: 100% 100%;
+}
+.starfield::after {
+  background-position: 25% 25%;
+  opacity: 0.7;
+  animation: twinkle 6s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .starfield::after { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dark ::-webkit-scrollbar { width: 8px; height: 8px; }
+.dark ::-webkit-scrollbar-track { background: transparent; }
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  transition: background var(--dur-2) var(--ease-out);
+}
+.dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.16); }
+
+.light ::-webkit-scrollbar { width: 8px; height: 8px; }
+.light ::-webkit-scrollbar-track { background: transparent; }
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.12);
+  border-radius: 8px;
+  transition: background var(--dur-2) var(--ease-out);
+}
+.light ::-webkit-scrollbar-thumb:hover { background: rgba(15, 23, 42, 0.22); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DEBUG WRAPPER COMPAT
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  [data-debug-wrapper="true"] {
+    display: contents !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE UTILS
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar-responsive {
+    position: fixed;
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    transition: transform var(--dur-3) var(--ease-out);
+  }
+  .sidebar-responsive.open {
+    transform: translateX(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — honor user preference
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  LIGHT MODE READABILITY BASELINE — 2026-07-27                            ║
+   ║  Laporan owner: "tabel tidak terlihat punya kartu, baris menyatu dengan  ║
+   ║  latar; tombol memakai warna mentah; teks abu terlalu tipis."            ║
+   ║                                                                          ║
+   ║  Blok ini SENGAJA berada di luar @layer supaya menang atas utility       ║
+   ║  Tailwind pada specificity yang sama. Semua nilai memakai design token.  ║
+   ║  Scope: html.light saja (dark & classic punya perlakuan sendiri).        ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+/* ───────────────────────────────────────────────────────────────────────────
+   1. PERMUKAAN KARTU UNTUK SETIAP TABEL
+   Setiap elemen yang membungkus <table> secara langsung diubah jadi kartu
+   solid (putih + hairline + radius + shadow). Ini memperbaiki ±160 file
+   sekaligus tanpa menyentuh JSX-nya.
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light :is(div, section, form, td):has(> table) {
+  background-color: var(--card-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Wrapper tanpa utility overflow-* tidak akan memotong sudut tabel → beri clip */
+html.light :is(div, section, form):not([class*="overflow-"]):has(> table) {
+  overflow: hidden;
+}
+
+/* Hindari bingkai ganda: jika induknya sudah kartu, wrapper dalam dibuat polos */
+html.light :is(
+  [class*="card-surface"],
+  [class*="bg-card"],
+  [class*="glass"],
+  [data-table-shell="true"],
+  [class*="bg-background"]
+) > :is(div, section, form):has(> table) {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   2. ISI TABEL — header, pemisah baris, zebra, hover
+   Guard `:not([class*="bg-"])` menjaga sel/baris yang sengaja diberi warna
+   (status, seleksi, highlight) supaya tidak tertimpa.
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light table {
+  background-color: var(--card-surface);
+  color: hsl(var(--foreground));
+}
+
+html.light table > thead > tr > th:not([class*="bg-"]),
+html.light table > thead > tr > td:not([class*="bg-"]) {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Sudut header ikut membulat mengikuti kartu pembungkus */
+html.light table > thead > tr:first-child > th:first-child { border-top-left-radius: var(--radius-lg); }
+html.light table > thead > tr:first-child > th:last-child  { border-top-right-radius: var(--radius-lg); }
+
+html.light table > tbody > tr {
+  border-bottom: 1px solid hsl(var(--border));
+}
+html.light table > tbody > tr:last-child { border-bottom: 0; }
+
+html.light table > tbody > tr:nth-child(even):not([class*="bg-"]) {
+  background-color: rgba(15, 23, 42, 0.022);
+}
+html.light table > tbody > tr:hover:not([class*="bg-"]) {
+  background-color: var(--card-surface-hover);
+}
+
+/* Footer tabel (total/summary) */
+html.light table > tfoot > tr > :is(th, td):not([class*="bg-"]) {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Header sticky tetap solid saat discroll */
+html.light table > thead.sticky > tr > :is(th, td),
+html.light table > thead > tr.sticky > :is(th, td),
+html.light table > thead > tr > th.sticky {
+  background-color: hsl(var(--muted));
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   3. KETERBACAAN TEKS
+   Utility beropasitas rendah (`text-foreground/40`, `text-muted-foreground/50`
+   dst.) menghasilkan kontras < 3:1 di atas latar terang. Di light mode semua
+   dipadatkan ke token --muted-foreground (kontras ±6:1).
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light .text-foreground\/30,
+html.light .text-foreground\/40,
+html.light .text-foreground\/45,
+html.light .text-foreground\/50,
+html.light .text-foreground\/55,
+html.light .text-foreground\/60,
+html.light .text-foreground\/65,
+html.light .text-foreground\/70,
+html.light .text-muted-foreground\/30,
+html.light .text-muted-foreground\/40,
+html.light .text-muted-foreground\/50,
+html.light .text-muted-foreground\/60,
+html.light .text-muted-foreground\/70 {
+  color: hsl(var(--muted-foreground));
+}
+
+html.light .text-foreground\/80,
+html.light .text-foreground\/90,
+html.light .text-muted-foreground\/80,
+html.light .text-muted-foreground\/90 {
+  color: hsl(var(--foreground));
+}
+
+/* Placeholder & label sekunder tetap terbaca */
+html.light .text-white\/60,
+html.light .text-white\/70 { color: rgba(255, 255, 255, 0.85); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   6. BLOK PASTEL / KPI — beri hairline supaya terbaca sebagai kartu
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light .border-white { border-color: var(--glass-border); }
+
+html.light :is(div, section):is(
+  [class~="bg-blue-50"], [class~="bg-indigo-50"], [class~="bg-violet-50"],
+  [class~="bg-emerald-50"], [class~="bg-green-50"], [class~="bg-teal-50"],
+  [class~="bg-amber-50"], [class~="bg-orange-50"], [class~="bg-yellow-50"],
+  [class~="bg-red-50"], [class~="bg-rose-50"], [class~="bg-sky-50"]
+)[class*="rounded-"] {
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--glass-border);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   7. PANEL TRANSPARAN (`bg-foreground/5`) YANG BERISI KONTEN PADAT
+   Di light mode 5% hitam ≈ warna latar → dibuat sedikit lebih pekat supaya
+   batas panel tetap terbaca, tanpa mengubah kesan "subtle".
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light .bg-foreground\/5  { background-color: rgba(15, 23, 42, 0.045); }
+html.light .bg-foreground\/10 { background-color: rgba(15, 23, 42, 0.075); }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   8. INPUT / SELECT DI DALAM KARTU — pastikan tepinya terlihat
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]) {
+  border-color: hsl(var(--border));
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   9. IDIOM DARK-MODE YANG BOCOR KE LIGHT MODE
+   `bg-black/20`/`/30` dipakai sebagai strip header panel (benar di dark, jadi
+   pita abu gelap di light). Overlay modal (.fixed/.absolute) dikecualikan.
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light .bg-black\/5:not(.fixed):not(.absolute),
+html.light .bg-black\/10:not(.fixed):not(.absolute),
+html.light .bg-black\/20:not(.fixed):not(.absolute),
+html.light .bg-black\/30:not(.fixed):not(.absolute) {
+  background-color: rgba(15, 23, 42, 0.035);
+}
+
+/* `bg-white/5|10|20` sebagai permukaan panel tak terlihat di light mode */
+html.light .bg-white\/5:not(.fixed):not(.absolute),
+html.light .bg-white\/10:not(.fixed):not(.absolute) {
+  background-color: var(--card-surface);
+}
+
+/* `divide-white/5` (pemisah baris versi dark) tidak terlihat di atas putih */
+html.light [class*="divide-white"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: hsl(var(--border));
+}
+
+/* @@LIGHT-BUTTON-BASELINE:START@@ */
+
+/* ───────────────────────────────────────────────────────────────────────────
+   TOMBOL — warna mentah dipetakan ke token brand (light mode)
+   Exact word match (`class~=`) supaya varian seperti `hover:bg-blue-50`
+   ATAU `bg-blue-500/20` TIDAK ikut terkena.
+   Hanya elemen interaktif; titik status / chart / badge tetap semantik.
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light :is(button, a, [role="button"], [type="button"], [type="submit"]):is(
+  [class~="bg-blue-500"],
+  [class~="bg-blue-600"],
+  [class~="bg-blue-700"],
+  [class~="bg-blue-800"],
+  [class~="bg-indigo-500"],
+  [class~="bg-indigo-600"],
+  [class~="bg-indigo-700"],
+  [class~="bg-indigo-800"],
+  [class~="bg-sky-500"],
+  [class~="bg-sky-600"],
+  [class~="bg-sky-700"],
+  [class~="bg-sky-800"],
+  [class~="bg-violet-500"],
+  [class~="bg-violet-600"],
+  [class~="bg-violet-700"],
+  [class~="bg-violet-800"],
+  [class~="bg-purple-500"],
+  [class~="bg-purple-600"],
+  [class~="bg-purple-700"],
+  [class~="bg-purple-800"]
+) {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+html.light :is(button, a, [role="button"], [type="button"], [type="submit"]):is(
+  [class~="bg-blue-500"],
+  [class~="bg-blue-600"],
+  [class~="bg-blue-700"],
+  [class~="bg-blue-800"],
+  [class~="bg-indigo-500"],
+  [class~="bg-indigo-600"],
+  [class~="bg-indigo-700"],
+  [class~="bg-indigo-800"],
+  [class~="bg-sky-500"],
+  [class~="bg-sky-600"],
+  [class~="bg-sky-700"],
+  [class~="bg-sky-800"],
+  [class~="bg-violet-500"],
+  [class~="bg-violet-600"],
+  [class~="bg-violet-700"],
+  [class~="bg-violet-800"],
+  [class~="bg-purple-500"],
+  [class~="bg-purple-600"],
+  [class~="bg-purple-700"],
+  [class~="bg-purple-800"]
+) :is(svg, span, p, strong, small) {
+  color: hsl(var(--primary-foreground));
+}
+html.light :is(button, a, [role="button"], [type="button"], [type="submit"]):is(
+  [class~="hover:bg-blue-500"],
+  [class~="hover:bg-blue-600"],
+  [class~="hover:bg-blue-700"],
+  [class~="hover:bg-blue-800"],
+  [class~="hover:bg-indigo-500"],
+  [class~="hover:bg-indigo-600"],
+  [class~="hover:bg-indigo-700"],
+  [class~="hover:bg-indigo-800"],
+  [class~="hover:bg-sky-500"],
+  [class~="hover:bg-sky-600"],
+  [class~="hover:bg-sky-700"],
+  [class~="hover:bg-sky-800"],
+  [class~="hover:bg-violet-500"],
+  [class~="hover:bg-violet-600"],
+  [class~="hover:bg-violet-700"],
+  [class~="hover:bg-violet-800"],
+  [class~="hover:bg-purple-500"],
+  [class~="hover:bg-purple-600"],
+  [class~="hover:bg-purple-700"],
+  [class~="hover:bg-purple-800"]
+):hover {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  filter: brightness(1.08);
+}
+html.light :is(button, a, [role="button"], [type="button"], [type="submit"]):is(
+  [class~="bg-emerald-500"],
+  [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"],
+  [class~="bg-green-500"],
+  [class~="bg-green-600"],
+  [class~="bg-green-700"],
+  [class~="bg-teal-500"],
+  [class~="bg-teal-600"],
+  [class~="bg-teal-700"],
+  [class~="bg-cyan-600"],
+  [class~="bg-cyan-700"],
+  [class~="bg-amber-600"],
+  [class~="bg-amber-700"],
+  [class~="bg-yellow-600"],
+  [class~="bg-yellow-700"],
+  [class~="bg-orange-500"],
+  [class~="bg-orange-600"],
+  [class~="bg-orange-700"],
+  [class~="bg-red-500"],
+  [class~="bg-red-600"],
+  [class~="bg-red-700"],
+  [class~="bg-rose-500"],
+  [class~="bg-rose-600"],
+  [class~="bg-rose-700"],
+  [class~="bg-pink-500"],
+  [class~="bg-pink-600"],
+  [class~="bg-pink-700"],
+  [class~="bg-fuchsia-500"],
+  [class~="bg-fuchsia-600"],
+  [class~="bg-fuchsia-700"],
+  [class~="bg-slate-600"],
+  [class~="bg-slate-700"],
+  [class~="bg-slate-800"],
+  [class~="bg-slate-900"],
+  [class~="bg-gray-600"],
+  [class~="bg-gray-700"],
+  [class~="bg-gray-800"],
+  [class~="bg-gray-900"],
+  [class~="bg-zinc-600"],
+  [class~="bg-zinc-700"],
+  [class~="bg-zinc-800"],
+  [class~="bg-zinc-900"],
+  [class~="bg-neutral-600"],
+  [class~="bg-neutral-700"],
+  [class~="bg-neutral-800"],
+  [class~="bg-neutral-900"],
+  [class~="bg-stone-600"],
+  [class~="bg-stone-700"],
+  [class~="bg-stone-800"],
+  [class~="bg-stone-900"]
+) {
+  color: #FFFFFF;
+}
+html.light :is(button, a, [role="button"], [type="button"], [type="submit"]):is(
+  [class~="bg-emerald-500"],
+  [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"],
+  [class~="bg-green-500"],
+  [class~="bg-green-600"],
+  [class~="bg-green-700"],
+  [class~="bg-teal-500"],
+  [class~="bg-teal-600"],
+  [class~="bg-teal-700"],
+  [class~="bg-cyan-600"],
+  [class~="bg-cyan-700"],
+  [class~="bg-amber-600"],
+  [class~="bg-amber-700"],
+  [class~="bg-yellow-600"],
+  [class~="bg-yellow-700"],
+  [class~="bg-orange-500"],
+  [class~="bg-orange-600"],
+  [class~="bg-orange-700"],
+  [class~="bg-red-500"],
+  [class~="bg-red-600"],
+  [class~="bg-red-700"],
+  [class~="bg-rose-500"],
+  [class~="bg-rose-600"],
+  [class~="bg-rose-700"],
+  [class~="bg-pink-500"],
+  [class~="bg-pink-600"],
+  [class~="bg-pink-700"],
+  [class~="bg-fuchsia-500"],
+  [class~="bg-fuchsia-600"],
+  [class~="bg-fuchsia-700"],
+  [class~="bg-slate-600"],
+  [class~="bg-slate-700"],
+  [class~="bg-slate-800"],
+  [class~="bg-slate-900"],
+  [class~="bg-gray-600"],
+  [class~="bg-gray-700"],
+  [class~="bg-gray-800"],
+  [class~="bg-gray-900"],
+  [class~="bg-zinc-600"],
+  [class~="bg-zinc-700"],
+  [class~="bg-zinc-800"],
+  [class~="bg-zinc-900"],
+  [class~="bg-neutral-600"],
+  [class~="bg-neutral-700"],
+  [class~="bg-neutral-800"],
+  [class~="bg-neutral-900"],
+  [class~="bg-stone-600"],
+  [class~="bg-stone-700"],
+  [class~="bg-stone-800"],
+  [class~="bg-stone-900"]
+) :is(svg, span, p, strong, small) {
+  color: #FFFFFF;
+}
+
+/* Bug kontras dari refactor massal terdahulu: `text-foreground` (near-black)
+   dipakai di atas latar pekat. Di light mode dipaksa putih. */
+html.light .text-foreground:is(
+  [class~="bg-blue-500"],
+  [class~="bg-blue-600"],
+  [class~="bg-blue-700"],
+  [class~="bg-blue-800"],
+  [class~="bg-indigo-500"],
+  [class~="bg-indigo-600"],
+  [class~="bg-indigo-700"],
+  [class~="bg-indigo-800"],
+  [class~="bg-sky-500"],
+  [class~="bg-sky-600"],
+  [class~="bg-sky-700"],
+  [class~="bg-sky-800"],
+  [class~="bg-violet-500"],
+  [class~="bg-violet-600"],
+  [class~="bg-violet-700"],
+  [class~="bg-violet-800"],
+  [class~="bg-purple-500"],
+  [class~="bg-purple-600"],
+  [class~="bg-purple-700"],
+  [class~="bg-purple-800"],
+  [class~="bg-emerald-500"],
+  [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"],
+  [class~="bg-green-500"],
+  [class~="bg-green-600"],
+  [class~="bg-green-700"],
+  [class~="bg-teal-500"],
+  [class~="bg-teal-600"],
+  [class~="bg-teal-700"],
+  [class~="bg-cyan-600"],
+  [class~="bg-cyan-700"],
+  [class~="bg-amber-600"],
+  [class~="bg-amber-700"],
+  [class~="bg-yellow-600"],
+  [class~="bg-yellow-700"],
+  [class~="bg-orange-500"],
+  [class~="bg-orange-600"],
+  [class~="bg-orange-700"],
+  [class~="bg-red-500"],
+  [class~="bg-red-600"],
+  [class~="bg-red-700"],
+  [class~="bg-rose-500"],
+  [class~="bg-rose-600"],
+  [class~="bg-rose-700"],
+  [class~="bg-pink-500"],
+  [class~="bg-pink-600"],
+  [class~="bg-pink-700"],
+  [class~="bg-fuchsia-500"],
+  [class~="bg-fuchsia-600"],
+  [class~="bg-fuchsia-700"],
+  [class~="bg-slate-600"],
+  [class~="bg-slate-700"],
+  [class~="bg-slate-800"],
+  [class~="bg-slate-900"],
+  [class~="bg-gray-600"],
+  [class~="bg-gray-700"],
+  [class~="bg-gray-800"],
+  [class~="bg-gray-900"],
+  [class~="bg-zinc-600"],
+  [class~="bg-zinc-700"],
+  [class~="bg-zinc-800"],
+  [class~="bg-zinc-900"],
+  [class~="bg-neutral-600"],
+  [class~="bg-neutral-700"],
+  [class~="bg-neutral-800"],
+  [class~="bg-neutral-900"],
+  [class~="bg-stone-600"],
+  [class~="bg-stone-700"],
+  [class~="bg-stone-800"],
+  [class~="bg-stone-900"]
+) {
+  color: #FFFFFF;
+}
+html.light .text-foreground:is(
+  [class~="bg-blue-500"],
+  [class~="bg-blue-600"],
+  [class~="bg-blue-700"],
+  [class~="bg-blue-800"],
+  [class~="bg-indigo-500"],
+  [class~="bg-indigo-600"],
+  [class~="bg-indigo-700"],
+  [class~="bg-indigo-800"],
+  [class~="bg-sky-500"],
+  [class~="bg-sky-600"],
+  [class~="bg-sky-700"],
+  [class~="bg-sky-800"],
+  [class~="bg-violet-500"],
+  [class~="bg-violet-600"],
+  [class~="bg-violet-700"],
+  [class~="bg-violet-800"],
+  [class~="bg-purple-500"],
+  [class~="bg-purple-600"],
+  [class~="bg-purple-700"],
+  [class~="bg-purple-800"],
+  [class~="bg-emerald-500"],
+  [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"],
+  [class~="bg-green-500"],
+  [class~="bg-green-600"],
+  [class~="bg-green-700"],
+  [class~="bg-teal-500"],
+  [class~="bg-teal-600"],
+  [class~="bg-teal-700"],
+  [class~="bg-cyan-600"],
+  [class~="bg-cyan-700"],
+  [class~="bg-amber-600"],
+  [class~="bg-amber-700"],
+  [class~="bg-yellow-600"],
+  [class~="bg-yellow-700"],
+  [class~="bg-orange-500"],
+  [class~="bg-orange-600"],
+  [class~="bg-orange-700"],
+  [class~="bg-red-500"],
+  [class~="bg-red-600"],
+  [class~="bg-red-700"],
+  [class~="bg-rose-500"],
+  [class~="bg-rose-600"],
+  [class~="bg-rose-700"],
+  [class~="bg-pink-500"],
+  [class~="bg-pink-600"],
+  [class~="bg-pink-700"],
+  [class~="bg-fuchsia-500"],
+  [class~="bg-fuchsia-600"],
+  [class~="bg-fuchsia-700"],
+  [class~="bg-slate-600"],
+  [class~="bg-slate-700"],
+  [class~="bg-slate-800"],
+  [class~="bg-slate-900"],
+  [class~="bg-gray-600"],
+  [class~="bg-gray-700"],
+  [class~="bg-gray-800"],
+  [class~="bg-gray-900"],
+  [class~="bg-zinc-600"],
+  [class~="bg-zinc-700"],
+  [class~="bg-zinc-800"],
+  [class~="bg-zinc-900"],
+  [class~="bg-neutral-600"],
+  [class~="bg-neutral-700"],
+  [class~="bg-neutral-800"],
+  [class~="bg-neutral-900"],
+  [class~="bg-stone-600"],
+  [class~="bg-stone-700"],
+  [class~="bg-stone-800"],
+  [class~="bg-stone-900"]
+) :is(svg, span, p) {
+  color: #FFFFFF;
+}
+/* @@LIGHT-BUTTON-BASELINE:END@@ */
+
+/* @@LIGHT-TEXT-BASELINE:START@@ */
+
+/* ───────────────────────────────────────────────────────────────────────────
+   TEKS PUCAT → SHADE TERBACA (light mode)
+   `text-emerald-300`, `text-blue-400`, dst. adalah warna untuk latar gelap.
+   Di atas kartu putih kontrasnya < 3:1. Di light mode dipetakan ke shade
+   600/700 dari keluarga warna yang sama sehingga sinyal semantiknya tetap.
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #475569;
+}
+html.light .text-gray-200,
+html.light .text-gray-300,
+html.light .text-gray-400 {
+  color: #4B5563;
+}
+html.light .text-zinc-200,
+html.light .text-zinc-300,
+html.light .text-zinc-400 {
+  color: #52525B;
+}
+html.light .text-neutral-200,
+html.light .text-neutral-300,
+html.light .text-neutral-400 {
+  color: #525252;
+}
+html.light .text-stone-200,
+html.light .text-stone-300,
+html.light .text-stone-400 {
+  color: #57534E;
+}
+html.light .text-red-200,
+html.light .text-red-300,
+html.light .text-red-400 {
+  color: #DC2626;
+}
+html.light .text-orange-200,
+html.light .text-orange-300,
+html.light .text-orange-400 {
+  color: #C2410C;
+}
+html.light .text-amber-200,
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #B45309;
+}
+html.light .text-yellow-200,
+html.light .text-yellow-300,
+html.light .text-yellow-400 {
+  color: #A16207;
+}
+html.light .text-lime-200,
+html.light .text-lime-300,
+html.light .text-lime-400 {
+  color: #4D7C0F;
+}
+html.light .text-green-200,
+html.light .text-green-300,
+html.light .text-green-400 {
+  color: #15803D;
+}
+html.light .text-emerald-200,
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #047857;
+}
+html.light .text-teal-200,
+html.light .text-teal-300,
+html.light .text-teal-400 {
+  color: #0F766E;
+}
+html.light .text-cyan-200,
+html.light .text-cyan-300,
+html.light .text-cyan-400 {
+  color: #0E7490;
+}
+html.light .text-sky-200,
+html.light .text-sky-300,
+html.light .text-sky-400 {
+  color: #0369A1;
+}
+html.light .text-blue-200,
+html.light .text-blue-300,
+html.light .text-blue-400 {
+  color: #2563EB;
+}
+html.light .text-indigo-200,
+html.light .text-indigo-300,
+html.light .text-indigo-400 {
+  color: #4F46E5;
+}
+html.light .text-violet-200,
+html.light .text-violet-300,
+html.light .text-violet-400 {
+  color: #7C3AED;
+}
+html.light .text-purple-200,
+html.light .text-purple-300,
+html.light .text-purple-400 {
+  color: #9333EA;
+}
+html.light .text-fuchsia-200,
+html.light .text-fuchsia-300,
+html.light .text-fuchsia-400 {
+  color: #C026D3;
+}
+html.light .text-pink-200,
+html.light .text-pink-300,
+html.light .text-pink-400 {
+  color: #DB2777;
+}
+html.light .text-rose-200,
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #E11D48;
+}
+
+/* Penyeimbang — di dalam permukaan gelap, teks pucat tetap dipertahankan */
+html.light :is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-zinc-800"], [class~="bg-zinc-900"], [class~="bg-zinc-950"], [class~="bg-neutral-800"], [class~="bg-neutral-900"], [class~="bg-neutral-950"], [class~="bg-stone-800"], [class~="bg-stone-900"], [class~="bg-stone-950"], [class~="bg-black"]) :is(.text-slate-200, .text-slate-300, .text-slate-400, .text-gray-200, .text-gray-300, .text-gray-400, .text-zinc-200, .text-zinc-300, .text-zinc-400, .text-neutral-200, .text-neutral-300, .text-neutral-400, .text-stone-200, .text-stone-300, .text-stone-400, .text-red-200, .text-red-300, .text-red-400, .text-orange-200, .text-orange-300, .text-orange-400, .text-amber-200, .text-amber-300, .text-amber-400, .text-yellow-200, .text-yellow-300, .text-yellow-400, .text-lime-200, .text-lime-300, .text-lime-400, .text-green-200, .text-green-300, .text-green-400, .text-emerald-200, .text-emerald-300, .text-emerald-400, .text-teal-200, .text-teal-300, .text-teal-400, .text-cyan-200, .text-cyan-300, .text-cyan-400, .text-sky-200, .text-sky-300, .text-sky-400, .text-blue-200, .text-blue-300, .text-blue-400, .text-indigo-200, .text-indigo-300, .text-indigo-400, .text-violet-200, .text-violet-300, .text-violet-400, .text-purple-200, .text-purple-300, .text-purple-400, .text-fuchsia-200, .text-fuchsia-300, .text-fuchsia-400, .text-pink-200, .text-pink-300, .text-pink-400, .text-rose-200, .text-rose-300, .text-rose-400) {
+  color: inherit;
+}
+/* @@LIGHT-TEXT-BASELINE:END@@ */

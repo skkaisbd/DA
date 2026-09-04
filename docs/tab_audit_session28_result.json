@@ -1,0 +1,224 @@
+{
+  "portals": {
+    "production": [
+      "production-dashboard",
+      "prod-control-tower",
+      "prod-wizard",
+      "prod-bulk-mi",
+      "prod-simple-input",
+      "prod-orders",
+      "prod-work-orders",
+      "prod-bundles",
+      "prod-material-reservation",
+      "prod-material-returns",
+      "prod-cutting",
+      "prod-assignments",
+      "prod-shift-handover",
+      "prod-rework-board",
+      "prod-exec-hub",
+      "prod-monitoring",
+      "prod-line-board",
+      "prod-andon-board",
+      "prod-alert-settings",
+      "prod-pareto",
+      "prod-fpy",
+      "prod-aql-calculator",
+      "prod-downtime",
+      "prod-backlog",
+      "prod-capacity-planning",
+      "prod-ai-insights",
+      "hr-ai-hub",
+      "prod-predictive-maintenance",
+      "prod-workspace-master",
+      "prod-processes",
+      "prod-sop",
+      "prod-defect-codes",
+      "prod-production-calendar",
+      "prod-models-bom",
+      "prod-employees"
+    ],
+    "finance": [
+      "finance-dashboard",
+      "fin-ar-invoices",
+      "fin-ar-360",
+      "fin-channel-gl",
+      "fin-procurement-requests",
+      "fin-3way-match",
+      "fin-approval",
+      "fin-cash",
+      "fin-petty-cash",
+      "fin-bank-transfer",
+      "fin-bank-recon",
+      "fin-ai-cashflow",
+      "fin-expenses",
+      "fin-kasbon",
+      "fin-expense-settlement",
+      "fin-settlement-queue",
+      "fin-cost-centers",
+      "fin-hpp",
+      "fin-recap",
+      "fin-coa",
+      "fin-journal-hub",
+      "fin-posting-profiles",
+      "fin-gl-mapping-config",
+      "fin-expense-category-master",
+      "fin-periods",
+      "fin-trial-balance",
+      "fin-general-ledger",
+      "fin-pnl",
+      "fin-balance-sheet",
+      "fin-cash-flow",
+      "fin-ap-aging",
+      "fin-budget",
+      "fin-fixed-assets",
+      "fin-executive-report",
+      "fin-acctg-adjust-hub",
+      "admin-setup-panel"
+    ],
+    "hr": [
+      "hr-dashboard",
+      "unified-approval-hub",
+      "hr-inbox",
+      "approval-multilevel",
+      "hr-shift-management",
+      "hr-employees",
+      "hr-org-chart",
+      "hr-assets",
+      "hr-announcements",
+      "hr-admin",
+      "hr-recruitment",
+      "hr-resume-screening",
+      "hr-onboarding",
+      "hr-job-board",
+      "hr-attendance-hub",
+      "hr-shift-scheduler",
+      "hr-overtime",
+      "hr-leave",
+      "hr-leave-balances",
+      "hr-performance-hub",
+      "hr-lms",
+      "hr-payroll-dashboard",
+      "hr-payroll-profiles",
+      "hr-payroll-allowances",
+      "hr-salary-adjustments",
+      "hr-payroll-run",
+      "hr-kasbon",
+      "hr-ai-hub",
+      "hr-reports",
+      "hr-expense-hub"
+    ],
+    "toko": [
+      "marketing-accounts",
+      "marketing-sales",
+      "marketing-import",
+      "marketing-orders",
+      "marketing-catalog",
+      "marketing-kol",
+      "marketing-kreator-requests",
+      "marketing-content-calendar",
+      "marketing-discounts",
+      "marketing-product-launches",
+      "marketing-reports",
+      "marketing-health",
+      "marketing-live-hub",
+      "marketing-targets",
+      "marketing-ai-hub",
+      "marketing-kol-leaderboard",
+      "marketing-scheduler",
+      "marketing-task-hub",
+      "marketing-after-sales",
+      "marketing-reviews",
+      "marketing-samples",
+      "marketing-ar-bridge",
+      "marketing-integration-settings",
+      "marketing-webhooks",
+      "maklon-notifications"
+    ]
+  },
+  "candidates": [
+    {
+      "feature": "asset",
+      "cross_portal": true,
+      "modules": [
+        {
+          "id": "fin-acctg-adjust-hub",
+          "portal": "finance",
+          "tabs": [
+            "Depresiasi Aset (Batch)",
+            "Pelepasan Aset Tetap"
+          ]
+        },
+        {
+          "id": "hr-assets",
+          "portal": "hr",
+          "tabs": [
+            "Daftar Aset"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "attendance",
+      "cross_portal": false,
+      "modules": [
+        {
+          "id": "hr-attendance-hub",
+          "portal": "hr",
+          "tabs": [
+            "Absen Otomatis",
+            "Absensi Harian (Manual)",
+            "Approval Absen"
+          ]
+        },
+        {
+          "id": "hr-inbox",
+          "portal": "hr",
+          "tabs": [
+            "Absensi ( )"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "live",
+      "cross_portal": false,
+      "modules": [
+        {
+          "id": "marketing-live-hub",
+          "portal": "toko",
+          "tabs": [
+            "Live Sessions",
+            "LiveHost Mgmt"
+          ]
+        },
+        {
+          "id": "marketing-sales",
+          "portal": "toko",
+          "tabs": [
+            "\ud83c\udfa5 Live Revenue"
+          ]
+        }
+      ]
+    },
+    {
+      "feature": "payroll",
+      "cross_portal": false,
+      "modules": [
+        {
+          "id": "hr-admin",
+          "portal": "hr",
+          "tabs": [
+            "Struktur Gaji"
+          ]
+        },
+        {
+          "id": "hr-inbox",
+          "portal": "hr",
+          "tabs": [
+            "Gaji ( )"
+          ]
+        }
+      ]
+    }
+  ]
+}

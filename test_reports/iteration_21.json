@@ -1,0 +1,34 @@
+{
+  "summary": "Retest bug HIGH iteration_20: notifikasi 'Rapor Keputusan RnD' kini muncul di bel header. Semua target lulus. Regresi ringan kokpit RnD & Ringkasan Bisnis juga OK.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_verification": {
+    "login_admin": "PASS (admin@garment.com / Admin@123)",
+    "rnd_dashboard_hash": "PASS (#rnd-dashboard mounts kokpit RnD)",
+    "rnd_weekly_card": "PASS (data-testid rnd-weekly-card visible; counts: Disetujui 1 / Ditolak 0 / Menunggu 1 / Menunggu Terlalu Lama 0)",
+    "rnd_weekly_send_click": "PASS (klik pertama sukses; klik kedua tanpa error)",
+    "notif_bell_after_send": "PASS: badge notification-unread-badge naik dari 3 → 5 (+2 rapor RnD). Popover menampilkan chip 'RnD 2' dan dua item 'Rapor keputusan RnD 2026-W32: 1 disetujui · 0 ditolak · 0 tertunda lama'.",
+    "notif_see_all_center": "PASS: Pusat Notifikasi modal menampilkan filter RnD (2) dengan kedua rapor terlihat, ada tombol 'Tandai' per item + 'Tandai semua dibaca'.",
+    "notif_mark_read": "PASS: Klik tombol 'Tandai' pada satu item RnD menurunkan badge dari 5 → 4.",
+    "rnd_funnel_and_lifecycle": "PASS (rnd-funnel, rnd-funnel-techpack, rnd-funnel-sample, rnd-lifecycle-table semuanya render).",
+    "ringkasan_bisnis_alerts": "PASS (card-alerts + alert-po-days-input=3 + alert-ar-days-input=3 + alert-threshold-save render; nilai sebelumnya tersimpan)."
+  },
+  "cleanup": "Menghapus 8 dokumen notifications subtype=rnd_weekly_decisions dari koleksi notifications (count 8 → 0).",
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "backend/routes/notification_categories.py: fix `_fetch()` menambahkan cocok konvensi baru {user_id: user.id} + categorize() memakai meta.link_module/subtype sudah benar; disarankan menambah unit test regression agar dua konvensi (target_user_ids/target_roles vs notif_insert) tetap tercover ke depan."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skip per request)", "frontend": "100%"},
+  "test_credentials": "admin@garment.com / Admin@123",
+  "seed_data_creation": "Menghasilkan 2 notifikasi rapor RnD selama pengujian, lalu semua notifikasi subtype rnd_weekly_decisions dibersihkan.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Frontend adalah build statis; tidak ada build folder saat start container — bash /app/scripts/rebuild_frontend.sh perlu dijalankan bila 'Preparing preview...' muncul. Bell header muncul hanya setelah masuk ke portal (mis. Portal Manajemen), tidak di halaman Pilih Portal. Data-testid utama: notification-bell-btn, notification-unread-badge, notification-dropdown, notif-category-chips, notif-cat-<slug>, notification-see-all, notification-detail-modal, notif-mark-all, notif-row.",
+  "rca of the issue": "Bug iter_20: koleksi `notifications` memiliki dua konvensi penulis — legacy menulis target_user_ids/target_roles, sedangkan notif_insert (SSOT baru, dipakai rapor RnD) menulis satu dokumen per user_id. Endpoint /api/notifications/categorized (backend/routes/notification_categories.py) hanya query konvensi legacy sehingga rapor RnD tidak pernah tampil di bel. Perbaikan: _fetch() ditambah OR {user_id: user.id}, dan categorize() memakai meta.link_module/subtype untuk memetakan ke kategori 'rnd'. Verified end-to-end via UI: kirim rapor → badge naik → item tampil di popover & Pusat Notifikasi → mark-read menurunkan badge."
+}

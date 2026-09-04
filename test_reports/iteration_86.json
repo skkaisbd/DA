@@ -1,0 +1,53 @@
+{
+  "summary": "Uji UI end-to-end + verifikasi API untuk 3 keluhan pemilik (BUG1 UOM Roll, BUG2 Cutting Master Model, BUG3 HPP dari PO) + regresi. Backend guardrail HIJAU untuk semua invarian yang diminta. Frontend: BUG1-A (kolom Satuan + kolom Sisa/Total tanpa satuan di header) OK; BUG1-C read-only unit di dialog Issue TIDAK sempat diverifikasi karena diblok oleh bug tampilan detail Roll; BUG2-A/B (dropdown Model, Varian, tombol + modal Model Baru) OK; BUG3-A/B (blok harga turunan read-only + input Harga Awal hanya saat CREATE) OK. Regresi (Ambang Stok, Surat Jalan CMT, Alert & Reorder) OK. Ditemukan 1 BUG FRONTEND BARU pada dialog Detail Roll — semua field (Material, Sisa, Supplier, PO, dst.) tampil kosong / '0,00 / 0,00 satuan' karena state salah bentuk.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "WMSFabricRollsModule.jsx — Dialog Detail Roll (handleView)",
+        "issue": "Dialog Detail Roll menampilkan semua field kosong: Material '', Color/Lot '- / -', Supplier '-', PO '-', dan Sisa '0,00 / 0,00 satuan' (walau tabel & movement history menunjukkan roll punya 18,00 meter). AKAR: `handleView` di baris 182-190 memanggil `setViewDialog(d)` padahal API `GET /api/wms/fabric-rolls/{id}` mengembalikan objek roll (spread) + `movements`, sedangkan komponen membaca `viewDialog.roll?.*`. Komentar di baris 81 malah menulis bentuk yang benar `// {roll, movements}`. Fix: `setViewDialog({ roll: d, movements: d.movements || [] })` di baris 186. Ini memblokir verifikasi BUG1-B (tidak bisa membaca satuan asli + info '≈ ... m' di detail) dan BUG1-C (tidak bisa membuka dialog Issue dari detail karena info dasar kosong).",
+        "selector": "[data-testid=\"roll-detail-qty\"]",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix WMSFabricRollsModule.jsx `handleView` (line 186): ganti `setViewDialog(d)` menjadi `setViewDialog({ roll: d, movements: d.movements || [] })` agar detail Roll menampilkan data (Material, Sisa, Supplier, PO, satuan asli + info ≈ m).",
+    "Setelah fix, rebuild static bundle: `bash scripts/rebuild_frontend.sh`, lalu verifikasi ulang BUG1-B (roll-detail-qty menunjukkan satuan roll + baris '≈ ... m') dan BUG1-C (dialog Issue: input-issue-unit read-only + issue kecil berhasil)."
+  ],
+  "backend_verification_evidence": {
+    "BUG1-D_issue_wrong_unit_rejected": "POST /api/wms/fabric-rolls/<id>/issue dengan unit='kg' pada roll bersatuan meter -> 400 detail 'Gulungan RL-202608-0001 bersatuan meter — keluarkan dalam meter, bukan kg.'",
+    "BUG3-C_material_put_unit_cost_ignored": "PUT /api/rahaza/materials/<id> dengan unit_cost=200+7777 -> 200 OK, unit_cost tetap 200, response memuat harga_satuan_catatan yang mengarahkan ke Aksesoris → Valuasi HPP.",
+    "BUG2-C_cutting_post_without_model_id": "POST /api/cutting/orders dengan input_material_id valid TANPA model_id -> 400 'Model/style wajib dipilih dari Master Produk — bukan diketik. …'",
+    "gate_script": "Owner reported scripts/verify_uom_roll_dan_style_master.py = 10 invarian HIJAU; gate.sh = 53 VERDICT HIJAU."
+  },
+  "frontend_verification_evidence": {
+    "BUG1-A_table": "Header tabel Roll Kain memakai 'Sisa / Total' (tanpa (m)/(kg)) + kolom 'Satuan' terpisah. data-testid roll-uom-<no> dan roll-qty-<no> hadir (4 baris).",
+    "BUG1-B_detail": "GAGAL: roll-detail-qty menampilkan '0,00 / 0,00 satuan' — semua field detail kosong (lihat frontend_issues.ui_bugs).",
+    "BUG1-C_issue_unit": "TIDAK BISA DIVERIFIKASI: tergantung detail modal yang bermasalah; input-issue-unit selector ada di kode dengan readOnly.",
+    "BUG2-A_cutting_dropdowns": "cutting-model-select (14 opsi), cutting-variant-select, cutting-new-model-btn semua hadir. Kolom ketikan 'Nama Style' TIDAK ada.",
+    "BUG2-B_new_model_modal": "cutting-new-model-modal + new-model-name + new-model-code + new-model-submit semua hadir.",
+    "BUG3-A_edit_material": "Blok mat-cost-derived dengan mat-cost-value ('Rp 200 / pcs') beserta 'Sumber: belum ada pembelian bernilai' dan catatan 'Harga tidak diketik di sini…' terlihat. Input mat-field-unit-cost TIDAK muncul saat EDIT.",
+    "BUG3-B_create_material": "Input mat-field-unit-cost muncul saat mode CREATE (Material Baru).",
+    "REGRESI-1_roll_kain_screen": "Filter, toggle Tabel/Kartu, CSV, tab 'Penerimaan tanpa roll' terlihat di halaman Roll Kain.",
+    "REGRESI-2_carryover": "#wh-master=thresholds, #da-cmt-receive (tombol Surat Jalan hadir), #warehouse-smart (halaman Alert & Reorder — pesan '334 dari 334 material belum punya ambang stok') semua memuat tanpa error."
+  },
+  "critical_code_review_comments": [
+    "WMSFabricRollsModule.jsx: handleView (l.182-190) tidak konsisten dengan bentuk state yang dideklarasikan di komentar (l.81 `// {roll, movements}`). Bug tampilan diam-diam: tidak ada error di console — hanya field kosong. Sebaiknya juga tambahkan defensive default agar movements iteration tidak crash bila null.",
+    "cutting.py POST /orders: urutan validasi memeriksa material_id sebelum model_id sehingga error 'wajib pilih Master Produk' hanya muncul jika input_material_id valid. Ini bukan bug, tetapi bila developer/QA mengetes cepat dengan payload dummy mereka akan melihat 404 material dulu — pesan model_id tidak akan muncul. Pertimbangkan urutan validasi (model_id lebih dulu) untuk klarifikasi pesan."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "85%"},
+  "test_credentials": "admin@garment.com / Admin@123 (superadmin) — /app/memory/test_credentials.md",
+  "seed_data_creation": "TIDAK ada data uji yang dibuat. Verifikasi API PUT unit_cost pada material live (unit_cost=200) hanya menguji bahwa perubahan diabaikan — nilai unit_cost tetap 200 setelah panggilan (baseline dipertahankan). Panggilan POST /issue dengan unit salah ditolak 400 sehingga tidak ada mutasi. Panggilan POST /cutting/orders tanpa model_id ditolak 400 sehingga tidak ada order dibuat.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Setelah main agent memperbaiki WMSFabricRollsModule.jsx handleView dan rebuild frontend, lakukan retest BUG1-B (roll-detail-qty berisi total/sisa + satuan asli + baris '≈ ... m' bila non-meter) dan BUG1-C (dialog Issue: data-testid input-issue-unit read-only + tombol Issue qty kecil berhasil, sisa berkurang sesuai satuan). Backend gate INV-F35 (10 invarian) sudah HIJAU per owner; tidak perlu memproduksi ulang alur PO 650 yard → GR → 4 gulungan pada database hidup pemilik.",
+  "rca of the issue": "Bug BUG1-B ROOT CAUSE: `handleView` di WMSFabricRollsModule.jsx (line 182-190) menetapkan `setViewDialog(d)` sedangkan komponen membaca `viewDialog.roll?.*`. State awal (`useState(null)`) & komentar (`// {roll, movements}`) mengekspektasikan objek dengan properti `.roll`, namun handler menaruh objek roll langsung. Akibatnya `viewDialog.roll` selalu undefined → semua field detail kosong dan `rollRemaining/rollTotal/rollUom` fallback ke 0/0/'satuan'. REPRODUKSI: buka #wms-fabric-rolls → klik baris roll manapun → dialog Roll menampilkan semua field kosong (Material blank, Sisa '0,00 / 0,00 satuan') padahal Movement History di modal yang sama menampilkan '18,00 meter'. MITIGASI: ubah baris 186 menjadi `setViewDialog({ roll: d, movements: d.movements || [] })` lalu rebuild frontend static bundle."
+}

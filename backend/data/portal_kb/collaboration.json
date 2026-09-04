@@ -1,0 +1,37 @@
+{
+  "portal": "collaboration",
+  "label": "Portal Kolaborasi",
+  "ringkasan": "Portal Kolaborasi adalah ruang kerja bersama: catatan, pembagian tugas, dan lembar kerja (spreadsheet) internal yang bisa diisi beberapa orang.",
+  "prinsip": [
+    "Isi portal ini tidak memengaruhi angka operasional — ini ruang kerja, bukan transaksi.",
+    "Gunakan untuk perencanaan dan koordinasi, bukan sebagai sumber kebenaran data."
+  ],
+  "alur": [
+    {
+      "judul": "Bekerja bersama di lembar kerja",
+      "kata_kunci": ["spreadsheet", "lembar kerja", "kolaborasi", "catatan bersama"],
+      "modul": ["collab-workspace", "collaboration"],
+      "langkah": [
+        "Buka 'Spreadsheet' → buat atau pilih lembar kerja.",
+        "Bagikan ke rekan yang perlu mengisi.",
+        "Simpan hasil akhirnya ke modul resmi bila datanya perlu dipakai sistem."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "collaboration", "nama": "Portal Kolaborasi", "deskripsi": "Ruang kerja bersama tim."},
+    {"modul": "collab-workspace", "nama": "Spreadsheet", "deskripsi": "Lembar kerja internal yang bisa diisi bersama."}
+  ],
+  "faq": [
+    {
+      "q": "Apakah data di spreadsheet ini masuk ke laporan?",
+      "kata_kunci": ["masuk laporan", "spreadsheet resmi"],
+      "a": "Tidak. Lembar kerja di sini bersifat bantu-kerja. Data yang perlu masuk sistem harus dimasukkan lewat modul resminya (Gudang, Keuangan, dan seterusnya)."
+    }
+  ],
+  "saran": [
+    "Untuk apa Portal Kolaborasi dipakai?",
+    "Apakah data spreadsheet masuk laporan?",
+    "Bagaimana membagikan lembar kerja ke rekan?"
+  ]
+}

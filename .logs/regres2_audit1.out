@@ -1,0 +1,50 @@
+toko uji: Shopee Official Store DEMO · TikTok Shop DEMO
+
+[96m[1m▶ A — DETEKSI JENIS untuk 7 berkas ASLI pemilik (tidak boleh 5xx / salah platform)[0m
+  [92m✓ A-order_pesanan_shopee.xlsx[0m platform=shopee · usulan=marketplace_orders (skor 0.934) · 154 baris
+  [92m✓ A-pesanan_tiktok.xlsx[0m platform=tiktok · usulan=marketplace_orders (skor 1.0) · 95 baris
+  [92m✓ A-ads_shopee.csv[0m platform=shopee · usulan=shopee_ads_cpc (skor 1.0) · 16 baris
+  [92m✓ A-ads_shopee_keseluruhan.csv[0m platform=shopee · usulan=shopee_ads_cpc (skor 1.0) · 16 baris
+  [92m✓ A-ads_tiktok.xlsx[0m platform=tiktok · usulan=ads (skor 0.9308) · 20000 baris
+  [91m✗ A-retur_refund_shopee.xls[0m usulan=returns TAPI 0 baris data terbaca (kolom terbaca 46) — layar harus mengatakan ini sebelum staf menekan Unggah
+  [92m✓ A-retur_refund_tiktok.xlsx[0m platform=tiktok · usulan=returns (skor 0.892) · 4 baris
+
+[96m[1m▶ B — EKSPOR A (pesanan marketplace): upload → pratinjau → commit → rekap turunan[0m
+  [92m✓ B1[0m pemetaan otomatis SIAP (154 baris berkas)
+  [92m✓ B2[0m pratinjau: 57 baru · 0 perbarui · 19 ditolak · penghalang=[]
+  [92m✓ B3[0m commit: 57 masuk · 0 diperbarui · 19 ditolak · rekap={'dates': 15, 'upserted': 15, 'deleted': 0, 'skipped_override': 0, 'orders': 57, 'revenue_product': 3128910.0}
+  [92m✓ B4[0m jumlah yang dilaporkan = jumlah di DB (57)
+  [92m✓ B5[0m impor pesanan TIDAK melahirkan jurnal GL (benar)
+  [92m✓ B6[0m rekap harian turunan dihitung: {'dates': 15, 'upserted': 15, 'deleted': 0, 'skipped_override': 0, 'orders': 57, 'revenue_product': 3128910.0}
+
+[96m[1m▶ C — EKSPOR C (retur/refund) di atas pesanan yang ada: update_only + UNDO[0m
+  [92m✓ C1[0m pemetaan Ekspor C ready=True missing=[]
+  [92m✓ C2[0m commit Ekspor C: 0 diperbarui · 4 ditolak · undo_count=0
+  [92m✓ C3[0m jenis update_only tidak membuat baris baru (benar)
+  [92m✓ C5[0m rollback: dipulihkan=0 · hanya field=0 · hilang=0 · pesan=tidak ada yang perlu dibatalkan (sesi ini tidak membuat maupun mengubah baris)
+  [92m✓ C6[0m semua jejak UNDO ditandai sudah dipulihkan
+  [92m✓ C7[0m rollback kedua ditolak dengan pesan yang benar (idempoten)
+
+[96m[1m▶ D — IMPOR IKLAN dua kali (mode perbarui) → UNDO harus memulihkan nilai lama[0m
+  [92m✓ D1[0m commit iklan #1: 10 masuk · 0 diperbarui
+  [92m✓ D2[0m commit iklan #2: 0 masuk · 10 diperbarui · undo_count=10
+  [92m✓ D3[0m impor ulang menyimpan jejak UNDO
+  [92m✓ D4[0m rollback iklan #2: 10 baris dipulihkan ke keadaan sebelum impor
+
+[96m[1m▶ E — UNDO Ekspor A: pesanan hilang lagi & rekap harian turunan ikut turun[0m
+  [92m✓ E1[0m semua pesanan sesi ini dihapus (57 baris) · rekap={'dates': 15, 'upserted': 0, 'deleted': 15, 'skipped_override': 0, 'orders': 0, 'revenue_product': 0}
+  [92m✓ E2[0m rekap harian turunan ikut dihitung ulang sesudah rollback
+
+[96m[1m▶ F — RIWAYAT & laporan UNDO bisa dibaca lagi (bukan hanya toast)[0m
+  [92m✓ F-Ekspor A[0m status=rolled_back undo=0 pending=0 restored=0 dibatalkan=2026-08-26T05:40:13.424000
+  [92m✓ F-Ekspor C[0m status=rolled_back undo=0 pending=0 restored=0 dibatalkan=2026-08-26T05:40:13.171000
+  [92m✓ F-iklan #2[0m status=rolled_back undo=10 pending=0 restored=10 dibatalkan=2026-08-26T05:40:13.389000
+  [92m✓ F-hist[0m riwayat impor: total 63
+
+[96m[1m▶ G — bersih-bersih artefak audit[0m
+  [92m✓ G1[0m sisa dokumen artefak audit = 0
+
+==============================================================================
+HASIL AUDIT: 29 OK · 1 TEMUAN
+  TEMUAN A-retur_refund_shopee.xls: usulan=returns TAPI 0 baris data terbaca (kolom terbaca 46) — layar harus mengatakan ini sebelum staf menekan Unggah
+==============================================================================

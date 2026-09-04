@@ -1,0 +1,44 @@
+{
+  "summary": "ITER 106 verification: Fix #3 maklon invoice cancel/regenerate path, LOW #3 maklon PO auto-numbering, iter105 regression suite, and Maklon UI/portal regression. New suite /app/backend/tests/test_iter106_maklon.py (18 tests incl. DB-level assertions via pymongo) = 18/18 pass; tests/test_iter105_maklon.py = 46/46 pass (64 total). All requested backend assertions matched exactly (eligible row 60/150 Rp720.000 INV-MKL-2026-0001; generate total 799200 / qty 60 / status issued; duplicate generate 400 'sudah memiliki invoice'; 360 invoiced_amount 799200; payment 100000 -> partial_paid and unpay -> issued; cancel returns ar_status draft, mirror doc DELETED, AR reverted to draft with amount_paid 0 / issued_at null / same id+number exactly once, PO back to partial_delivered with ar_invoice_number unchanged; regenerate reuses same id+number without DuplicateKeyError/500; cleanup sync returns mirror_status partial_delivered). Auto-numbering verified: policy mode auto + format PO-MKL-{YYYY}{MM}-{SEQ:4}, POST without po_number -> PO-MKL-202609-0006 (matches ^PO-MKL-\\d{6}-\\d{4}$), manual number rejected 400 with 'OTOMATIS', maklon-finance mirror confirmed/200000/CMT 120000/margin 80000/AR draft unit_price 20000, DELETE cascades mirror+AR+404. Extra edge cases added: cancel blocked (400) while fully paid without deleting mirror, overpayment blocked, cancel of unknown/already-cancelled id returns 404 (no 500), generate with custom invoice_number rejected pointing at AR number and no mirror created. UI: maklon-billing generate dialog lists 'PO-MK-DEMO-2 — PT Aruna Activewear · terkirim 60/150 pcs · Rp 720.000', engine-AR note mentions INV-MKL-2026-0001, no 'Nomor Invoice' field after selection; maklon-po-360 and maklon-dashboard render with zero console errors; PO Maklon 'Buat PO' shows disabled data-testid=po-number-auto (PO-MKL-202609-0007) with 'otomatis' hint. Portals: vendor (cmtvendor) dashboard/jobs/shipments/receipts render, no 4xx and no 403 toasts; klien portal shows only PT Aruna POs (PO-MK-DEMO-1, PO-MK-DEMO-2 67%). Final DB state left clean: po-mk-demo-2 uninvoiced (no dewi mirror, AR draft, mirror status partial_delivered), no test POs/payments left.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MaklonBillingModule generate dialog (before order selected)", "issue": "Default state shows 'Nomor Invoice (otomatis)' preview 'PRE-2026-0001' — prefix literally 'PRE', looks like an unresolved placeholder/prefix fallback. Correct engine-AR note replaces it once PO-MK-DEMO-2 is selected, so cosmetic only.", "selector": "[data-testid=\"generate-invoice-dialog\"]", "priority": "LOW"},
+      {"component": "Klien portal login (/klien-maklon)", "issue": "Email/password/submit have no data-testid (login-email-input etc. absent), unlike the main login; automation must fall back to input[type=email]. Testability gap.", "selector": "input[type=email] / button:has-text('Masuk')", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Maklon 'Detail PO' list (hash maklon-po-360)", "issues": ["Progress column shows 0/150 0% for PO-MK-DEMO-2 while dashboard and klien portal show 67% (60 received) — all rows show 0/x, so the counter appears not wired to received qty (verify intended metric)"]},
+      {"screen": "Vendor portal sidebar", "issues": ["Inactive nav labels (Penerimaan Material, Inspeksi Material, ...) are very low contrast on the dark sidebar; only the active item is readable"]},
+      {"screen": "Klien portal header", "issues": ["Sub-title 'PT Aruna Activewear (Klien)' and 'Keluar' link are low-contrast on the dark purple header"]},
+      {"screen": "Buat PO Maklon modal", "issues": ["Tanggal PO / Deadline fields use the browser-native date picker (mm/dd/yyyy) instead of the shadcn calendar used elsewhere"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter106_maklon.py",
+    "/app/backend/tests/test_iter105_maklon.py",
+    "/app/test_reports/pytest/iter106_results.xml"
+  ],
+  "action_items": [
+    "Optional cosmetic: replace 'PRE-2026-0001' invoice-number preview in the maklon generate dialog default state (unresolved prefix) or hide the field until an order is picked",
+    "Optional: add data-testid to /klien-maklon login inputs for automation parity",
+    "Verify the 0/150 0% progress column in Maklon 'Detail PO' list (received qty 60 is shown elsewhere as 67%)"
+  ],
+  "critical_code_review_comments": [
+    "cancel_invoice engine_ar branch correctly deletes the mirror + payments and reverts AR to draft; verified no duplicate AR allocation (rahaza_ar_invoices with linked_maklon_po_id po-mk-demo-2 stays exactly 1 across generate/cancel/regenerate/cancel cycles)",
+    "_generate_from_engine_ar orphan_issued self-heal + delete_many(cancelled) + replace_one(upsert) makes re-generate idempotent; no DuplicateKeyError reproduced in 4 consecutive cycles",
+    "cancel on an already-cancelled engine_ar invoice id now returns 404 (mirror deleted) rather than 500 — acceptable, but the UI should refresh the list after cancel so users cannot double-click cancel",
+    "/app/backend/routes/dewi_maklon_billing.py is 876 lines — consider splitting invoice vs payment vs report routes"
+  ],
+  "updated_files": ["/app/backend/tests/test_iter106_maklon.py"],
+  "success_rate": {"backend": "100% (64/64)", "frontend": "100% of requested flows (no console errors)"},
+  "seed_data_creation": "Transient only: one maklon PO auto-numbered PO-MKL-202609-0006 (created + deleted with cascade check); invoices/payments on po-mk-demo-2 created and fully reverted. Final DB left uninvoiced/clean.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com/Admin@123, klienmaklon@dewiaditya.id/Dewi@123, cmtvendor@dewiaditya.id/Dewi@123 (login response key is `token`; /app/memory/test_credentials.md still says `access_token` — worth correcting)",
+  "context_for_next_testing_agent": "Tokens at /tmp/ta.tok /tmp/tk.tok /tmp/tc.tok (login rate limit 10/60s — reuse). Run: cd /app/backend && python3 -m pytest tests/test_iter106_maklon.py tests/test_iter105_maklon.py -q -p no:cacheprovider -n 0 (64 expected). test_iter106 asserts DB state directly with pymongo and self-heals precondition (cancels any existing mirror + syncs) so it is re-runnable; it leaves po-mk-demo-2 uninvoiced. UI hashes: maklon-billing, maklon-po-360, maklon-dashboard, maklon-pos-engine (PO Maklon module, businessType maklon). Klien portal login has no data-testids.",
+  "rca_of_the_issue": "Iter105 blocker was caused by the cancel path keeping the mirror doc in dewi_maklon_invoices as 'cancelled' with the same id/invoice_number as the AR, so re-generate hit the unique index on invoice_number (DuplicateKeyError -> 500). Fix verified: engine_ar cancel now deletes the mirror + its payments and reverts the AR to draft (amount_paid 0, issued_at null), while generate additionally purges legacy cancelled mirrors and upserts by id — regenerate now returns the same id/number with no duplicates in either collection."
+}

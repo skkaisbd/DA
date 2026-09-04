@@ -1,0 +1,37 @@
+{
+  "summary": "Frontend-only UI/E2E testing of Fase H-2/H-3/H-4/H-9 on the preview URL. Verified Portal Gudang sidebar cleanup (Scan Gudang & Kirim CMT gone, Buat Barcode added, Roll Kain moved to Inbound), deep links of the removed doors, the whole 'Buat Barcode' screen (manual print with PDF download + history, material/FG tab switching, AUTO-from-PO with copies == PO qty, >500 label guard), MI create flow as ADMIN GUDANG and as SUPERVISOR PRODUKSI (both succeed, draft + detail modal + list row), MI create from production job, plus a regression sweep of 19 Portal Gudang modules and Portal Produksi 'Kirim Material CMT'. ZERO console/page errors observed in any flow. One real regression found: module-only / hash deep link to wh-material-issue is now resolved to the PRODUCTION portal (silent dead-end for warehouse-only users). All test data created (MI-20260815-027, MI-20260815-028, barcode jobs BC-20260815-005/006) was deleted after testing.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MI detail modal (RahazaMaterialIssueModule / Modal)", "issue": "Escape key does not close the detail modal; the modal overlay keeps intercepting pointer events so the page behind (incl. mi-create-btn) is unusable until the X is clicked. No keyboard/backdrop dismissal.", "selector": "[data-testid^=\"mi-detail-\"] -> Modal overlay div[data-state=\"open\"][aria-hidden=\"true\"]", "priority": "LOW"},
+      {"component": "MI create modal — tab 'Dari job produksi'", "issue": "When an MI already exists for the chosen job, backend draft-from-job returns the EXISTING document; the UI silently opens that old MI's detail (e.g. JOB-PO-INT-DEMO-3 -> MI-20260814-002) with no message. User believes a new draft was created. Suggest an info banner: 'MI untuk job ini sudah ada: <no>'.", "selector": "[data-testid=\"mi-create-submit\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Deep link / bookmark to Pengeluaran Material for warehouse users", "issue": "REGRESSION from H-2: wh-material-issue is now listed in BOTH production and warehouse navs. App.js findPortalForModule() returns the FIRST portal in PORTAL_NAV containing the id, and 'production' is declared before 'warehouse' -> for admin_gudang the resolved portal is 'production' (no access). Result: fresh login with ?module=wh-material-issue lands on 'Pilih Portal' (dead end, no notice); with an existing session it lands on Dashboard Gudang and the requested module is never opened; #wh-material-issue behaves the same. Explicit ?portal=warehouse&module=wh-material-issue works. Super admin is silently taken to Portal Produksi instead of Gudang. Fix: resolve among ALL portals containing the module and pick one the role can access (or add an explicit home-portal map).", "affected_selectors": ["[data-testid=\"rahaza-mi-page\"]"]}
+    ],
+    "design_issues": [
+      {"screen": "Pengeluaran Material (MI)", "issues": ["Status filter (mi-filter-status) is a raw native <select> while the rest of the app uses SmartNativeSelect; the UoM selects inside the modals are native too — visually inconsistent with the surrounding glass UI."]},
+      {"screen": "Buat Barcode", "issues": ["No blocking issues. Contrast, spacing, empty states and warning colours are fine; limit warning + disabled print button are clear."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix findPortalForModule() so a module present in several portals resolves to a portal the current role can access (warehouse users must be able to deep-link/bookmark wh-material-issue via ?module= and #hash).",
+    "Optional: show 'MI untuk job ini sudah ada (<no>)' when draft-from-job returns an existing document instead of silently opening it.",
+    "Optional: allow Escape / backdrop click to close the MI detail modal.",
+    "Optional: replace remaining raw <select> in RahazaMaterialIssueModule (mi-filter-status, UoM) with SmartNativeSelect for consistency."
+  ],
+  "critical_code_review_comments": [
+    "RahazaMaterialIssueModule.jsx mixes relative fetch('/api/rahaza/...') with fetch(`${process.env.REACT_APP_BACKEND_URL}/api/...`). Works on the preview (same origin) but violates the 'always use REACT_APP_BACKEND_URL' rule and will break if the frontend is served from another origin.",
+    "portalNav.js cross-portal duplication of wh-material-issue is intentional but it silently changed deep-link resolution semantics in App.js — any future cross-portal door needs the findPortalForModule fix above.",
+    "WMSBarcodeModule.jsx: printPdf() does not revoke the object URL until immediately after a.click(); on slow browsers the download may be cancelled. Consider revoking in a setTimeout / after 'download' fires (not observed failing in Chromium tests)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (per request)", "frontend": "92% (11/12 scenarios fully pass; deep-link resolution for wh-material-issue fails)"},
+  "seed_data_creation": "None left behind. Temporarily created and then DELETED: MI-20260815-027 (admin gudang manual), MI-20260815-028 (supervisor produksi manual), barcode print jobs BC-20260815-005 (material, 5 labels) and BC-20260815-006 (FG, 3 labels). Verified rahaza_material_issues back to MI-20260814-001/002 and wh_barcode_print_jobs = 0.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "gudang@dewiaditya.id / Dewi@123, spv@dewiaditya.id / Dewi@123 (login rate limit 10/60s per IP — space out logins)",
+  "context_for_next_testing_agent": "Deep links must be given as ?portal=<id>&module=<moduleId>; module-only links are resolved by findPortalForModule and are unreliable for modules duplicated across portals. SmartNativeSelect is NOT a native <select>: drive it with [data-testid=\"x-trigger\"] then [data-testid=\"x-list\"] [role=\"option\"] (select_option fails). Portal sections are top pills [data-testid=\"section-pill-<idx>\"]; the sidebar shows only the active section's doors ([data-testid=\"sidebar-items\"]). Verified PASS this iteration: barcode manual print + PDF download + riwayat row, tab material(12)/fg(332) switching, AUTO from PO-INT-DEMO-1 (200 labels == PO qty, DA-TS01-HTM-ALLSIZE), >500 guard (803 labels -> barcode-limit-warning + print disabled), MI manual create for both roles, wh-scan & wms-cmt-dispatches deep links still render, 19 Gudang modules + prod-shipments-vendor render with 0 console errors.",
+  "rca_of_the_issue": "App.js findPortalForModule() iterates Object.entries(PORTAL_NAV) and returns the first portal whose sections/groups contain the module id. Fase H-2 added wh-material-issue to the production portal nav (declared at line ~194, before warehouse at ~320), so the function now returns 'production' for that id. For roles without production access (admin_gudang) canAccessPortal fails and the deep-link branch falls through to the portal picker (fresh login) or to the localStorage portal default module (existing session) — in both cases the requested screen never opens and no explanation is shown, which is exactly the 'the module disappeared' failure mode the code comments warn about."
+}

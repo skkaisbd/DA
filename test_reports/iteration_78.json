@@ -1,0 +1,96 @@
+{
+  "summary": "Session #27 (FASE G) document numbering enforcement testing completed. Backend: 45/45 tests PASSED covering catalog (51 types: 27 enforced, 23 always-auto with reasons, 1 pending), mode change validation, enforcement for 3 document types (Expense Claims, Kreator Requests, Accessory Purchase Requests) in both auto and manual modes, legacy loan endpoint HTTP 410, and fabric rolls seeder (4 DEMO rolls with RL-YYYYMM-#### pattern). UI: All acceptance items GREEN — Document Numbering screen shows 27 Otomatis/Manual toggles + 23 'Selalu otomatis' badges, Fabric Rolls screen has 4 rows with DEMO data, and 7 regression modules load without errors.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "minor": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend: Authentication (admin@garment.com)",
+    "Backend: GET /api/admin/doc-numbering returns 51 document types",
+    "Backend: 27 enforced types, 23 always-auto types with reasons, 1 pending type",
+    "Backend: Can change mode for enforced types (200)",
+    "Backend: Cannot change mode for always-auto types (400 with reason)",
+    "Backend: Can change format for always-auto types (200)",
+    "Backend: Expense Claims - auto mode rejects typed number (400)",
+    "Backend: Expense Claims - auto mode creates with auto number (201, format EC-YYYYMM-####)",
+    "Backend: Expense Claims - manual mode requires number (400)",
+    "Backend: Expense Claims - manual mode rejects wrong pattern (400)",
+    "Backend: Expense Claims - manual mode accepts correct pattern (201)",
+    "Backend: Expense Claims - duplicate number rejected (409)",
+    "Backend: Kreator Requests - auto mode rejects typed number (400)",
+    "Backend: Kreator Requests - auto mode creates with auto number (200, format REQ-KR-YYMMDD-###)",
+    "Backend: Kreator Requests - manual mode requires number (400)",
+    "Backend: Kreator Requests - manual mode accepts correct pattern (200)",
+    "Backend: Accessory Purchase Requests - auto mode rejects typed number (400)",
+    "Backend: Accessory Purchase Requests - auto mode creates with auto number (201, format ACC-PR-####)",
+    "Backend: Accessory Purchase Requests - manual mode requires number (400)",
+    "Backend: Accessory Purchase Requests - manual mode accepts correct pattern (201)",
+    "Backend: Legacy loan endpoint returns HTTP 410 with message mentioning Kasbon & Pinjaman",
+    "Backend: GET /api/wms/fabric-rolls returns at least 4 DEMO rolls",
+    "Backend: DEMO rolls follow RL-YYYYMM-#### pattern (not old DEMO-RL-000x)",
+    "UI: Document Numbering screen loads with title 'Penomoran Dokumen & SKU'",
+    "UI: Found 27 'Otomatis' mode buttons (enforced types)",
+    "UI: Found 27 'Manual' mode buttons (enforced types)",
+    "UI: Found 23 'Selalu otomatis' badges (always-auto types with reasons)",
+    "UI: 'Roll Kain' document type visible",
+    "UI: 'Klaim Biaya' document type visible",
+    "UI: Fabric Rolls screen has 4 rows (not empty)",
+    "UI: DEMO rolls visible (4 mentions)",
+    "UI: Fabric rolls have RL-202608-#### pattern visible in screenshot",
+    "UI Regression: wh-fg (Pengeluaran Barang Jadi) loads without errors",
+    "UI Regression: fin-ar-invoices (Invoice Piutang) loads without errors",
+    "UI Regression: accessories-purchase (PR Aksesoris) loads without errors",
+    "UI Regression: cmt-permak (Permak) loads without errors",
+    "UI Regression: maklon-samples (Sampel Maklon) loads without errors",
+    "UI Regression: marketing-kreator-requests (Permintaan Kreator) loads without errors",
+    "UI Regression: hr-expense-hub (Hub Biaya Karyawan) loads without errors"
+  ],
+  
+  "test_report_links": [
+    "/app/backend/backend_test_doc_numbering_session27.py",
+    "/app/.screenshots/doc-numbering-detailed.png",
+    "/app/.screenshots/fabric-rolls-data.png"
+  ],
+  
+  "action_items": [],
+  
+  "critical_code_review_comments": [
+    "backend/core/doc_number_policy.py — issue_number() correctly enforces auto/manual modes with pattern validation and duplicate detection (409)",
+    "backend/data/doc_number_registry.py — 51 document types correctly categorized: 27 policy_enforced, 23 auto_only with alasan_otomatis, 1 pending_enforce",
+    "backend/routes/rahaza_employee_loans.py — POST /disburse correctly returns HTTP 410 with message directing to Kasbon & Pinjaman",
+    "backend/scripts/seed_finance_wms_demo.py — fabric rolls seeder creates 4 DEMO rolls with RL-YYYYMM-#### pattern (not old DEMO-RL-000x)",
+    "frontend — Document Numbering screen correctly displays mode toggles for enforced types and 'Selalu otomatis' badges for always-auto types",
+    "All 3 tested document types (Expense Claims, Kreator Requests, Acc Purchase Requests) correctly enforce numbering policy in both auto and manual modes"
+  ],
+  
+  "updated_files": [
+    "/app/backend/backend_test_doc_numbering_session27.py (new — 45 tests covering catalog, mode changes, 3 document types enforcement, legacy endpoint, fabric rolls)"
+  ],
+  
+  "success_rate": {
+    "backend": "100% (45/45)",
+    "frontend": "100% (all UI acceptance items GREEN)"
+  },
+  
+  "test_credentials": "admin@garment.com / Admin@123",
+  
+  "seed_data_creation": "No new seed data created. Used existing DEMO data from seed_finance_wms_demo.py which creates 4 fabric rolls with RL-YYYYMM-#### pattern.",
+  
+  "retest_needed": false,
+  
+  "should_call_test_agent_after_fix": false,
+  
+  "should_main_agent_test_itself": false,
+  
+  "context_for_next_testing_agent": "Session #27 (FASE G) document numbering enforcement is stable end-to-end. All 51 document types are correctly categorized (27 enforced, 23 always-auto with reasons, 1 pending). The 3 tested document types (Expense Claims, Kreator Requests, Acc Purchase Requests) correctly enforce auto/manual modes with pattern validation and duplicate detection. Legacy loan endpoint correctly returns HTTP 410. Fabric rolls seeder creates 4 DEMO rolls with correct RL-YYYYMM-#### pattern. UI correctly displays mode toggles and always-auto badges. All 7 regression modules load without errors.",
+  
+  "rca_of_the_issue": "n/a — all acceptance items GREEN. Session #27 implementation is working as specified."
+}

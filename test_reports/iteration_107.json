@@ -1,0 +1,18 @@
+{
+  "summary": "Menjalankan skrip regresi finance /app/backend/scripts/verify_finance_fixes.py — SEMUA cek PASS (C-01 AR/AP same-account, C-02 GRNI Dr 1-1401 / Cr 2-1150, C-04 COA 1-1320 ASSET & neraca balanced, C-05 asset_disposal profil 1-2500/1-2501, C-06 maklon generate→JE, payment→JE + cash movement, cancel-when-paid rejected, delete-payment voids, cancel voids JE & AR back to draft, tidak ada line yatim, H-04 legacy 3-digit rejected). Idempotensi migrate-canonical dan seed-da→410 diverifikasi. Regresi P&L/AR-aging/maklon-aging 200. Cleanup selesai (JE=0 lines=0 setelah run). Frontend: login admin → Portal Keuangan → Maklon Billing termuat (data-testid maklon-billing), dialog PaymentDialog code sudah mengandung data-testid pay-cash-account-select (verifikasi UI penuh sulit karena tidak ada invoice di seed setelah cleanup, sesuai instruksi 'cukup verifikasi UI').",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/scripts/verify_finance_fixes.py"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "verify_finance_fixes.py sudah komprehensif dan idempoten (cleanup FIXTEST); pertahankan sebagai regresi.",
+    "MaklonBillingModule.jsx: PaymentDialog select rekening kas/bank data-testid=pay-cash-account-select sudah benar (line 421)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100% (UI load only)"},
+  "test_credentials": "admin@garment.com / Admin@123",
+  "seed_data_creation": "FIXTEST-* dibersihkan otomatis oleh skrip; po-mk-demo-2 dikembalikan ke status draft via /production-pos/{id}/sync-maklon-finance.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Untuk regresi finance jalankan: (1) simpan JWT admin ke /app/.tok_admin, (2) cd /app/backend && python3 scripts/verify_finance_fixes.py — harus FAILED:[] dan cleanup JE before/after count sama. UI PaymentDialog hanya bisa dibuka jika ada invoice generated dari po-mk-demo-2 (via Generate Invoice di modul Invoice Maklon)."
+}

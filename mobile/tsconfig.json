@@ -1,0 +1,48 @@
+{
+  // ───────────────────────────────────────────────────────────────────────────
+  // KENAPA `extends` MENUNJUK BERKAS LOKAL, BUKAN `"expo/tsconfig.base"`
+  // ───────────────────────────────────────────────────────────────────────────
+  // `mobile/node_modules` TIDAK PERNAH dipasang di container ini (dependensi
+  // Expo/React Native berukuran ~1 GB dan app ini tidak dilayani preview).
+  // Akibatnya `"expo/tsconfig.base"` TIDAK BISA di-resolve, dan itu bukan cuma
+  // masalah TypeScript: `eslint-plugin-import` (lewat resolver typescript yang
+  // mem-glob `**/tsconfig.json`) MELEMPAR
+  //     Error: File 'expo/tsconfig.base' not found.
+  //     Occurred while linting /app/frontend/src/App.js:1  Rule: "import/namespace"
+  // sehingga ESLint keluar rc=2 dengan stdout KOSONG ⇒ gate lint platform
+  // melaporkan "JavaScript linting failed due to a linter engine error" dan
+  // MEM-BLOK tool `finish`/`ask_human` — seluruh sesi tidak bisa diserahkan.
+  //
+  // Ini kekambuhan KE-3 dari penyakit yang sama (FASE 12 "BUG-C", FASE 14
+  // "symlink formatter", lalu FASE 21). Dua perbaikan sebelumnya hanya
+  // MENGGESER kegagalannya karena tidak menghapus penyebabnya: app Expo yang
+  // dependensinya tak pernah ada. Lihat scripts/guardrails/verify_platform_lint_engine.py
+  //
+  // `tsconfig.expo-base.json` adalah salinan **verbatim** dari
+  // `expo@54.0.35/tsconfig.base.json` (versi yang sama persis dengan
+  // dependensi `"expo": "54.0.35"` di `mobile/package.json`), diambil lewat
+  // `npm pack expo@54.0.35`. Jadi TIDAK ADA perubahan semantik — hanya
+  // resolusinya yang tidak lagi bergantung pada node_modules yang tak ada.
+  // `${configDir}` di dalamnya tetap menunjuk direktori berkas INI, sesuai
+  // spesifikasi TypeScript, jadi `exclude`-nya tetap benar.
+  //
+  // KALAU kelak `mobile/node_modules` benar-benar dipasang dan Anda ingin
+  // mengikuti default upstream Expo secara otomatis, kembalikan satu baris ini
+  // ke "expo/tsconfig.base" — guardrail INV-LINT-01 akan langsung MERAH bila
+  // dependensinya belum ada, jadi kesalahannya tidak bisa lolos diam-diam.
+  "extends": "./tsconfig.expo-base.json",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
+}

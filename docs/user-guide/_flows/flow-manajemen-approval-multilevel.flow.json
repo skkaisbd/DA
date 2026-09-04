@@ -1,0 +1,50 @@
+{
+  "flow_id": "flow-manajemen-approval-multilevel",
+  "title": "Alur Approval Multilevel (Manajemen): Pusat Persetujuan Bertingkat Lintas Dokumen (PO/Dispatch/Cuti/Expense/dll)",
+  "portal": "manajemen",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal 'command center' persetujuan untuk manajemen. Satu mesin approval bertingkat (sequential multi-level) melayani BANYAK tipe dokumen: leave (cuti), overtime (lembur), expense (klaim biaya), purchase_order (PO), salary_adjustment (penyesuaian gaji), material_return (retur material), resignation (pengunduran diri), dan asset_purchase (pembelian aset). Rantai (chain) yang dipakai ditentukan otomatis berdasar type + kondisi ambang (amount/days): mis. PO >= 5jt -> 3 level (Admin Purchasing -> Manajer -> Owner), Cuti < 3 hari -> 1 level (Manajer). Requester submit -> Level 1 pending, level lain waiting -> approver Level 1 approve -> pindah Level 2 -> ... -> level terakhir approve -> APPROVED. Reject di level mana pun MENGGAGALKAN request (cascade: level sisa jadi skipped). Requester dapat cancel selama masih pending. Admin/Owner mengelola konfigurasi chain (CRUD + seed default). Modul menyediakan inbox 'Perlu Tindakan' per user (berdasar peran di level aktif), daftar 'Semua Request', dan ringkasan (widget summary). Guardrail: submit tanpa chain cocok ditolak (400), approve/reject request yang sudah selesai ditolak (400), cancel request non-pending ditolak (400), dan konfigurasi chain hanya untuk admin/owner (403).",
+  "modules_touched": ["approval-multilevel", "unified-approval-hub"],
+  "critical_endpoints": [
+    "/api/approvals/requests",
+    "/api/approvals/requests/{id}",
+    "/api/approvals/requests/{id}/approve",
+    "/api/approvals/requests/{id}/reject",
+    "/api/approvals/requests/{id}/cancel",
+    "/api/approvals/chains",
+    "/api/approvals/chains/{id}",
+    "/api/approvals/pending",
+    "/api/approvals/summary",
+    "/api/approvals/seed-missing-chains"
+  ],
+  "supporting_endpoints": [
+    "/api/approvals/seed-chains"
+  ],
+  "test_script": "tests/flow_manajemen_approval_multilevel_test.py",
+  "doc": "docs/user-guide/manajemen/flow-manajemen-approval-multilevel.md",
+  "db_collections": [
+    "approval_chains",
+    "approval_requests"
+  ],
+  "happy_path_steps": [
+    "Setup: pastikan chain default ter-seed (idempotent) -> approval_chains terisi 11 chain baku",
+    "Submit request (type + ref_code + meta.amount/days) -> chain dipilih otomatis; status=pending, current_level=1, level lain waiting; nomor id",
+    "Approve Level 1 -> current_level=2, level 1 approved, level 2 pending (sequential)",
+    "Approve Level 2 -> current_level=3, level 2 approved, level 3 pending",
+    "Approve Level terakhir -> status=approved + completed_at (semua level approved)",
+    "Jalur reject: approve L1 lalu reject L2 -> status=rejected, level sisa=skipped (cascade)",
+    "Jalur cancel: requester cancel saat pending -> status=cancelled",
+    "Konfigurasi chain: create/update/delete (soft) chain oleh admin/owner",
+    "Inbox: GET pending (per peran di level aktif) + GET summary (total_pending, my_pending_count, approved_today, by_type)"
+  ],
+  "guardrails": [
+    "Submit type tanpa chain cocok -> 400",
+    "Approve/Reject request yang sudah approved/rejected/cancelled -> 400",
+    "Cancel request yang tidak pending -> 400",
+    "Create/Update/Delete chain oleh non-admin (mis. role hr) -> 403"
+  ],
+  "qa": "docs/user-guide/_qa/flow-manajemen-approval-multilevel_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_manajemen_approval_multilevel_test.py: seed 11 chain; routing kondisi leave days>=3->3 level & days<3->1 level; PO 12jt 3-level approve L1->L2->L3->approved; reject cascade L2->rejected+L3 skipped; cancel->cancelled; chain CRUD create/update/soft-delete; guard no-chain 400, approve-after-done 400, cancel-after-cancel 400, non-admin create-chain 403; pending+summary 200); audit_testids.py approval-multilevel LULUS 0 FAIL (15 testid statik unik; A4 WARN = false-positive parsing arrow-function). DB pristine setelah cleanup (approval_requests=0; chain default dipertahankan).",
+  "notes_qa": "Observasi LOW (code smell, non-blocking): services/approval_chain_service.py process_action() memiliki blok logika terduplikasi (baris ~302-389). Efeknya benign karena blok kedua membaca ulang doc['current_level'] in-memory yang TIDAK berubah, sehingga menghasilkan transisi identik (tidak melompati level). Diverifikasi via POC: approve tepat maju satu level, reject cascade benar. Direkomendasikan refactor (hapus duplikasi) di sesi backend terpisah. Frontend MultiLevelApprovalModule.jsx ditambah 15 data-testid (tabs/filter/refresh/seed/card actions/detail modal) untuk testability E2E."
+}

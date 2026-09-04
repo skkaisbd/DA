@@ -1,0 +1,44 @@
+{
+  "portal": "assets",
+  "label": "Portal Manajemen Aset",
+  "ringkasan": "Portal Manajemen Aset mencatat barang milik perusahaan yang dipakai berulang: mesin, peralatan, kendaraan, perangkat kerja. Berbeda dari persediaan, aset tidak habis dipakai dan disusutkan.",
+  "prinsip": [
+    "Aset punya pemegang dan lokasi — selalu jelas siapa yang bertanggung jawab.",
+    "Peminjaman BARANG ada di sini, bukan di Portal Aksesoris.",
+    "Nilai buku dan penyusutan aset dikelola di Portal Keuangan → Aset Tetap."
+  ],
+  "alur": [
+    {
+      "judul": "Mendaftarkan dan meminjamkan aset",
+      "kata_kunci": ["aset", "pinjam alat", "peminjaman", "inventaris", "mesin", "kendaraan"],
+      "modul": ["asset-management"],
+      "langkah": [
+        "Daftarkan aset: kode, nama, kategori, lokasi, dan kondisi.",
+        "Catat serah terima ke karyawan pemegang beserta tanggalnya.",
+        "Pengembalian dicatat dengan kondisi terakhir; kerusakan dilaporkan untuk perbaikan.",
+        "Untuk nilai perolehan dan penyusutan, gunakan Portal Keuangan → Aset Tetap."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "asset-management", "nama": "Manajemen Aset", "deskripsi": "Register aset, pemegang, lokasi, peminjaman, dan kondisinya."}
+  ],
+  "faq": [
+    {
+      "q": "Apa beda aset dengan persediaan?",
+      "kata_kunci": ["beda aset persediaan", "aset vs stok"],
+      "a": "Persediaan habis saat dipakai atau dijual dan dicatat di Portal Gudang/Aksesoris. Aset dipakai berulang selama bertahun-tahun, punya pemegang, dan disusutkan nilainya di Portal Keuangan."
+    },
+    {
+      "q": "Di mana mencatat aset yang dipegang karyawan?",
+      "kata_kunci": ["aset karyawan", "pegang aset"],
+      "a": "Bisa dari sini (serah terima aset) dan terlihat juga di Portal SDM → 'Aset Karyawan' agar HR bisa memeriksanya saat karyawan keluar."
+    }
+  ],
+  "saran": [
+    "Bagaimana mendaftarkan aset baru?",
+    "Bagaimana mencatat peminjaman alat?",
+    "Apa beda aset dengan persediaan?",
+    "Di mana penyusutan aset dihitung?"
+  ]
+}

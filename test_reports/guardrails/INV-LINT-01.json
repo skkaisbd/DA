@@ -1,0 +1,13 @@
+{
+  "gate": "INV-LINT-01",
+  "title": "Gate lint platform bisa jalan & lulus (oxlint + import validation)",
+  "checked": 6,
+  "counts": {},
+  "blocking": 0,
+  "block_sev": [
+    "HIGH"
+  ],
+  "duration_s": 26.95,
+  "ts": "2026-09-04 05:55:49",
+  "findings": []
+}

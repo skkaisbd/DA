@@ -1,0 +1,44 @@
+{
+  "summary": "Tested the two new Finance > Pencairan Marketplace features: (A) POST /api/marketing/settlements/import/preview and (B) GET /api/marketing/settlements/by-account, plus the matching UI (SettlementImportPanel + SettlementByStoreCards). Backend: 13/13 pytest assertions pass (1 skipped - see below). Every value requested in the review was verified exactly (Shopee CSV: row_count=2, platform_guess=shopee, gross 3.000.000 / refunds 200.000 / seller_discount 170.000 / commission 135.000 / service_fee 45.000 / affiliate 10.000 / net 2.440.000, dates 2026-08-15 & 2026-08-02..05, unmapped=['Ongkos Kirim Dibayar Pembeli'], draft.expected_net_payout=2.440.000, per-field source columns present; TikTok XLSX: platform_guess=tiktokshop, settlement_id=STM-2026-08-16-01, gross 7.000.000, net 5.920.000, adjustments -70.000, affiliate 100.000, unmapped=['Shipping cost']). Preview is confirmed non-persisting (settlement count unchanged). Error paths: order-export CSV -> 400 'Tidak ada satu pun kolom uang', .pdf/.png -> 415, empty file -> 400, no token -> 401. by-account: defaults to 2026-08, months ['2026-08','2026-07'] sorted desc, all 11 per-store fields present, 2026-07 -> DA Official Shopee count=2 deduction_pct=6, 2026-01 -> empty, month=bad -> 400. Frontend: per-store card panel, month input, prev/next (next disabled at newest month), all three import scenarios and the end-to-end import->save->row->card-refresh flow all work with zero React console errors. ONE REAL BUG FOUND: on a second consecutive import the auto-selected store is NOT re-derived, so a report can be silently saved to the WRONG store (reproduced - a TikTok settlement was saved under DA Official Shopee).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/marketing/settlements/import/preview", "issue": "403 non-finance case could NOT be verified: the users collection contains only admin@garment.com (superadmin). hr@dewiaditya.id / Dewi@123 returns 401 (account does not exist). Test is skipped, not passing."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Impor Laporan Pencairan - store auto-selection on a SECOND import",
+        "issue": "CRITICAL/HIGH. In FinanceSettlementModule.jsx importFile(): `const f = { ...EMPTY, account_id: form.account_id || accountId || '' }` followed by `if (!f.account_id && d.platform_guess) {...}`. Because `form` state survives closing the form/import panel, the second and every later import inherits the PREVIOUS import's account_id and the platform-based auto-pick is skipped entirely. Reproduced twice: (1) import Shopee CSV, close form, import TikTok XLSX -> store stays 'DA Official Shopee', pressing Simpan saved STM-2026-08-16-01 (a tiktokshop report) under DA Official Shopee (verified in Mongo: account_id=c386b3ce... platform=shopee). (2) reverse order: import TikTok first, then Shopee CSV -> store stays 'DA Official TikTok'. Nothing on screen warns that the store contradicts platform_guess. Consequence: wrong per-store deduction cards and, once journaled, the wrong coa_cash_code/coa_revenue_code (the exact failure mode the module docstring says it must prevent). Fix: derive the account from d.platform_guess on EVERY import (reset form to EMPTY first, or only keep a MANUALLY chosen account), and/or block save + show a warning when accOf(form.account_id).platform !== d.platform_guess.",
+        "affected_selectors": ["fin-settlement-import-file", "fin-settlement-input-account", "fin-settlement-save"]
+      }
+    ],
+    "design_issues": [
+      {"screen": "Pencairan Marketplace - settlement table while import panel is open", "issues": ["Minor: with the wide import preview panel open, the new row's TANGGAL / TOKO cells wrap onto two lines ('2026-08-' / '16'), making the date briefly look truncated. Cosmetic only."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter99_settlement_import_bystore.py",
+    "/app/test_reports/pytest/iter99_results.xml"
+  ],
+  "action_items": [
+    "HIGH: Fix store auto-selection in FinanceSettlementModule.importFile() so platform_guess is re-applied on every import (currently only the first import in a page session picks the right store; later imports silently reuse the previous store).",
+    "HIGH: Add a guard so Simpan refuses / warns when the selected store's platform differs from the imported report's platform_guess - a mismatched store also picks the wrong cash & revenue COA for the journal.",
+    "LOW: Seed a non-finance role user (e.g. hr@dewiaditya.id) so the 403 RBAC path on /import/preview can actually be regression-tested; today only admin@garment.com exists."
+  ],
+  "critical_code_review_comments": [
+    "FinanceSettlementModule.jsx importFile(): `account_id: form.account_id || accountId || ''` conflates 'user's deliberate choice' with 'leftover state from the previous import'. Since the auto-pick is gated on `!f.account_id`, this permanently disables platform detection after the first import. Reset to EMPTY (or track a separate `accountTouchedByUser` flag) before applying the draft.",
+    "settlement_import.py values(): every field except `adjustments` is passed through abs(). A platform that reports gross_sales as a negative correction would be silently flipped positive. Acceptable today, but worth logging when sign flipping occurs.",
+    "/import/preview validates the extension only after reading the whole body; the 15 MB guard runs after `await file.read()`, so a 500 MB upload is still fully buffered in memory before rejection. Consider streaming/size-checking earlier."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter99_settlement_import_bystore.py"],
+  "success_rate": {"backend": "100% (13/13 executed, 1 skipped - no non-finance user exists)", "frontend": "90% (all requested flows pass; 1 integration bug on repeat import)"},
+  "seed_data_creation": "Created settlement STM-2026-08-16-01 via the UI import->save flow, correctly attributed to DA Official TikTok (8a098933-42aa-497c-8140-7b2852d81268), 2026-08-16, gross 7.000.000 / net 5.920.000, math_verified, no journal yet. An earlier mis-attributed copy of the same settlement (saved under DA Official Shopee because of the bug above) was deleted from marketing_settlements to leave the DB clean. Existing settlements STL-TEST-001, STL-UI-1788373763, STL-QA-1788373644 were NOT touched.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123 (UI login form works; note that server-side HTTP calls from non-browser clients to /api/auth/login can be answered with 403 by the edge - use the browser form or requests from inside the container for tokens)",
+  "context_for_next_testing_agent": "Backend regression file: /app/backend/tests/test_iter99_settlement_import_bystore.py (run with `cd /app/backend && python -m pytest tests/test_iter99_settlement_import_bystore.py`; pytest.ini already sets -n/--dist so do not pass -p no:xdist). Frontend is a prebuilt static bundle - after any frontend source change run `bash /app/scripts/rebuild_frontend.sh` (~4 min) before retesting. UI login: fill input[type=email]/input[type=password] then the 'Masuk' button, then goto /?portal=finance&module=fin-marketplace-settlement (localStorage injection via urllib fails - the edge returns 403 to non-browser clients). To retest the open bug: fresh page load -> import settlement_shopee_contoh.csv -> close form -> import settlement_tiktok_contoh.xlsx -> fin-settlement-input-account must switch to DA Official TikTok (today it stays Shopee). 2026-08 now has 2 store cards (Shopee 15%, TikTok 14.43%); 2026-07 has 1 card (Shopee 6%, 2 pencairan).",
+  "rca_of_the_issue": "Root cause of the wrong-store import: React state `form` is module-level and is never reset between imports. `importFile()` seeds the new draft with `form.account_id || accountId` and then only auto-detects the store when that seed is empty (`if (!f.account_id && d.platform_guess)`). After the first import the seed is never empty again, so `platform_guess` is ignored for all subsequent imports in the same page session. Reproduction: fresh load -> import Shopee CSV (store correctly = DA Official Shopee) -> close form -> import TikTok XLSX -> store still DA Official Shopee -> Simpan -> Mongo doc for STM-2026-08-16-01 has account_id=c386b3ce-2b85-453a-88a3-b3e5e37277be / platform=shopee. Mitigation until fixed: reload the page before each import, or manually re-pick the store in fin-settlement-input-account."
+}

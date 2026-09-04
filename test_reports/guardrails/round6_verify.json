@@ -1,0 +1,155 @@
+{
+  "round": 6,
+  "ts": "2026-08-26 03:26:15",
+  "total": 14,
+  "safe": 14,
+  "fail": 0,
+  "cleanup": {
+    "ar_by_id": 2,
+    "ar_by_mark": 0,
+    "ap_by_id": 1,
+    "ap_by_mark": 0,
+    "clients": 1,
+    "customers": 1,
+    "journal_entries": 2,
+    "journal_lines": 2
+  },
+  "residual": {
+    "ar_mark": 0,
+    "ap_mark": 0,
+    "clients_mark": 0,
+    "cust_mark": 0,
+    "neg_ar": 0,
+    "neg_ap": 0,
+    "orphan_je": 0
+  },
+  "results": [
+    {
+      "test": "AR positive control (qty10 price1000)",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR negative qty",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR negative price",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR negative tax_pct",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR discount>total",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR non-numeric qty (no 5xx)",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AP positive control",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AP negative price",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AP negative qty",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR payment positive control (draft)",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "AR payment to CANCELLED invoice",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "Maklon client positive control (rate 5000)",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "Maklon client NEGATIVE rate",
+      "status": 422,
+      "expected": [
+        400,
+        422
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    },
+    {
+      "test": "Catalog item negative price -> 422",
+      "status": 422,
+      "expected": [
+        422
+      ],
+      "verdict": "SAFE",
+      "detail": ""
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "flow_id": "flow-keuangan-jurnal",
+  "title": "Alur Jurnal & Akuntansi/Laporan (COA -> Jurnal -> Posting -> Neraca/Laba-Rugi)",
+  "portal": "finance",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Keuangan untuk inti akuntansi double-entry: kelola Chart of Accounts (COA), buat jurnal manual berimbang (Debit=Credit) dengan akun leaf valid, posting jurnal (draft -> posted) dengan guard periode, lalu lihat dampaknya pada laporan keuangan (neraca saldo, neraca, laba-rugi, buku besar).",
+  "modules_touched": ["fin-journal-hub", "fin-general-ledger"],
+  "critical_endpoints": [
+    "/api/rahaza/journals",
+    "/api/rahaza/journals/{je_id}/post",
+    "/api/rahaza/finance/reports/balance-sheet"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/journals",
+    "/api/rahaza/journals/{je_id}/void",
+    "/api/rahaza/coa/accounts",
+    "/api/rahaza/coa/tree",
+    "/api/rahaza/coa/seed",
+    "/api/rahaza/finance/reports/profit-loss",
+    "/api/rahaza/finance/reports/trial-balance",
+    "/api/rahaza/finance/reports/general-ledger"
+  ],
+  "test_script": "tests/flow_keuangan_jurnal_test.py",
+  "doc": "docs/user-guide/keuangan/flow-keuangan-jurnal.md",
+  "db_collections": ["rahaza_coa_accounts", "rahaza_journal_entries", "rahaza_periods"],
+  "happy_path_steps": [
+    "Pastikan COA ter-seed (akun leaf valid)",
+    "Buat jurnal berimbang (Debit=Credit) lalu posting (status posted)",
+    "Lihat dampak pada laporan: neraca saldo, neraca, laba-rugi, buku besar"
+  ],
+  "qa": "docs/user-guide/_qa/flow-keuangan-jurnal_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (jurnal posted, unbalanced ditolak, 4 laporan 200); E2E UI pending batch"
+}

@@ -1,0 +1,63 @@
+{
+  "flow_id": "flow-rnd-sampling-design",
+  "title": "Alur Sampling/Desain (RnD): Style Master -> Sampling -> Approval -> HPP",
+  "portal": "rnd",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Riset & Pengembangan (RnD) produk garmen dari ide desain hingga siap-produksi. Empat fase berurutan: (1) STYLE MASTER -> RnD staff membuat style (kode+nama+kategori+buyer+kain+musim), status draft; melampirkan variant/tech-pack; lalu mengajukan review ke Owner (submit-for-review -> pending_owner_review); Owner meninjau (owner-approve -> approved_for_launch, atau owner-reject dengan catatan -> kembali draft). Style internal yang disetujui dapat di-promote menjadi Production Model (rahaza_models) untuk produksi massal. (2) SAMPLING -> membuat Sample Request per style (qty, prioritas, due date), status draft; submit -> submitted. (3) APPROVAL -> Owner/Manajer approve/reject sample (submitted -> approved/rejected) sebagai bukti mutu sebelum lanjut. (4) HPP -> menghitung Harga Pokok Produksi per pcs (kain + aksesoris + CMT + cutting + packaging + overhead%) dan usulan Harga Jual (margin%), dengan preview live tanpa simpan maupun simpan+revisi; tersedia agregat overview per style (samples/hpp/revisions/tech-packs) dan analytics RnD. Guardrail: create style tanpa code/name 400 & code duplikat 409; transisi status style/sample salah 400; owner-reject tanpa catatan 400; promote ganda 400; sample tanpa style_id 400 / style invalid 404.",
+  "modules_touched": ["rnd-design-hub", "rnd-costing-hub", "rnd-styles", "rnd-samples", "rnd-hpp", "rnd-techpack"],
+  "critical_endpoints": [
+    "/api/dewi/rnd/styles",
+    "/api/dewi/rnd/styles/{id}/submit-for-review",
+    "/api/dewi/rnd/styles/{id}/owner-approve",
+    "/api/dewi/rnd/styles/{id}/owner-reject",
+    "/api/dewi/rnd/styles/{id}/promote-to-production",
+    "/api/dewi/rnd/sample-requests",
+    "/api/dewi/rnd/sample-requests/{id}/submit",
+    "/api/dewi/rnd/sample-requests/{id}/approve",
+    "/api/dewi/rnd/sample-requests/{id}/reject",
+    "/api/dewi/rnd/hpp-calculator",
+    "/api/dewi/rnd/hpp-calculator/preview",
+    "/api/dewi/rnd/styles/{id}/overview"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/rnd/styles/{id}",
+    "/api/dewi/rnd/styles/pending-review",
+    "/api/dewi/rnd/sample-requests/{id}",
+    "/api/dewi/rnd/hpp-calculator/{id}",
+    "/api/dewi/rnd/tech-packs",
+    "/api/dewi/rnd/tech-packs/{id}/approve",
+    "/api/dewi/rnd/revisions",
+    "/api/dewi/rnd/analytics"
+  ],
+  "test_script": "tests/flow_rnd_sampling_design_test.py",
+  "doc": "docs/user-guide/rnd/flow-rnd-sampling-design.md",
+  "db_collections": [
+    "dewi_rnd_styles",
+    "dewi_rnd_sample_requests",
+    "dewi_rnd_hpp",
+    "dewi_rnd_tech_packs",
+    "dewi_rnd_revisions",
+    "rahaza_models"
+  ],
+  "happy_path_steps": [
+    "Buat style (kode+nama) -> status=draft",
+    "Submit for review -> status=pending_owner_review (muncul di daftar pending-review)",
+    "Owner approve -> status=approved_for_launch (atau owner-reject+catatan -> draft)",
+    "Promote to production -> membuat Production Model (rahaza_models), promoted_to_model_id terisi",
+    "Buat sample-request (style_id) -> status=draft; submit -> submitted",
+    "Approve sample -> approved (approval_status=approved); jalur reject -> rejected",
+    "HPP preview (tanpa simpan) lalu create HPP -> hitung direct_cost/overhead/hpp_total/selling_price_proposal",
+    "Update HPP (ubah margin) -> recalc; list HPP by style",
+    "Style overview agregat + analytics RnD; tech-pack create -> approve"
+  ],
+  "guardrails": [
+    "create style tanpa code/name -> 400 ; code duplikat -> 409",
+    "submit-for-review pada status salah -> 400 ; owner-approve non-pending -> 400 ; owner-reject tanpa catatan -> 400 ; promote ganda -> 400",
+    "create sample-request tanpa style_id -> 400 ; style_id invalid -> 404",
+    "submit sample non-draft -> 400 ; approve sample non-submitted -> 400"
+  ],
+  "qa": "docs/user-guide/_qa/flow-rnd-sampling-design_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_rnd_sampling_design_test.py, 27 skenario): style create->submit-review->owner-approve->promote(model); jalur owner-reject+catatan; sample create->submit->approve; jalur reject sample; HPP preview (direct=60700, hpp_total=66770, selling=95385.71 @margin30) + create + update (@margin40 selling=111283.33) + list; overview (samples=2,hpp=1) + analytics; tech-pack create+approve; guard tanpa-code 400, dup 409, transisi-salah 400, reject-tanpa-notes 400, promote-ganda 400, sample-tanpa-style 400, style-invalid 404. audit_testids.py rnd-design-hub+rnd-costing-hub (+3 tab file) LULUS 0 FAIL (27 testid statik unik; A4 WARN false-positive arrow-function). DB pristine setelah cleanup (0 residu E2E-RND).",
+  "notes_qa": "Tidak ada bug baru ditemukan. Observasi LOW: endpoint aksi (approve/owner-approve/promote) hanya memvalidasi autentikasi + status, tanpa hard-block peran di layer aksi (gating peran diasumsikan di UI portal RnD). Dicatat di _qa untuk pengerasan lanjutan; tidak memengaruhi happy-path."
+}

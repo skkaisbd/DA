@@ -1,0 +1,138 @@
+{
+  "summary": "Completed comprehensive testing of Size Mapping + Stale Price Warning features (2026-08-08 session). Backend: 14/14 tests passed (100%). Frontend: All critical UI elements verified. Both features working correctly with ZERO critical bugs.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": [],
+    "minor_issues": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend SM-1: GET /size-mapping overview returns correct data with 6 unmapped labels",
+    "Backend SM-2: GET /size-mapping?style_id filter works correctly",
+    "Backend SM-3: POST /size-mapping/apply validation (400 for empty, 404 for invalid size_id)",
+    "Backend SM-4: POST /size-mapping/apply create_new generates CLEAN codes (2830 for 28/30, no slashes/spaces)",
+    "Backend SM-5: POLICY B1 verified - size_list unchanged after apply",
+    "Backend SM-6: POST /size-mapping/auto with create_missing=true maps all labels (5 applied, 0 remaining)",
+    "Backend SM-7: POST /size-mapping/auto with create_missing=false skips labels without suggestions",
+    "Backend ST-1: GET /hpp-calculator with stale detection - HPP-DEMO-001 has stale_count=1, HPP-DEMO-002 has stale_count=0",
+    "Backend ST-2: MONEY validation - HPP-DEMO-001 hpp_total=34457.5 unchanged, HPP-DEMO-002 hpp_total=95700.0 unchanged",
+    "Backend ST-3: GET /hpp-calculator?with_stale=false does not compute stale fields",
+    "Backend ST-4: GET /hpp-calculator/{id}/stale-check consistency with list view",
+    "Backend REG-1: GET /styles/{id}/size-list still works (8 sizes)",
+    "Backend REG-2: GET /variants/sku-audit returns HTTP 200 (not 500)",
+    "Backend REG-3: GET /color-options returns correct palette (NVY=Navy=#1E3A5F, no garbage colors)",
+    "Frontend SM-UI-1: Size Mapping module loads successfully at rnd-design-hub → sizemap tab",
+    "Frontend SM-UI-2: All 4 stat cards display numbers (unmatched=0, blocked=0, matched=14, variants=128)",
+    "Frontend SM-UI-3: All-clear message displayed correctly (all sizes already mapped after backend auto-mapping)",
+    "Frontend SM-UI-4: Matched panel toggle opens and displays 14 matched size pairs",
+    "Frontend HPP-UI-1: HPP Calculator module loads successfully at rnd-costing-hub → hpp tab",
+    "Frontend HPP-UI-2: Stale list banner displays '1 HPP memakai harga master yang sudah berubah'",
+    "Frontend HPP-UI-3: HPP-DEMO-001 shows stale badge '1 harga berubah' with correct HPP value Rp 34.458",
+    "Frontend HPP-UI-4: HPP-DEMO-002 shows '—' (no stale) with correct HPP value Rp 95.700",
+    "Frontend REG-1: Variants tab in rnd-design-hub loads without errors",
+    "Frontend REG-2: Tech Pack tab in rnd-design-hub loads without errors",
+    "CRITICAL: ONESET and TOP labels found with from_variants=true (from Excel import, not in size_list)",
+    "CRITICAL: Clean size codes created (2830, 3234, 3638, 3XL, ONESET, TOP - no spaces/slashes)",
+    "CRITICAL: MONEY validation passed - HPP numbers unchanged after stale detection",
+    "CRITICAL: POLICY B1 verified - size_list remains FREE TEXT, only size_map updated"
+  ],
+  
+  "test_report_links": [
+    "/app/backend_test_size_mapping_stale.py",
+    "/app/backend_test_output.log",
+    ".screenshots/size_mapping_module.png",
+    ".screenshots/hpp_calculator_list.png"
+  ],
+  
+  "success_percentage": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all critical UI elements verified)",
+    "overall": "100%"
+  },
+  
+  "updated_files": [
+    "/app/backend_test_size_mapping_stale.py"
+  ],
+  
+  "action_item_for_main_agent": "",
+  
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false,
+  
+  "detailed_findings": {
+    "size_mapping_feature": {
+      "status": "WORKING",
+      "backend_endpoints": {
+        "GET /api/dewi/rnd/size-mapping": "✅ Returns correct summary with items[], matched[], master_sizes[]",
+        "GET /api/dewi/rnd/size-mapping?style_id": "✅ Filter by style works",
+        "POST /api/dewi/rnd/size-mapping/apply": "✅ Validation working (400/404), creates clean codes",
+        "POST /api/dewi/rnd/size-mapping/auto": "✅ Auto-mapping works with/without create_missing"
+      },
+      "frontend_ui": {
+        "navigation": "✅ Hash rnd-design-hub → tab sizemap works",
+        "stat_cards": "✅ All 4 cards show numbers (unmatched=0, blocked=0, matched=14, variants=128)",
+        "table": "✅ All-clear message displayed (all sizes mapped)",
+        "matched_panel": "✅ Toggle opens panel with 14 matched pairs",
+        "refresh_button": "✅ Present and functional"
+      },
+      "policy_b1_compliance": "✅ VERIFIED - size_list unchanged after apply, only size_map updated",
+      "data_sources": "✅ VERIFIED - reads from BOTH size_list AND variants (ONESET/TOP from Excel import)"
+    },
+    "stale_price_warning_feature": {
+      "status": "WORKING",
+      "backend_endpoints": {
+        "GET /api/dewi/rnd/hpp-calculator": "✅ Returns stale_count, stale_lines[], stale_delta_total",
+        "GET /api/dewi/rnd/hpp-calculator?with_stale=false": "✅ Stale fields not computed",
+        "GET /api/dewi/rnd/hpp-calculator/{id}/stale-check": "✅ Consistent with list view"
+      },
+      "frontend_ui": {
+        "navigation": "✅ Hash rnd-costing-hub → tab hpp works",
+        "stale_banner": "✅ Displays '1 HPP memakai harga master yang sudah berubah'",
+        "hpp_demo_001": "✅ Shows stale badge '1 harga berubah', HPP value Rp 34.458",
+        "hpp_demo_002": "✅ Shows '—' (no stale), HPP value Rp 95.700"
+      },
+      "money_validation": "✅ CRITICAL - HPP numbers unchanged (34457.5 and 95700.0)",
+      "stale_detection": "✅ HPP-DEMO-001 has 1 stale line (ACC-BTN-12: 200→230, delta=30, direction=naik)"
+    },
+    "regression_tests": {
+      "backend": {
+        "size_list_endpoint": "✅ GET /styles/{id}/size-list works (8 sizes)",
+        "sku_audit": "✅ GET /variants/sku-audit returns 200 (not 500)",
+        "color_palette": "✅ GET /color-options correct (NVY=Navy=#1E3A5F, no garbage)"
+      },
+      "frontend": {
+        "variants_tab": "✅ Loads without errors",
+        "techpack_tab": "✅ Loads without errors"
+      }
+    }
+  },
+  
+  "evidence": {
+    "backend_test_output": "14/14 tests passed (100%)",
+    "frontend_screenshots": [
+      "size_mapping_module.png - Shows all-clear message with 14 matched sizes",
+      "hpp_calculator_list.png - Shows stale banner and both HPP demo documents with correct values"
+    ],
+    "critical_validations": [
+      "ONESET and TOP labels found with from_variants=true (proves dual-source reading)",
+      "Clean codes: 2830 (not 28/30), 3234 (not 32/34), 3638 (not 36/38)",
+      "HPP-DEMO-001: hpp_total=34457.5 unchanged, stale_count=1",
+      "HPP-DEMO-002: hpp_total=95700.0 unchanged, stale_count=0",
+      "Policy B1: size_list unchanged after apply"
+    ]
+  },
+  
+  "notes": {
+    "data_state": "All 6 unmapped labels (28/30, 32/34, 36/38, 3XL, ONESET, TOP) were successfully mapped during backend testing via auto-mapping. Frontend shows all-clear state which is correct.",
+    "money_critical": "MONEY validation is CRITICAL and PASSED - no HPP numbers changed due to stale detection feature. Stale detection is read-only and does not modify saved values.",
+    "policy_b1": "Policy B1 compliance verified - R&D sizes remain FREE TEXT, only size_map (hints) are updated. This is the owner's explicit requirement.",
+    "ssot_fixes": "Two SSOT bugs were also fixed in this session: (1) color palette seeding, (2) size promotion respecting size_map. Both verified working."
+  }
+}

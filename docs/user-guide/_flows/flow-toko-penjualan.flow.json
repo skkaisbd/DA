@@ -1,0 +1,29 @@
+{
+  "flow_id": "flow-toko-penjualan",
+  "title": "Alur Penjualan Multi-Channel (Akun -> Input Sales -> Generate AR Invoice)",
+  "portal": "toko",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Toko/Marketing untuk pendapatan multi-channel: kelola akun channel (Shopee/TikTok/dll), input data penjualan harian per akun (revenue+orders), lalu jembatani ke Piutang (AR) dengan generate AR invoice batch dari data sales.",
+  "modules_touched": ["marketing-accounts", "marketing-sales", "marketing-ar-bridge"],
+  "critical_endpoints": [
+    "/api/marketing/accounts",
+    "/api/marketing/sales-data",
+    "/api/marketing/sales-data/generate-ar-batch"
+  ],
+  "supporting_endpoints": [
+    "/api/marketing/accounts",
+    "/api/marketing/sales-data",
+    "/api/rahaza/ar-invoices"
+  ],
+  "test_script": "tests/flow_toko_penjualan_test.py",
+  "doc": "docs/user-guide/toko/flow-toko-penjualan.md",
+  "db_collections": ["marketing_platform_accounts", "marketing_sales_data", "rahaza_ar_invoices"],
+  "happy_path_steps": [
+    "Buat akun channel (platform Shopee)",
+    "Input data sales harian (revenue + orders)",
+    "Generate AR invoice batch dari sales (grouping daily)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-toko-penjualan_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (1 invoice ter-generate); E2E UI (iteration_79) Akun->Sales->AR 100% PASS"
+}

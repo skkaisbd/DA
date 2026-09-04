@@ -1,0 +1,35 @@
+{
+  "flow_id": "flow-gudang-stock-opname2",
+  "title": "Alur Stock Opname (Cycle/Full Count -> Selisih -> Approval -> Posting Adjustment)",
+  "portal": "gudang",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal pencacahan stok (stock opname) di gudang menggunakan modul SSOT wms/opname2. Supervisor memulai sesi opname (full_count atau cycle_count per building/zone/rack). Sistem memuat posisi (wh_positions) dalam scope menjadi count_items dengan system_qty. Petugas mencacah (scan) qty fisik per posisi; sistem menghitung selisih (variance = counted - system) dan variance_pct. Sesi di-submit ke supervisor (pending_approval), lalu di-approve. Bila apply_adjustments=true, sistem melakukan POSTING: memperbarui qty wh_positions ke counted_qty untuk item ber-variance dan mencatat jejak audit ke wh_fg_movements (source=opname_adjustment). Guardrail menjaga: hanya 1 sesi open sekaligus, submit butuh minimal 1 item ter-count, approve hanya pada pending_approval, scan hanya pada sesi open, dan sesi approved tidak bisa dibatalkan. Mendukung blind_mode (sembunyikan system_qty saat pencacahan) dan ekspor count-sheet PDF.",
+  "modules_touched": ["wms-opname-enhanced"],
+  "critical_endpoints": [
+    "/api/wms/opname2/start",
+    "/api/wms/opname2/{session_id}/scan",
+    "/api/wms/opname2/{session_id}/submit",
+    "/api/wms/opname2/{session_id}/approve"
+  ],
+  "supporting_endpoints": [
+    "/api/wms/opname2",
+    "/api/wms/opname2/stats",
+    "/api/wms/opname2/{session_id}",
+    "/api/wms/opname2/{session_id}/cancel",
+    "/api/wms/opname2/{session_id}/count-sheet-pdf"
+  ],
+  "test_script": "tests/flow_gudang_stock_opname2_test.py",
+  "doc": "docs/user-guide/gudang/flow-gudang-stock-opname2.md",
+  "db_collections": ["wh_opname_sessions2", "wh_positions", "wh_fg_movements"],
+  "happy_path_steps": [
+    "Start sesi opname (scope rack/zone/building/all) -> status open, count_items terisi dari wh_positions",
+    "Scan/count qty fisik per posisi -> variance dihitung (counted - system)",
+    "Submit sesi -> status pending_approval (butuh minimal 1 item ter-count)",
+    "Approve + apply_adjustments -> posting qty wh_positions + jejak wh_fg_movements, status approved",
+    "Monitor via daftar sesi & stats; ekspor count-sheet PDF"
+  ],
+  "qa": "docs/user-guide/_qa/flow-gudang-stock-opname2_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (start->scan->submit->approve+posting; qty wh_positions ter-adjust 100->95 + movement audit; 5 guardrail: submit-empty 400, approve-non-pending 400, single-open-session 400, scan-non-open 400, cancel-approved 400); DB pristine; E2E UI PASS (Portal Gudang -> Stok & Akurasi -> Opname Stok: create->scan->submit->approve+posting qty->90, no logout)",
+  "notes_qa": "POC mengisolasi data via fixture position pada rack unik (E2E-OPN-RACK) + scope rack sehingga posting hanya menyentuh posisi uji; cleanup hard-delete sesi/posisi/movement."
+}

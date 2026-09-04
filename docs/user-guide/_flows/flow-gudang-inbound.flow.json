@@ -1,0 +1,53 @@
+{
+  "flow_id": "flow-gudang-inbound",
+  "title": "Alur Inbound Gudang (PO -> Penerimaan -> Penyimpanan -> Stok)",
+  "portal": "warehouse",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Gudang untuk barang masuk: buat Purchase Order (approval), terima barang (Goods Receipt/GRN) yang menambah stok dual-ledger (warehouse_stock + rahaza_material_stock) dan memutakhirkan qty diterima PO, lalu penyimpanan (put-away) memindahkan stok dari lokasi penerimaan ke lokasi simpan.",
+  "modules_touched": [
+    "wh-purchase-orders",
+    "wh-receiving",
+    "wh-putaway"
+  ],
+  "critical_endpoints": [
+    "/api/rahaza/purchase-orders",
+    "/api/wms/legacy/receiving",
+    "/api/wms/legacy/putaway",
+    "/api/wms/legacy/stock"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/purchase-orders/{id}/submit",
+    "/api/rahaza/purchase-orders/{id}/approve",
+    "/api/rahaza/purchase-orders/{id}/reject",
+    "/api/rahaza/purchase-orders/{id}/cancel",
+    "/api/rahaza/purchase-orders/{id}/create-gr",
+    "/api/rahaza/purchase-orders/{id}/grs",
+    "/api/wms/legacy/receiving/{id}",
+    "/api/wms/legacy/locations",
+    "/api/wms/legacy/stock/summary",
+    "/api/wms/legacy/movements",
+    "/api/rahaza/materials"
+  ],
+  "test_script": "tests/flow_gudang_inbound_test.py",
+  "doc": "docs/user-guide/gudang/flow-gudang-inbound.md",
+  "manifests": [
+    "docs/user-guide/_manifests/wh-purchase-orders.manifest.json",
+    "docs/user-guide/_manifests/wh-receiving.manifest.json",
+    "docs/user-guide/_manifests/wh-putaway.manifest.json"
+  ],
+  "db_collections": [
+    "rahaza_purchase_orders",
+    "warehouse_receiving",
+    "warehouse_stock",
+    "rahaza_material_stock",
+    "warehouse_putaway",
+    "warehouse_movements"
+  ],
+  "happy_path_steps": [
+    "Buat PO: pilih vendor + item material (qty, harga) -> POST /purchase-orders -> status draft.",
+    "Ajukan & Setujui PO: POST /submit (pending_approval) lalu POST /approve (approved).",
+    "Penerimaan (GRN): POST /receiving (draft) lalu PUT /receiving/{id} status=received -> stok bertambah (dual-ledger) + PO qty_received naik (partially/fully_received).",
+    "Penyimpanan (Putaway): POST /putaway (source_stock_id -> target_location) -> stok pindah dari lokasi terima ke lokasi simpan.",
+    "Verifikasi stok akhir via GET /stock."
+  ]
+}

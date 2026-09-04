@@ -1,0 +1,5 @@
+Order ID,Order Status,SKU ID,Seller SKU,Product Name,Quantity,SKU Subtotal After Discount,Order Amount,Created Time,Purchase Channel,Shipping Provider Name,Warehouse Name
+DEMO-A-1001,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,2,180000,190000,05/08/2026 10:15:00,Shopee,J&T Express,Gudang Utama
+DEMO-A-1002,Perlu dikirim,SKU9002,DEMO-KAOS-L,Kaos Polos Premium L,1,95000,102000,05/08/2026 11:40:00,Shopee,SiCepat,Gudang Utama
+DEMO-A-1003,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,3,270000,282000,06/08/2026 09:05:00,Shopee,J&T Express,Gudang Utama
+DEMO-A-1004,Perlu dikirim,SKU9003,DEMO-HOODIE-M,Hoodie Fleece M,1,215000,225000,06/08/2026 15:22:00,Shopee,Anteraja,Gudang Utama

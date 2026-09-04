@@ -1,0 +1,3198 @@
+{
+  "module_id": "prod-work-orders",
+  "component_name": "RahazaWorkOrdersModule",
+  "component_file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+  "registry_info": {
+    "registry": "frontend/src/components/erp/moduleRegistry.js",
+    "registry_rhs": "RahazaWorkOrdersModule"
+  },
+  "generated_from": "scripts/docgen/extract_module.py",
+  "summary": {
+    "components_total": 14,
+    "components_erp": 9,
+    "components_ui": 4,
+    "components_lib": 1,
+    "frontend_endpoints_unique": 21,
+    "frontend_endpoints_verified": 21,
+    "frontend_endpoints_unverified": 0,
+    "testid_prefixes": 80,
+    "backend_routes_total": 2081
+  },
+  "components": [
+    {
+      "name": "RahazaWorkOrdersModule",
+      "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+      "kind": "erp",
+      "n_endpoints": 20,
+      "n_testids": 32
+    },
+    {
+      "name": "OnwardCTA",
+      "file": "frontend/src/components/erp/OnwardCTA.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 1
+    },
+    {
+      "name": "glass",
+      "file": "frontend/src/components/ui/glass.jsx",
+      "kind": "ui",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "button",
+      "file": "frontend/src/components/ui/button.jsx",
+      "kind": "ui",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "Modal",
+      "file": "frontend/src/components/erp/Modal.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 1
+    },
+    {
+      "name": "DataTableV2",
+      "file": "frontend/src/components/erp/DataTableV2.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 13
+    },
+    {
+      "name": "moduleAtoms",
+      "file": "frontend/src/components/erp/moduleAtoms.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 4
+    },
+    {
+      "name": "bundleTickets",
+      "file": "frontend/src/components/erp/bundleTickets.js",
+      "kind": "erp",
+      "n_endpoints": 2,
+      "n_testids": 0
+    },
+    {
+      "name": "LKPDialog",
+      "file": "frontend/src/components/erp/LKPDialog.jsx",
+      "kind": "erp",
+      "n_endpoints": 6,
+      "n_testids": 45
+    },
+    {
+      "name": "PaginationBar",
+      "file": "frontend/src/components/erp/PaginationBar.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "utils",
+      "file": "frontend/src/lib/utils.js",
+      "kind": "lib",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "IconButton",
+      "file": "frontend/src/components/erp/IconButton.jsx",
+      "kind": "erp",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "responsive-table-wrapper",
+      "file": "frontend/src/components/ui/responsive-table-wrapper.jsx",
+      "kind": "ui",
+      "n_endpoints": 0,
+      "n_testids": 0
+    },
+    {
+      "name": "tooltip",
+      "file": "frontend/src/components/ui/tooltip.jsx",
+      "kind": "ui",
+      "n_endpoints": 0,
+      "n_testids": 0
+    }
+  ],
+  "endpoints": {
+    "verified": [
+      {
+        "path": "/api/rahaza/bundles/{}/ticket.pdf",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/bundleTickets.js",
+            "line": 46,
+            "raw": "/api/rahaza/bundles/${bundle.id}/ticket.pdf"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_bundles_docs.py",
+            "line": 50
+          }
+        ],
+        "verified": true,
+        "match_type": "suffix"
+      },
+      {
+        "path": "/api/rahaza/defect-codes",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 113,
+            "raw": "/api/rahaza/defect-codes"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_qc_v2.py",
+            "line": 89
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_qc_v2.py",
+            "line": 98
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/employees",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 117,
+            "raw": "/api/rahaza/employees"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 512
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 581
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/lines",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 114,
+            "raw": "/api/rahaza/lines"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 415
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 432
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/lkp-bulk-today",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 119,
+            "raw": "/api/rahaza/lkp-bulk-today"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 635
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/lkp/{}",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 256,
+            "raw": "/api/rahaza/lkp/${lkp.id}"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 411
+          },
+          {
+            "method": "DELETE",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 700
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/lkp/{}/pdf",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 212,
+            "raw": "/api/rahaza/lkp/${lkp.id}/pdf"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 234,
+            "raw": "/api/rahaza/lkp/${lkp.id}/pdf"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 896,
+            "raw": "/api/rahaza/lkp/${wo.latest_lkp_id}/pdf"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 422
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/lkp/{}/regenerate",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 249,
+            "raw": "/api/rahaza/lkp/${lkp.id}/regenerate"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 538
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/machines",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 115,
+            "raw": "/api/rahaza/machines"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 343
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 359
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/models",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 109,
+            "raw": "/api/rahaza/models"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_production.py",
+            "line": 79
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_production.py",
+            "line": 87
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/orders",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 111,
+            "raw": "/api/rahaza/orders"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_orders.py",
+            "line": 140
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_orders.py",
+            "line": 179
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/shifts",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 116,
+            "raw": "/api/rahaza/shifts"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 281
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_master.py",
+            "line": 289
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/sizes",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 110,
+            "raw": "/api/rahaza/sizes"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_production.py",
+            "line": 227
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_production.py",
+            "line": 235
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 88,
+            "raw": "/api/rahaza/work-orders"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 171,
+            "raw": "/api/rahaza/work-orders"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 300
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 371
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders-statuses",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 108,
+            "raw": "/api/rahaza/work-orders-statuses"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 684
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 133,
+            "raw": "/api/rahaza/work-orders/${wo.id}"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 147,
+            "raw": "/api/rahaza/work-orders/${wo.id}"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 171,
+            "raw": "/api/rahaza/work-orders/${editing.id}"
+          },
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 195,
+            "raw": "/api/rahaza/work-orders/${wo.id}"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 359
+          },
+          {
+            "method": "PUT",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 453
+          },
+          {
+            "method": "DELETE",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 590
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}/bundle-tickets.pdf",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/bundleTickets.js",
+            "line": 65,
+            "raw": "/api/rahaza/work-orders/${woId}/bundle-tickets.pdf${qs"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_bundles_docs.py",
+            "line": 70
+          }
+        ],
+        "verified": true,
+        "match_type": "suffix"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}/generate-bundles",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 268,
+            "raw": "/api/rahaza/work-orders/${bundleGenModal.wo.id}/generate-bundles${bundleGenModal.force"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_bundles_mgmt.py",
+            "line": 92
+          }
+        ],
+        "verified": true,
+        "match_type": "suffix"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}/lkp",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 204,
+            "raw": "/api/rahaza/work-orders/${woId}/lkp"
+          },
+          {
+            "file": "frontend/src/components/erp/LKPDialog.jsx",
+            "line": 214,
+            "raw": "/api/rahaza/work-orders/${wo.id}/lkp"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "GET",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 318
+          },
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_lkp.py",
+            "line": 330
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}/retry-wip-posting",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 554,
+            "raw": "/api/rahaza/work-orders/${detail.id}/retry-wip-posting"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 569
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      },
+      {
+        "path": "/api/rahaza/work-orders/{}/status",
+        "frontend_evidence": [
+          {
+            "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+            "line": 189,
+            "raw": "/api/rahaza/work-orders/${wo.id}/status"
+          }
+        ],
+        "backend_routes": [
+          {
+            "method": "POST",
+            "file": "backend/routes/rahaza_work_orders.py",
+            "line": 482
+          }
+        ],
+        "verified": true,
+        "match_type": "exact"
+      }
+    ],
+    "unverified": []
+  },
+  "testids": [
+    {
+      "prefix": "bulk-lkp-btn",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 297,
+          "raw": "bulk-lkp-btn"
+        }
+      ]
+    },
+    {
+      "prefix": "bulk-lkp-modal",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 847,
+          "raw": "bulk-lkp-modal"
+        }
+      ]
+    },
+    {
+      "prefix": "bulk-lkp-row-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 883,
+          "raw": "bulk-lkp-row-${wo.wo_id}"
+        }
+      ]
+    },
+    {
+      "prefix": "create-lkp-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 907,
+          "raw": "create-lkp-${wo.wo_id}"
+        }
+      ]
+    },
+    {
+      "prefix": "dtv2-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 265,
+          "raw": "dtv2-${tableId}"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 277,
+          "raw": "dtv2-${tableId}-search"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 302,
+          "raw": "dtv2-${tableId}-reset"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 319,
+          "raw": "dtv2-${tableId}-cols-btn"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 364,
+          "raw": "dtv2-${tableId}-density-${k}"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 376,
+          "raw": "dtv2-${tableId}-export"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 385,
+          "raw": "dtv2-${tableId}-bulk-bar"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 422,
+          "raw": "dtv2-${tableId}-th-${c.key}"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 477,
+          "raw": "dtv2-${tableId}-row-${row[rowKey]}"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 539,
+          "raw": "dtv2-${tableId}-prev"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 549,
+          "raw": "dtv2-${tableId}-next"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-add-checkpoint",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 464,
+          "raw": "lkp-add-checkpoint"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-add-measure",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 287,
+          "raw": "lkp-add-measure"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-audit-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 703,
+          "raw": "lkp-audit-${lkp.lkp_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-audit-modal",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 734,
+          "raw": "lkp-audit-modal"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-checkpoint-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 457,
+          "raw": "lkp-checkpoint-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-color",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 254,
+          "raw": "lkp-color"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-color-code",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 258,
+          "raw": "lkp-color-code"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-create-btn",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 712,
+          "raw": "lkp-create-btn"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-daily-target",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 332,
+          "raw": "lkp-daily-target"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-defect-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 442,
+          "raw": "lkp-defect-${d.code}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-dialog",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 236,
+          "raw": "lkp-dialog"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-download-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 691,
+          "raw": "lkp-download-${lkp.lkp_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-flow-dur-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 351,
+          "raw": "lkp-flow-dur-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-flow-sam-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 353,
+          "raw": "lkp-flow-sam-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-gauge",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 262,
+          "raw": "lkp-gauge"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-line",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 300,
+          "raw": "lkp-line"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-machine",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 308,
+          "raw": "lkp-machine"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-measure-part-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 279,
+          "raw": "lkp-measure-part-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-measure-val-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 281,
+          "raw": "lkp-measure-val-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-next",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 536,
+          "raw": "lkp-next"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-operator",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 316,
+          "raw": "lkp-operator"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-carton-spec",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 495,
+          "raw": "lkp-pack-carton-spec"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-fold",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 478,
+          "raw": "lkp-pack-fold"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-hangtag",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 486,
+          "raw": "lkp-pack-hangtag"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-instruction",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 506,
+          "raw": "lkp-pack-instruction"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-polybag",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 482,
+          "raw": "lkp-pack-polybag"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-qty-carton",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 491,
+          "raw": "lkp-pack-qty-carton"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-pack-shipping-mark",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 499,
+          "raw": "lkp-pack-shipping-mark"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-prev",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 531,
+          "raw": "lkp-prev"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-preview-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 685,
+          "raw": "lkp-preview-${lkp.lkp_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-qc-aql",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 419,
+          "raw": "lkp-qc-aql"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-qc-sampling",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 428,
+          "raw": "lkp-qc-sampling"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-qc-tolerance",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 423,
+          "raw": "lkp-qc-tolerance"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-regenerate-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 697,
+          "raw": "lkp-regenerate-${lkp.lkp_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-row-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 667,
+          "raw": "lkp-row-${lkp.lkp_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-section",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 649,
+          "raw": "lkp-section"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-shift",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 324,
+          "raw": "lkp-shift"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-shift-target",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 337,
+          "raw": "lkp-shift-target"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-sop-acceptance-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 399,
+          "raw": "lkp-sop-acceptance-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-sop-defects-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 405,
+          "raw": "lkp-sop-defects-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-sop-safety-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 385,
+          "raw": "lkp-sop-safety-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-sop-steps-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 392,
+          "raw": "lkp-sop-steps-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-sop-tools-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 379,
+          "raw": "lkp-sop-tools-${i}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-special-notes",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 519,
+          "raw": "lkp-special-notes"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 76,
+          "raw": "lkp-step-${idx}"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-1-content",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 248,
+          "raw": "lkp-step-1-content"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-2-content",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 363,
+          "raw": "lkp-step-2-content"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-3-content",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 415,
+          "raw": "lkp-step-3-content"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-4-content",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 474,
+          "raw": "lkp-step-4-content"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-step-5-content",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 513,
+          "raw": "lkp-step-5-content"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-structure",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 270,
+          "raw": "lkp-structure"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-submit",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 540,
+          "raw": "lkp-submit"
+        }
+      ]
+    },
+    {
+      "prefix": "lkp-weight",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/LKPDialog.jsx",
+          "line": 266,
+          "raw": "lkp-weight"
+        }
+      ]
+    },
+    {
+      "prefix": "modal-close",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/Modal.jsx",
+          "line": 96,
+          "raw": "modal-close"
+        }
+      ]
+    },
+    {
+      "prefix": "print-lkp-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 899,
+          "raw": "print-lkp-${wo.wo_id}"
+        }
+      ]
+    },
+    {
+      "prefix": "rahaza-work-orders-page",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 289,
+          "raw": "rahaza-work-orders-page"
+        }
+      ]
+    },
+    {
+      "prefix": "testId",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/OnwardCTA.jsx",
+          "line": 38,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 571,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/DataTableV2.jsx",
+          "line": 582,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/moduleAtoms.jsx",
+          "line": 11,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/moduleAtoms.jsx",
+          "line": 65,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/moduleAtoms.jsx",
+          "line": 116,
+          "raw": "testId"
+        },
+        {
+          "file": "frontend/src/components/erp/moduleAtoms.jsx",
+          "line": 134,
+          "raw": "testId"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-add-btn",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 300,
+          "raw": "wo-add-btn"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-bundlegen-force",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 789,
+          "raw": "wo-bundlegen-force"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-bundlegen-modal",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 765,
+          "raw": "wo-bundlegen-modal"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-bundlegen-print",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 819,
+          "raw": "wo-bundlegen-print"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-bundlegen-submit",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 834,
+          "raw": "wo-bundlegen-submit"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-bundles-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 403,
+          "raw": "wo-bundles-${wo.wo_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-detail-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 396,
+          "raw": "wo-detail-${wo.wo_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-empty-cta-manual",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 386,
+          "raw": "wo-empty-cta-manual"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-empty-cta-orders",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 377,
+          "raw": "wo-empty-cta-orders"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-field-model",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 457,
+          "raw": "wo-field-model"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-field-order",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 445,
+          "raw": "wo-field-order"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-field-priority",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 483,
+          "raw": "wo-field-priority"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-field-qty",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 477,
+          "raw": "wo-field-qty"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-field-size",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 466,
+          "raw": "wo-field-size"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-form",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 437,
+          "raw": "wo-form"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-print-tickets-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 411,
+          "raw": "wo-print-tickets-${wo.wo_number}"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-save-btn",
+      "dynamic": false,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 506,
+          "raw": "wo-save-btn"
+        }
+      ]
+    },
+    {
+      "prefix": "wo-transition-",
+      "dynamic": true,
+      "evidence": [
+        {
+          "file": "frontend/src/components/erp/RahazaWorkOrdersModule.jsx",
+          "line": 638,
+          "raw": "wo-transition-${ns}"
+        }
+      ]
+    }
+  ],
+  "all_backend_paths": [
+    "",
+    "/accounting-status",
+    "/analytics",
+    "/api/accessories",
+    "/api/accessories/{}",
+    "/api/accessory-defects",
+    "/api/accessory-inspections",
+    "/api/accessory-requests",
+    "/api/accessory-requests/{}",
+    "/api/accessory-shipments",
+    "/api/accessory-shipments/{}",
+    "/api/activity-logs",
+    "/api/activity-logs/{}",
+    "/api/ai-business/daily-summary",
+    "/api/ai-business/daily-summary/history",
+    "/api/ai-business/fraud-detection",
+    "/api/ai-business/production-optimize",
+    "/api/ai-business/revenue-forecast",
+    "/api/ai/usage/budgets",
+    "/api/ai/usage/logs",
+    "/api/ai/usage/summary",
+    "/api/ai/usage/today",
+    "/api/analytics/ai/history",
+    "/api/analytics/ai/production/rca",
+    "/api/analytics/ai/qc/rca",
+    "/api/announcements",
+    "/api/announcements/active",
+    "/api/announcements/all",
+    "/api/announcements/{}",
+    "/api/announcements/{}/toggle",
+    "/api/approval-inbox/badge",
+    "/api/approvals/chains",
+    "/api/approvals/chains/{}",
+    "/api/approvals/pending",
+    "/api/approvals/requests",
+    "/api/approvals/requests/{}",
+    "/api/approvals/requests/{}/approve",
+    "/api/approvals/requests/{}/cancel",
+    "/api/approvals/requests/{}/reject",
+    "/api/approvals/seed-chains",
+    "/api/approvals/seed-missing-chains",
+    "/api/approvals/summary",
+    "/api/attachments",
+    "/api/attachments/{}",
+    "/api/attachments/{}/meta",
+    "/api/audit-logs",
+    "/api/auth/login",
+    "/api/auth/me",
+    "/api/auth/users",
+    "/api/buyers",
+    "/api/buyers/{}",
+    "/api/capacity/bottlenecks",
+    "/api/capacity/check-wo",
+    "/api/capacity/overview",
+    "/api/capacity/simulate",
+    "/api/capacity/utilization",
+    "/api/collab/activity-feed",
+    "/api/collab/notifications",
+    "/api/collab/notifications/mark-all-read",
+    "/api/collab/notifications/unread-count",
+    "/api/collab/notifications/{}",
+    "/api/collab/notifications/{}/read",
+    "/api/collab/search",
+    "/api/collab/search/link-preview",
+    "/api/collab/study-groups",
+    "/api/collab/study-groups/{}",
+    "/api/collab/study-groups/{}/members",
+    "/api/collab/study-groups/{}/members/{}",
+    "/api/company-settings",
+    "/api/dashboard",
+    "/api/dashboard/analytics",
+    "/api/dewi/accessory-requests",
+    "/api/dewi/accessory-requests/stats/summary",
+    "/api/dewi/accessory-requests/{}",
+    "/api/dewi/accessory-requests/{}/allocate",
+    "/api/dewi/accessory-requests/{}/deliver",
+    "/api/dewi/accessory-requests/{}/reject",
+    "/api/dewi/accessory-requests/{}/submit",
+    "/api/dewi/ai-actions",
+    "/api/dewi/ai-actions/stats",
+    "/api/dewi/ai-actions/{}",
+    "/api/dewi/assets",
+    "/api/dewi/assets/assignments",
+    "/api/dewi/assets/employee/{}",
+    "/api/dewi/assets/labels/bulk",
+    "/api/dewi/assets/{}",
+    "/api/dewi/assets/{}/assign",
+    "/api/dewi/assets/{}/label",
+    "/api/dewi/assets/{}/return",
+    "/api/dewi/client-portal/auth/change-password",
+    "/api/dewi/client-portal/auth/login",
+    "/api/dewi/client-portal/auth/me",
+    "/api/dewi/client-portal/badge-counts",
+    "/api/dewi/client-portal/dashboard",
+    "/api/dewi/client-portal/invoices",
+    "/api/dewi/client-portal/invoices/{}",
+    "/api/dewi/client-portal/invoices/{}/pdf",
+    "/api/dewi/client-portal/orders",
+    "/api/dewi/client-portal/orders/{}",
+    "/api/dewi/client-portal/orders/{}/qc",
+    "/api/dewi/client-portal/orders/{}/samples",
+    "/api/dewi/client-portal/profile",
+    "/api/dewi/client-portal/samples",
+    "/api/dewi/client-portal/samples/{}",
+    "/api/dewi/client-portal/samples/{}/approve",
+    "/api/dewi/client-portal/samples/{}/reject",
+    "/api/dewi/client-portal/samples/{}/revision",
+    "/api/dewi/client-portal/uploads",
+    "/api/dewi/cmt-component-requests",
+    "/api/dewi/cmt-component-requests/stats/summary",
+    "/api/dewi/cmt-component-requests/{}",
+    "/api/dewi/cmt-component-requests/{}/set-status",
+    "/api/dewi/cmt/lifecycle",
+    "/api/dewi/cmt/lifecycle/summary",
+    "/api/dewi/cmt/lifecycle/{}",
+    "/api/dewi/cutting/batches",
+    "/api/dewi/cutting/batches/{}",
+    "/api/dewi/cutting/batches/{}/reject-roll",
+    "/api/dewi/cutting/batches/{}/status",
+    "/api/dewi/cutting/requests",
+    "/api/dewi/cutting/requests/{}/approve",
+    "/api/dewi/cutting/requests/{}/reject",
+    "/api/dewi/cutting/summary",
+    "/api/dewi/hris/performance/assignments",
+    "/api/dewi/hris/performance/assignments/{}",
+    "/api/dewi/hris/performance/cycles",
+    "/api/dewi/hris/performance/cycles/{}",
+    "/api/dewi/hris/performance/kpis",
+    "/api/dewi/hris/performance/kpis/{}",
+    "/api/dewi/hris/performance/reviews",
+    "/api/dewi/hris/performance/reviews/{}",
+    "/api/dewi/hris/performance/reviews/{}/submit",
+    "/api/dewi/hris/performance/seed-demo",
+    "/api/dewi/hris/performance/summary",
+    "/api/dewi/kasbon/apply-payroll-deductions",
+    "/api/dewi/kasbon/employee/{}/deductions",
+    "/api/dewi/kasbon/my-requests",
+    "/api/dewi/kasbon/requests",
+    "/api/dewi/kasbon/requests/{}",
+    "/api/dewi/kasbon/requests/{}/cancel",
+    "/api/dewi/kasbon/requests/{}/disburse",
+    "/api/dewi/kasbon/requests/{}/hr-review",
+    "/api/dewi/kasbon/requests/{}/repay",
+    "/api/dewi/kasbon/seed",
+    "/api/dewi/kasbon/stats",
+    "/api/dewi/kpi/achievements/{}",
+    "/api/dewi/kpi/badges",
+    "/api/dewi/kpi/fairness/{}",
+    "/api/dewi/kpi/gamification/seed-demo",
+    "/api/dewi/kpi/gamification/summary",
+    "/api/dewi/kpi/goals",
+    "/api/dewi/kpi/goals/{}",
+    "/api/dewi/kpi/leaderboard",
+    "/api/dewi/kpi/leaderboard/{}",
+    "/api/dewi/kpi/monitor/{}",
+    "/api/dewi/kpi/my/achievements",
+    "/api/dewi/kpi/my/forms/{}",
+    "/api/dewi/kpi/my/periods",
+    "/api/dewi/kpi/my/result/{}",
+    "/api/dewi/kpi/my/results",
+    "/api/dewi/kpi/perform/{}",
+    "/api/dewi/kpi/perform/{}/bulk",
+    "/api/dewi/kpi/perform/{}/{}",
+    "/api/dewi/kpi/periods",
+    "/api/dewi/kpi/periods/{}",
+    "/api/dewi/kpi/questions",
+    "/api/dewi/kpi/questions/seed-defaults",
+    "/api/dewi/kpi/questions/{}",
+    "/api/dewi/kpi/reports/summary/{}",
+    "/api/dewi/kpi/results/{}",
+    "/api/dewi/kpi/results/{}/calculate",
+    "/api/dewi/kpi/results/{}/publish",
+    "/api/dewi/kpi/results/{}/{}/pdf",
+    "/api/dewi/kpi/stats",
+    "/api/dewi/kpi/submissions",
+    "/api/dewi/kpi/submissions/{}/{}",
+    "/api/dewi/kpi/trend",
+    "/api/dewi/kpi/trend/{}",
+    "/api/dewi/kreator-requests",
+    "/api/dewi/kreator-requests/stats/summary",
+    "/api/dewi/kreator-requests/{}",
+    "/api/dewi/kreator-requests/{}/approve-by-rnd",
+    "/api/dewi/kreator-requests/{}/mark-delivered",
+    "/api/dewi/kreator-requests/{}/mark-sample-ready",
+    "/api/dewi/kreator-requests/{}/reject",
+    "/api/dewi/kreator-requests/{}/submit",
+    "/api/dewi/lms/analytics",
+    "/api/dewi/lms/courses",
+    "/api/dewi/lms/courses/{}",
+    "/api/dewi/lms/courses/{}/enroll",
+    "/api/dewi/lms/courses/{}/materials",
+    "/api/dewi/lms/enrollments",
+    "/api/dewi/lms/enrollments/{}/certificate",
+    "/api/dewi/lms/enrollments/{}/progress",
+    "/api/dewi/lms/materials/{}",
+    "/api/dewi/lms/quizzes",
+    "/api/dewi/lms/quizzes/{}/submit",
+    "/api/dewi/lms/quizzes/{}/take",
+    "/api/dewi/lms/seed",
+    "/api/dewi/maklon/bom",
+    "/api/dewi/maklon/bom-templates",
+    "/api/dewi/maklon/bom-templates/apply-to-po",
+    "/api/dewi/maklon/bom-templates/{}",
+    "/api/dewi/maklon/bom-templates/{}/activate",
+    "/api/dewi/maklon/bom/{}",
+    "/api/dewi/maklon/buyer-catalog",
+    "/api/dewi/maklon/buyer-catalog/{}",
+    "/api/dewi/maklon/buyer-catalog/{}/check-drift",
+    "/api/dewi/maklon/buyer-catalog/{}/price-history",
+    "/api/dewi/maklon/buyer-catalog/{}/samples",
+    "/api/dewi/maklon/buyer-catalog/{}/toggle",
+    "/api/dewi/maklon/clients",
+    "/api/dewi/maklon/clients/{}",
+    "/api/dewi/maklon/clients/{}/portal-accounts/{}",
+    "/api/dewi/maklon/clients/{}/portal-accounts/{}/reset-password",
+    "/api/dewi/maklon/clients/{}/portal-accounts/{}/toggle",
+    "/api/dewi/maklon/clients/{}/portal-status",
+    "/api/dewi/maklon/clients/{}/provision-portal",
+    "/api/dewi/maklon/clients/{}/toggle",
+    "/api/dewi/maklon/dispatches",
+    "/api/dewi/maklon/dispatches/{}/cancel",
+    "/api/dewi/maklon/dispatches/{}/confirm",
+    "/api/dewi/maklon/finance/cmt-payments/{}/post-ap",
+    "/api/dewi/maklon/finance/pos/{}/advance-payment",
+    "/api/dewi/maklon/finance/pos/{}/post-ar",
+    "/api/dewi/maklon/hpp",
+    "/api/dewi/maklon/hpp/{}",
+    "/api/dewi/maklon/invoices",
+    "/api/dewi/maklon/invoices/generate",
+    "/api/dewi/maklon/invoices/{}",
+    "/api/dewi/maklon/invoices/{}/cancel",
+    "/api/dewi/maklon/invoices/{}/pdf",
+    "/api/dewi/maklon/material-receive",
+    "/api/dewi/maklon/material-receive/{}",
+    "/api/dewi/maklon/orders/{}/material-issues",
+    "/api/dewi/maklon/orders/{}/material-issues/{}",
+    "/api/dewi/maklon/orders/{}/production-detail",
+    "/api/dewi/maklon/orders/{}/stage-qty",
+    "/api/dewi/maklon/orders/{}/status",
+    "/api/dewi/maklon/payments",
+    "/api/dewi/maklon/payments/{}",
+    "/api/dewi/maklon/pos",
+    "/api/dewi/maklon/pos-summary",
+    "/api/dewi/maklon/pos/{}",
+    "/api/dewi/maklon/pos/{}/360",
+    "/api/dewi/maklon/pos/{}/cancel",
+    "/api/dewi/maklon/pos/{}/confirm",
+    "/api/dewi/maklon/pos/{}/dispatches",
+    "/api/dewi/maklon/pos/{}/timeline",
+    "/api/dewi/maklon/qc",
+    "/api/dewi/maklon/qc/by-order/{}",
+    "/api/dewi/maklon/qc/defect-pareto",
+    "/api/dewi/maklon/qc/summary/overview",
+    "/api/dewi/maklon/qc/{}",
+    "/api/dewi/maklon/reports/aging",
+    "/api/dewi/maklon/reports/billing-summary",
+    "/api/dewi/maklon/reports/monthly-billing",
+    "/api/dewi/maklon/samples",
+    "/api/dewi/maklon/samples/by-order/{}",
+    "/api/dewi/maklon/samples/summary/overview",
+    "/api/dewi/maklon/samples/{}",
+    "/api/dewi/maklon/samples/{}/approve",
+    "/api/dewi/maklon/samples/{}/reject",
+    "/api/dewi/maklon/samples/{}/revision",
+    "/api/dewi/maklon/samples/{}/submit",
+    "/api/dewi/maklon/summary",
+    "/api/dewi/notifications",
+    "/api/dewi/notifications/bulk-send",
+    "/api/dewi/notifications/manual",
+    "/api/dewi/notifications/provider-config",
+    "/api/dewi/notifications/provider-config/test",
+    "/api/dewi/notifications/scan-overdue",
+    "/api/dewi/notifications/summary",
+    "/api/dewi/notifications/{}",
+    "/api/dewi/notifications/{}/retry",
+    "/api/dewi/notifications/{}/send",
+    "/api/dewi/onboarding/analytics",
+    "/api/dewi/onboarding/checklists",
+    "/api/dewi/onboarding/checklists/{}",
+    "/api/dewi/onboarding/checklists/{}/tasks",
+    "/api/dewi/onboarding/checklists/{}/tasks/{}",
+    "/api/dewi/onboarding/seed",
+    "/api/dewi/onboarding/templates",
+    "/api/dewi/onboarding/templates/{}",
+    "/api/dewi/onboarding/templates/{}/tasks",
+    "/api/dewi/onboarding/templates/{}/tasks/{}",
+    "/api/dewi/org/chart",
+    "/api/dewi/org/headcount",
+    "/api/dewi/org/positions",
+    "/api/dewi/org/positions/{}",
+    "/api/dewi/org/seed",
+    "/api/dewi/org/units",
+    "/api/dewi/org/units/{}",
+    "/api/dewi/recruitment/analytics",
+    "/api/dewi/recruitment/candidates",
+    "/api/dewi/recruitment/candidates/{}",
+    "/api/dewi/recruitment/candidates/{}/interviews",
+    "/api/dewi/recruitment/candidates/{}/interviews/{}",
+    "/api/dewi/recruitment/candidates/{}/notes",
+    "/api/dewi/recruitment/candidates/{}/upload-cv",
+    "/api/dewi/recruitment/jobs",
+    "/api/dewi/recruitment/jobs/{}",
+    "/api/dewi/recruitment/pipeline",
+    "/api/dewi/recruitment/seed",
+    "/api/dewi/recruitment/talent-pool",
+    "/api/dewi/recruitment/talent-pool/stats",
+    "/api/dewi/recruitment/talent-pool/{}/notes",
+    "/api/dewi/recruitment/talent-pool/{}/toggle",
+    "/api/dewi/reports/actual-vs-target",
+    "/api/dewi/reports/daily",
+    "/api/dewi/reports/export/daily.csv",
+    "/api/dewi/reports/export/monthly.csv",
+    "/api/dewi/reports/maklon/client/{}/export.csv",
+    "/api/dewi/reports/maklon/client/{}/export.xlsx",
+    "/api/dewi/reports/monthly",
+    "/api/dewi/reports/po/{}",
+    "/api/dewi/reports/production-trend",
+    "/api/dewi/reports/production/po/{}/export.csv",
+    "/api/dewi/reports/production/po/{}/export.xlsx",
+    "/api/dewi/scheduler/jobs",
+    "/api/dewi/scheduler/jobs/{}/run-now",
+    "/api/dewi/scheduler/runs",
+    "/api/dewi/seed-demo-full",
+    "/api/dewi/system/config",
+    "/api/dewi/system/config/bulk",
+    "/api/dewi/system/config/categories",
+    "/api/dewi/system/config/{}",
+    "/api/dewi/toko/flashsales",
+    "/api/dewi/toko/flashsales/{}",
+    "/api/dewi/toko/flashsales/{}/activate",
+    "/api/dewi/toko/pack-batches",
+    "/api/dewi/toko/pack-batches/{}/close",
+    "/api/export-excel",
+    "/api/export-pdf",
+    "/api/files/{}",
+    "/api/finance/ai-cashflow",
+    "/api/finance/bank-recon/gl-entries",
+    "/api/finance/bank-recon/sessions",
+    "/api/finance/bank-recon/sessions/{}",
+    "/api/finance/bank-recon/sessions/{}/approve",
+    "/api/finance/bank-recon/sessions/{}/auto-match",
+    "/api/finance/bank-recon/sessions/{}/import-bulk",
+    "/api/finance/bank-recon/sessions/{}/import-csv",
+    "/api/finance/bank-recon/sessions/{}/match",
+    "/api/finance/bank-recon/sessions/{}/transactions",
+    "/api/finance/bank-recon/sessions/{}/transactions/{}",
+    "/api/finance/bank-recon/sessions/{}/unmatch",
+    "/api/finance/bank-recon/summary",
+    "/api/finance/bank-transfers",
+    "/api/finance/bank-transfers/{}",
+    "/api/finance/bank-transfers/{}/retry-posting",
+    "/api/finance/bank-transfers/{}/void",
+    "/api/finance/petty-cash/funds",
+    "/api/finance/petty-cash/funds/{}",
+    "/api/finance/petty-cash/funds/{}/close",
+    "/api/finance/petty-cash/funds/{}/replenish",
+    "/api/finance/petty-cash/transactions",
+    "/api/finance/petty-cash/transactions/{}/retry-posting",
+    "/api/financial-recap",
+    "/api/finishing/batches",
+    "/api/finishing/batches/{}",
+    "/api/finishing/batches/{}/mark-shipped",
+    "/api/finishing/batches/{}/progress",
+    "/api/finishing/dashboard",
+    "/api/finishing/ready-for-shipment",
+    "/api/fulfillment/inventory/available",
+    "/api/fulfillment/orders/{}",
+    "/api/fulfillment/orders/{}/allocate",
+    "/api/fulfillment/orders/{}/dispatch",
+    "/api/fulfillment/orders/{}/pack",
+    "/api/fulfillment/orders/{}/pick",
+    "/api/fulfillment/queue",
+    "/api/fulfillment/summary",
+    "/api/garments",
+    "/api/garments/{}",
+    "/api/global-search",
+    "/api/health",
+    "/api/hr/ai/attrition/dashboard",
+    "/api/hr/ai/attrition/predict",
+    "/api/hr/ai/coaching/history",
+    "/api/hr/ai/coaching/{}",
+    "/api/hr/ai/employees/list",
+    "/api/hr/ai/resume-screen/history",
+    "/api/hr/ai/resume-screen/{}",
+    "/api/hr/expenses/categories",
+    "/api/hr/expenses/claims",
+    "/api/hr/expenses/claims/bulk-approve",
+    "/api/hr/expenses/claims/export",
+    "/api/hr/expenses/claims/{}",
+    "/api/hr/expenses/claims/{}/approve",
+    "/api/hr/expenses/claims/{}/disburse",
+    "/api/hr/expenses/claims/{}/reject",
+    "/api/hr/expenses/claims/{}/submit",
+    "/api/hr/expenses/gl-mappings",
+    "/api/hr/expenses/gl-mappings/bulk-resolve",
+    "/api/hr/expenses/gl-mappings/resolve/{}",
+    "/api/hr/expenses/gl-mappings/seed-default",
+    "/api/hr/expenses/gl-mappings/{}",
+    "/api/hr/expenses/master-categories",
+    "/api/hr/expenses/master-categories/seed-default",
+    "/api/hr/expenses/master-categories/{}",
+    "/api/hr/expenses/my-summary",
+    "/api/hr/expenses/outstanding-advances",
+    "/api/hr/expenses/outstanding-advances/export",
+    "/api/hr/expenses/pending-approval",
+    "/api/hr/expenses/per-diem-rates",
+    "/api/hr/expenses/per-diem-rates/{}",
+    "/api/hr/expenses/settlement-summary",
+    "/api/hr/expenses/settlements",
+    "/api/hr/expenses/settlements/bulk-approve",
+    "/api/hr/expenses/settlements/bulk-post",
+    "/api/hr/expenses/settlements/export",
+    "/api/hr/expenses/settlements/{}",
+    "/api/hr/expenses/settlements/{}/approve",
+    "/api/hr/expenses/settlements/{}/post",
+    "/api/hr/expenses/settlements/{}/reject",
+    "/api/hr/expenses/settlements/{}/submit",
+    "/api/hr/expenses/summary",
+    "/api/hr/expenses/travel",
+    "/api/hr/expenses/travel/bulk-approve",
+    "/api/hr/expenses/travel/export",
+    "/api/hr/expenses/travel/{}",
+    "/api/hr/expenses/travel/{}/advance-paid",
+    "/api/hr/expenses/travel/{}/approve",
+    "/api/hr/expenses/travel/{}/complete",
+    "/api/hr/expenses/travel/{}/per-diem-calc",
+    "/api/hr/expenses/travel/{}/reject",
+    "/api/hr/expenses/travel/{}/settlements",
+    "/api/hr/expenses/travel/{}/submit",
+    "/api/hr/inbox",
+    "/api/hr/inbox/summary",
+    "/api/hr/inbox/{}/{}/approve",
+    "/api/hr/inbox/{}/{}/reject",
+    "/api/hr/job-board/applications",
+    "/api/hr/job-board/applications/my",
+    "/api/hr/job-board/applications/{}/status",
+    "/api/hr/job-board/career-paths",
+    "/api/hr/job-board/jobs",
+    "/api/hr/job-board/jobs/{}",
+    "/api/hr/job-board/jobs/{}/close",
+    "/api/hr/shift-scheduler/generate",
+    "/api/hr/shift-scheduler/schedules",
+    "/api/hr/shift-scheduler/schedules/{}",
+    "/api/hr/shift-scheduler/schedules/{}/publish",
+    "/api/hr/shift-scheduler/templates",
+    "/api/hr/shift-scheduler/templates/{}",
+    "/api/hr/shifts",
+    "/api/hr/shifts/assignments",
+    "/api/hr/shifts/assignments/employee/{}",
+    "/api/hr/shifts/assignments/{}",
+    "/api/hr/shifts/calculate-hours",
+    "/api/hr/shifts/employee/{}/active",
+    "/api/hr/shifts/employee/{}/on-date",
+    "/api/hr/shifts/seed-defaults",
+    "/api/hr/shifts/summary",
+    "/api/hr/shifts/{}",
+    "/api/hr/skill-gap/analyses",
+    "/api/hr/skill-gap/analyze/company",
+    "/api/hr/skill-gap/analyze/department",
+    "/api/hr/skill-gap/analyze/individual",
+    "/api/hr/skill-gap/departments",
+    "/api/hr/skill-gap/requirements",
+    "/api/import-data",
+    "/api/import-template",
+    "/api/invoice-edit-requests",
+    "/api/invoice-edit-requests/{}/approve",
+    "/api/invoice-edit-requests/{}/reject",
+    "/api/lms/student/assignments/{}/submit",
+    "/api/lms/student/catalog",
+    "/api/lms/student/certificates",
+    "/api/lms/student/courses/{}",
+    "/api/lms/student/courses/{}/assignments",
+    "/api/lms/student/courses/{}/enroll",
+    "/api/lms/student/courses/{}/progress",
+    "/api/lms/student/materials/{}/complete",
+    "/api/lms/student/my-courses",
+    "/api/lms/student/quiz/{}/submit",
+    "/api/maklon/ai-quote/generate",
+    "/api/maklon/ai-quote/history",
+    "/api/maklon/ai-quote/{}",
+    "/api/maklon/ai-quote/{}/accept",
+    "/api/maklon/sla/client/{}",
+    "/api/maklon/sla/dashboard",
+    "/api/maklon/sla/lead-time/estimate",
+    "/api/management/audit/permissions",
+    "/api/management/okr/dashboard",
+    "/api/management/okr/key-results/{}",
+    "/api/management/okr/objectives",
+    "/api/management/okr/objectives/{}",
+    "/api/management/okr/objectives/{}/key-results",
+    "/api/management/okr/periods",
+    "/api/management/weekly-digest",
+    "/api/marketing/accounts",
+    "/api/marketing/accounts/{}",
+    "/api/marketing/accounts/{}/dashboard",
+    "/api/marketing/accounts/{}/legacy-config",
+    "/api/marketing/accounts/{}/recalculate-health",
+    "/api/marketing/accounts/{}/sales",
+    "/api/marketing/accounts/{}/sync",
+    "/api/marketing/accounts/{}/sync-history",
+    "/api/marketing/ads/ai-recommendations",
+    "/api/marketing/ads/campaigns",
+    "/api/marketing/ads/performance-trend",
+    "/api/marketing/ads/summary",
+    "/api/marketing/advanced-ai/ab-tests",
+    "/api/marketing/advanced-ai/ab-tests/{}",
+    "/api/marketing/advanced-ai/ab-tests/{}/conclude",
+    "/api/marketing/advanced-ai/ab-tests/{}/record",
+    "/api/marketing/advanced-ai/ab-tests/{}/status",
+    "/api/marketing/advanced-ai/ab-tests/{}/variants/{}",
+    "/api/marketing/advanced-ai/churn/run",
+    "/api/marketing/advanced-ai/churn/scores",
+    "/api/marketing/advanced-ai/pricing/events",
+    "/api/marketing/advanced-ai/pricing/run",
+    "/api/marketing/advanced-ai/pricing/settings",
+    "/api/marketing/advanced-ai/pricing/suggestions",
+    "/api/marketing/advanced-ai/pricing/suggestions/{}/apply",
+    "/api/marketing/advanced-ai/pricing/suggestions/{}/approve",
+    "/api/marketing/advanced-ai/pricing/suggestions/{}/reject",
+    "/api/marketing/ai-content/generate-caption",
+    "/api/marketing/ai-content/generate-image",
+    "/api/marketing/ai-content/history",
+    "/api/marketing/ai-insights/forecast",
+    "/api/marketing/ai-insights/overview",
+    "/api/marketing/ai-insights/recommendations",
+    "/api/marketing/ai-insights/sentiment",
+    "/api/marketing/alerts/evaluate",
+    "/api/marketing/alerts/history",
+    "/api/marketing/alerts/preview",
+    "/api/marketing/alerts/settings",
+    "/api/marketing/auto-create-tasks/trigger",
+    "/api/marketing/catalogs",
+    "/api/marketing/catalogs/archive-legacy-items",
+    "/api/marketing/catalogs/fg-products",
+    "/api/marketing/catalogs/seed-demo",
+    "/api/marketing/catalogs/stock-dashboard",
+    "/api/marketing/catalogs/{}",
+    "/api/marketing/catalogs/{}/bulk-stock-update",
+    "/api/marketing/catalogs/{}/items",
+    "/api/marketing/catalogs/{}/items/from-fg",
+    "/api/marketing/catalogs/{}/items/{}",
+    "/api/marketing/catalogs/{}/items/{}/photos",
+    "/api/marketing/catalogs/{}/items/{}/photos/remove",
+    "/api/marketing/catalogs/{}/items/{}/stock",
+    "/api/marketing/catalogs/{}/items/{}/sync-fg-stock",
+    "/api/marketing/catalogs/{}/low-stock",
+    "/api/marketing/catalogs/{}/stock-history",
+    "/api/marketing/catalogs/{}/sync-from-wms",
+    "/api/marketing/complaints",
+    "/api/marketing/complaints/summary",
+    "/api/marketing/complaints/{}",
+    "/api/marketing/complaints/{}/ai-classify",
+    "/api/marketing/complaints/{}/notes",
+    "/api/marketing/complaints/{}/status",
+    "/api/marketing/content-calendar",
+    "/api/marketing/content-calendar/monthly",
+    "/api/marketing/content-calendar/platforms",
+    "/api/marketing/content-calendar/summary",
+    "/api/marketing/content-calendar/types",
+    "/api/marketing/content-calendar/{}",
+    "/api/marketing/content-calendar/{}/ai-hook",
+    "/api/marketing/content-calendar/{}/status",
+    "/api/marketing/dashboard/comparison",
+    "/api/marketing/dashboard/overview",
+    "/api/marketing/dashboard/toko-overview",
+    "/api/marketing/discounts",
+    "/api/marketing/discounts/summary",
+    "/api/marketing/discounts/types",
+    "/api/marketing/discounts/{}",
+    "/api/marketing/health/accounts",
+    "/api/marketing/health/manual-snapshot",
+    "/api/marketing/health/ocr-screenshot",
+    "/api/marketing/health/summary",
+    "/api/marketing/health/timeline",
+    "/api/marketing/import-templates",
+    "/api/marketing/import-templates/{}",
+    "/api/marketing/import/history",
+    "/api/marketing/import/sessions",
+    "/api/marketing/import/sessions/{}",
+    "/api/marketing/import/sessions/{}/ai-assist",
+    "/api/marketing/import/sessions/{}/bulk-edit",
+    "/api/marketing/import/sessions/{}/cells",
+    "/api/marketing/import/sessions/{}/commit",
+    "/api/marketing/import/sessions/{}/lock",
+    "/api/marketing/import/sessions/{}/rollback",
+    "/api/marketing/import/templates",
+    "/api/marketing/import/upload",
+    "/api/marketing/import/{}",
+    "/api/marketing/import/{}/analyze",
+    "/api/marketing/import/{}/apply-template/{}",
+    "/api/marketing/import/{}/execute",
+    "/api/marketing/import/{}/mapping",
+    "/api/marketing/import/{}/preview",
+    "/api/marketing/import/{}/rollback",
+    "/api/marketing/integration-settings",
+    "/api/marketing/integration-settings/meta",
+    "/api/marketing/integration-settings/{}",
+    "/api/marketing/integration-settings/{}/test",
+    "/api/marketing/kol-leaderboard",
+    "/api/marketing/kol-leaderboard/{}/detail",
+    "/api/marketing/live/analytics/account-health",
+    "/api/marketing/live/analytics/host-leaderboard",
+    "/api/marketing/live/analytics/overview",
+    "/api/marketing/live/analytics/platform-breakdown",
+    "/api/marketing/live/analytics/product-performance",
+    "/api/marketing/live/analytics/revenue-trend",
+    "/api/marketing/live/analytics/sessions-comparison",
+    "/api/marketing/live/performance-trend",
+    "/api/marketing/live/sessions",
+    "/api/marketing/live/summary",
+    "/api/marketing/livehost",
+    "/api/marketing/livehost/analytics/host-performance",
+    "/api/marketing/livehost/analytics/shift-analysis",
+    "/api/marketing/livehost/clock",
+    "/api/marketing/livehost/payment/calculate",
+    "/api/marketing/livehost/payment/status",
+    "/api/marketing/livehost/payment/sync-to-finance",
+    "/api/marketing/livehost/portal/auth/login",
+    "/api/marketing/livehost/portal/clock",
+    "/api/marketing/livehost/portal/my-profile",
+    "/api/marketing/livehost/portal/my-shifts",
+    "/api/marketing/livehost/portal/notifications",
+    "/api/marketing/livehost/portal/notifications/mark-all-read",
+    "/api/marketing/livehost/portal/notifications/stream",
+    "/api/marketing/livehost/portal/notifications/{}/read",
+    "/api/marketing/livehost/portal/scripts",
+    "/api/marketing/livehost/portal/training",
+    "/api/marketing/livehost/portal/training/{}/complete",
+    "/api/marketing/livehost/scripts",
+    "/api/marketing/livehost/scripts/{}",
+    "/api/marketing/livehost/shifts",
+    "/api/marketing/livehost/shifts/calendar",
+    "/api/marketing/livehost/shifts/{}",
+    "/api/marketing/livehost/shifts/{}/performance",
+    "/api/marketing/livehost/sop/download",
+    "/api/marketing/livehost/training",
+    "/api/marketing/livehost/training/assign",
+    "/api/marketing/livehost/training/progress",
+    "/api/marketing/livehost/training/progress/{}/complete",
+    "/api/marketing/livehost/training/{}",
+    "/api/marketing/livehost/{}",
+    "/api/marketing/orders",
+    "/api/marketing/orders/bulk-status",
+    "/api/marketing/orders/picking-list",
+    "/api/marketing/orders/summary",
+    "/api/marketing/orders/{}",
+    "/api/marketing/orders/{}/status",
+    "/api/marketing/performance/overview",
+    "/api/marketing/performance/top-products",
+    "/api/marketing/product-launches",
+    "/api/marketing/product-launches/summary",
+    "/api/marketing/product-launches/{}",
+    "/api/marketing/product-launches/{}/status",
+    "/api/marketing/reports/admin/migrate-seed-accounts",
+    "/api/marketing/reports/daily",
+    "/api/marketing/reports/monthly",
+    "/api/marketing/reports/monthly/export-pdf",
+    "/api/marketing/returns",
+    "/api/marketing/returns/credit-notes",
+    "/api/marketing/returns/credit-notes/{}",
+    "/api/marketing/returns/credit-notes/{}/post-to-gl",
+    "/api/marketing/returns/reasons",
+    "/api/marketing/returns/summary",
+    "/api/marketing/returns/{}",
+    "/api/marketing/returns/{}/approve",
+    "/api/marketing/returns/{}/complete",
+    "/api/marketing/returns/{}/create-credit-note",
+    "/api/marketing/returns/{}/reject",
+    "/api/marketing/reviews",
+    "/api/marketing/reviews/categories",
+    "/api/marketing/reviews/platforms",
+    "/api/marketing/reviews/summary",
+    "/api/marketing/reviews/{}",
+    "/api/marketing/reviews/{}/ai-categorize",
+    "/api/marketing/reviews/{}/respond",
+    "/api/marketing/sales-data",
+    "/api/marketing/sales-data/generate-ar-batch",
+    "/api/marketing/samples",
+    "/api/marketing/samples/summary",
+    "/api/marketing/samples/{}",
+    "/api/marketing/samples/{}/deliver",
+    "/api/marketing/samples/{}/ship",
+    "/api/marketing/samples/{}/update-progress",
+    "/api/marketing/seed-sample-data",
+    "/api/marketing/targets",
+    "/api/marketing/targets/creator",
+    "/api/marketing/targets/creator/export-pdf",
+    "/api/marketing/targets/creator/monthly-summary",
+    "/api/marketing/targets/monthly-summary",
+    "/api/marketing/task-templates",
+    "/api/marketing/task-templates/{}",
+    "/api/marketing/tasks",
+    "/api/marketing/tasks-stats",
+    "/api/marketing/tasks/{}",
+    "/api/marketing/tasks/{}/approve",
+    "/api/marketing/tasks/{}/complete-action",
+    "/api/marketing/tasks/{}/reject",
+    "/api/marketing/webhooks/events",
+    "/api/marketing/webhooks/events/{}",
+    "/api/marketing/webhooks/events/{}/reprocess",
+    "/api/marketing/webhooks/manual",
+    "/api/marketing/webhooks/shopee",
+    "/api/marketing/webhooks/stats",
+    "/api/marketing/webhooks/tiktok",
+    "/api/marketing/webhooks/tokopedia",
+    "/api/metrics",
+    "/api/notifications",
+    "/api/notifications/mark-all-read",
+    "/api/notifications/stream",
+    "/api/notifications/trigger/wo-due-scan",
+    "/api/notifications/unified",
+    "/api/notifications/unified/mark-all-read",
+    "/api/notifications/unified/stats",
+    "/api/notifications/unified/{}/mark-read",
+    "/api/notifications/unread-count",
+    "/api/notifications/{}/read",
+    "/api/payroll/automation/alerts",
+    "/api/payroll/automation/attendance-sync",
+    "/api/payroll/automation/dashboard",
+    "/api/payroll/automation/history",
+    "/api/payroll/automation/schedule",
+    "/api/payroll/automation/trigger",
+    "/api/pdf-export-columns",
+    "/api/pdf-export-configs",
+    "/api/pdf-export-configs/{}",
+    "/api/permissions",
+    "/api/po-accessories",
+    "/api/po-accessories/{}",
+    "/api/po-items",
+    "/api/po-items-produced",
+    "/api/po-items/{}",
+    "/api/portal-saya/annual-review",
+    "/api/portal-saya/career-coach/chat",
+    "/api/portal-saya/career-coach/chat/history",
+    "/api/portal-saya/career-coach/generate-report",
+    "/api/portal-saya/career-coach/profile",
+    "/api/portal-saya/career-coach/reports",
+    "/api/portal-saya/documents",
+    "/api/portal-saya/documents/{}",
+    "/api/portal-saya/me/employee",
+    "/api/portal-saya/me/leave-balance",
+    "/api/portal-saya/me/leaves",
+    "/api/portal-saya/me/payslips",
+    "/api/portal-saya/peer-feedback",
+    "/api/portal-saya/peer-feedback/given",
+    "/api/portal-saya/peer-feedback/received",
+    "/api/portal-saya/peers",
+    "/api/procurement/dashboard",
+    "/api/procurement/inbox",
+    "/api/procurement/request-types",
+    "/api/procurement/requests",
+    "/api/procurement/requests/{}",
+    "/api/procurement/requests/{}/approve",
+    "/api/procurement/requests/{}/cancel",
+    "/api/procurement/requests/{}/complete",
+    "/api/procurement/requests/{}/create-po",
+    "/api/procurement/requests/{}/reject",
+    "/api/procurement/requests/{}/submit",
+    "/api/procurement/requests/{}/timeline",
+    "/api/prod/cmt-receipts",
+    "/api/prod/cmt-receipts/summary",
+    "/api/prod/cmt-receipts/{}",
+    "/api/prod/cmt-receipts/{}/approve",
+    "/api/prod/cmt-receipts/{}/lines",
+    "/api/prod/cmt-receipts/{}/lines/{}",
+    "/api/prod/cmt-receipts/{}/reject",
+    "/api/prod/cmt-receipts/{}/submit",
+    "/api/prod/control-tower",
+    "/api/prod/control-tower/alerts",
+    "/api/prod/control-tower/wo-list",
+    "/api/prod/display-rak",
+    "/api/prod/material-summary-by-location",
+    "/api/product-variants",
+    "/api/product-variants/{}",
+    "/api/production-pos",
+    "/api/production-pos/{}",
+    "/api/production-pos/{}/close",
+    "/api/production-pos/{}/quantity-summary",
+    "/api/production-pos/{}/stage-qty",
+    "/api/production-pos/{}/stage-summary",
+    "/api/production-pos/{}/status",
+    "/api/production/material-returns",
+    "/api/production/material-returns/summary",
+    "/api/production/material-returns/{}",
+    "/api/production/material-returns/{}/approve",
+    "/api/production/material-returns/{}/receive",
+    "/api/production/material-returns/{}/reject",
+    "/api/production/material-returns/{}/submit",
+    "/api/production/predictive-maintenance/dashboard",
+    "/api/production/predictive-maintenance/machines",
+    "/api/production/predictive-maintenance/machines/{}/health",
+    "/api/production/predictive-maintenance/machines/{}/predict",
+    "/api/production/predictive-maintenance/maintenance-logs",
+    "/api/production/predictive-maintenance/maintenance-logs/{}",
+    "/api/products",
+    "/api/products/{}",
+    "/api/products/{}/photo",
+    "/api/products/{}/photo-stream",
+    "/api/push/send",
+    "/api/push/status",
+    "/api/push/subscribe",
+    "/api/push/test",
+    "/api/push/unsubscribe",
+    "/api/push/vapid-public-key",
+    "/api/qc/analytics/rework-by-operator",
+    "/api/qc/dashboard",
+    "/api/qc/defect-types",
+    "/api/qc/inspections",
+    "/api/qc/inspections/{}",
+    "/api/rahaza/360-feedback/cycles",
+    "/api/rahaza/360-feedback/cycles/{}",
+    "/api/rahaza/360-feedback/cycles/{}/close",
+    "/api/rahaza/360-feedback/cycles/{}/submit",
+    "/api/rahaza/3way-match",
+    "/api/rahaza/3way-match/{}",
+    "/api/rahaza/admin/migrate-stock-nulls",
+    "/api/rahaza/ai/chat",
+    "/api/rahaza/ai/daily-summary",
+    "/api/rahaza/ai/history",
+    "/api/rahaza/ai/predictive-delay",
+    "/api/rahaza/ai/root-cause",
+    "/api/rahaza/ai/smart-search",
+    "/api/rahaza/alerts/evaluate",
+    "/api/rahaza/alerts/preview",
+    "/api/rahaza/alerts/settings",
+    "/api/rahaza/andon",
+    "/api/rahaza/andon/active",
+    "/api/rahaza/andon/history",
+    "/api/rahaza/andon/settings",
+    "/api/rahaza/andon/{}/ack",
+    "/api/rahaza/andon/{}/cancel",
+    "/api/rahaza/andon/{}/resolve",
+    "/api/rahaza/ap-aging",
+    "/api/rahaza/ap-invoices",
+    "/api/rahaza/ap-invoices/from-gr",
+    "/api/rahaza/ap-invoices/{}/payment",
+    "/api/rahaza/ap-invoices/{}/post-to-gl",
+    "/api/rahaza/ap-invoices/{}/send",
+    "/api/rahaza/ap-invoices/{}/status",
+    "/api/rahaza/aps/auto-schedule/commit",
+    "/api/rahaza/aps/auto-schedule/preview",
+    "/api/rahaza/aps/auto-schedule/rollback",
+    "/api/rahaza/aps/auto-schedule/runs",
+    "/api/rahaza/aps/auto-schedule/runs/{}",
+    "/api/rahaza/aps/gantt",
+    "/api/rahaza/aps/smv",
+    "/api/rahaza/aps/smv/override",
+    "/api/rahaza/aps/smv/recompute",
+    "/api/rahaza/aps/wo/{}",
+    "/api/rahaza/aps/wo/{}/reschedule",
+    "/api/rahaza/aql/calculate",
+    "/api/rahaza/aql/reference",
+    "/api/rahaza/ar-360/aging",
+    "/api/rahaza/ar-360/customer/{}/statement",
+    "/api/rahaza/ar-360/customers",
+    "/api/rahaza/ar-360/dashboard",
+    "/api/rahaza/ar-aging",
+    "/api/rahaza/ar-invoices",
+    "/api/rahaza/ar-invoices/overdue-report",
+    "/api/rahaza/ar-invoices/{}/payment",
+    "/api/rahaza/ar-invoices/{}/post-to-gl",
+    "/api/rahaza/ar-invoices/{}/send",
+    "/api/rahaza/ar-invoices/{}/status",
+    "/api/rahaza/ar-invoices/{}/write-off-bad-debt",
+    "/api/rahaza/attendance",
+    "/api/rahaza/attendance/bulk",
+    "/api/rahaza/attendance/clock-in",
+    "/api/rahaza/attendance/clock-out",
+    "/api/rahaza/attendance/grid",
+    "/api/rahaza/attendance/my-today",
+    "/api/rahaza/attendance/office-location",
+    "/api/rahaza/attendance/summary",
+    "/api/rahaza/backlog",
+    "/api/rahaza/backlog/escalate/{}",
+    "/api/rahaza/boms",
+    "/api/rahaza/boms/versions",
+    "/api/rahaza/boms/{}",
+    "/api/rahaza/boms/{}/activate",
+    "/api/rahaza/boms/{}/copy-to-sizes",
+    "/api/rahaza/boms/{}/requirements",
+    "/api/rahaza/cash-accounts",
+    "/api/rahaza/cash-accounts/{}",
+    "/api/rahaza/cash-movements",
+    "/api/rahaza/channel-gl-mapping",
+    "/api/rahaza/channel-gl-mapping/seed-da",
+    "/api/rahaza/channel-gl-mapping/{}",
+    "/api/rahaza/coa/accounts",
+    "/api/rahaza/coa/accounts/{}",
+    "/api/rahaza/coa/seed",
+    "/api/rahaza/coa/seed-da",
+    "/api/rahaza/coa/tree",
+    "/api/rahaza/cost-centers",
+    "/api/rahaza/cost-centers/{}",
+    "/api/rahaza/costing-settings",
+    "/api/rahaza/customers",
+    "/api/rahaza/customers/{}",
+    "/api/rahaza/defect-codes",
+    "/api/rahaza/defect-codes/seed",
+    "/api/rahaza/defect-codes/{}",
+    "/api/rahaza/delegations",
+    "/api/rahaza/delegations/{}",
+    "/api/rahaza/downtime",
+    "/api/rahaza/downtime/reason-codes",
+    "/api/rahaza/downtime/summary",
+    "/api/rahaza/downtime/{}",
+    "/api/rahaza/employees",
+    "/api/rahaza/employees/auto-link-users",
+    "/api/rahaza/employees/sync-user-employee-ids",
+    "/api/rahaza/employees/{}",
+    "/api/rahaza/employees/{}/documents",
+    "/api/rahaza/employees/{}/link-user",
+    "/api/rahaza/employees/{}/photo",
+    "/api/rahaza/execution/flow-summary",
+    "/api/rahaza/execution/my-work",
+    "/api/rahaza/execution/process/{}/board",
+    "/api/rahaza/execution/qc-event",
+    "/api/rahaza/execution/quick-output",
+    "/api/rahaza/execution/recent-events",
+    "/api/rahaza/execution/rework-event",
+    "/api/rahaza/execution/simple-input",
+    "/api/rahaza/execution/simple-input/history",
+    "/api/rahaza/execution/simple-input/{}",
+    "/api/rahaza/expenses",
+    "/api/rahaza/expenses/{}/post-to-gl",
+    "/api/rahaza/expiring-contracts",
+    "/api/rahaza/fg-matrix",
+    "/api/rahaza/fg-matrix/allocate",
+    "/api/rahaza/fg-matrix/cell-detail/{}",
+    "/api/rahaza/fg-matrix/models",
+    "/api/rahaza/fg-matrix/release/{}",
+    "/api/rahaza/fg-matrix/reservations",
+    "/api/rahaza/fg-matrix/seed-demo",
+    "/api/rahaza/finance-summary",
+    "/api/rahaza/finance/accruals",
+    "/api/rahaza/finance/accruals/create-recurring",
+    "/api/rahaza/finance/accruals/recurring-templates",
+    "/api/rahaza/finance/accruals/{}",
+    "/api/rahaza/finance/accruals/{}/post",
+    "/api/rahaza/finance/accruals/{}/reverse",
+    "/api/rahaza/finance/bank-recon-adjustments",
+    "/api/rahaza/finance/bank-recon-adjustments/{}",
+    "/api/rahaza/finance/bank-recon-adjustments/{}/post",
+    "/api/rahaza/finance/budget-summary",
+    "/api/rahaza/finance/budgets",
+    "/api/rahaza/finance/budgets/{}",
+    "/api/rahaza/finance/budgets/{}/approve",
+    "/api/rahaza/finance/budgets/{}/import-excel",
+    "/api/rahaza/finance/budgets/{}/items",
+    "/api/rahaza/finance/budgets/{}/items/{}",
+    "/api/rahaza/finance/budgets/{}/lock",
+    "/api/rahaza/finance/budgets/{}/reopen",
+    "/api/rahaza/finance/budgets/{}/variance",
+    "/api/rahaza/finance/fixed-assets",
+    "/api/rahaza/finance/fixed-assets-summary",
+    "/api/rahaza/finance/fixed-assets/depreciation-due",
+    "/api/rahaza/finance/fixed-assets/depreciation-summary",
+    "/api/rahaza/finance/fixed-assets/run-batch-depreciation",
+    "/api/rahaza/finance/fixed-assets/{}",
+    "/api/rahaza/finance/fixed-assets/{}/dispose",
+    "/api/rahaza/finance/fixed-assets/{}/post-depr/{}",
+    "/api/rahaza/finance/fixed-assets/{}/schedule",
+    "/api/rahaza/finance/reports/balance-sheet",
+    "/api/rahaza/finance/reports/cash-flow",
+    "/api/rahaza/finance/reports/general-ledger",
+    "/api/rahaza/finance/reports/journal-list",
+    "/api/rahaza/finance/reports/profit-loss",
+    "/api/rahaza/finance/reports/trial-balance",
+    "/api/rahaza/grn-qc/aql/calculate",
+    "/api/rahaza/grn-qc/grn-inspections",
+    "/api/rahaza/grn-qc/grn-inspections/{}",
+    "/api/rahaza/grn-qc/inspect/{}",
+    "/api/rahaza/grn-qc/reject-categories",
+    "/api/rahaza/grn-qc/seed-demo",
+    "/api/rahaza/grn-qc/supplier-scorecard",
+    "/api/rahaza/grn-qc/supplier-scorecard/{}",
+    "/api/rahaza/grs/available-for-invoice",
+    "/api/rahaza/handover-templates",
+    "/api/rahaza/handover-templates/seed-default",
+    "/api/rahaza/handover-templates/{}",
+    "/api/rahaza/hpp/maklon-client/{}",
+    "/api/rahaza/hpp/maklon-order/{}",
+    "/api/rahaza/hpp/maklon-order/{}/snapshot",
+    "/api/rahaza/hpp/production-po/{}",
+    "/api/rahaza/hpp/production-po/{}/snapshot",
+    "/api/rahaza/hpp/snapshots",
+    "/api/rahaza/hpp/snapshots/maklon",
+    "/api/rahaza/hpp/snapshots/po",
+    "/api/rahaza/hpp/work-order/{}",
+    "/api/rahaza/hpp/work-order/{}/snapshot",
+    "/api/rahaza/hr-seed/run",
+    "/api/rahaza/hr-seed/seed-connected",
+    "/api/rahaza/hr-seed/seed-kpi",
+    "/api/rahaza/hr/dashboard",
+    "/api/rahaza/hr/employee-loans",
+    "/api/rahaza/hr/employee-loans/disburse",
+    "/api/rahaza/hr/employee-loans/outstanding-by-employee/{}",
+    "/api/rahaza/hr/employee-loans/{}",
+    "/api/rahaza/hr/employee-loans/{}/deduct-from-payroll",
+    "/api/rahaza/hr/employee-loans/{}/repay",
+    "/api/rahaza/hr/reports/attendance-summary",
+    "/api/rahaza/hr/reports/attendance-summary.xlsx",
+    "/api/rahaza/hr/reports/attendance-validation",
+    "/api/rahaza/hr/reports/overtime-summary",
+    "/api/rahaza/hr/reports/overtime-summary.xlsx",
+    "/api/rahaza/hr/reports/payroll-summary",
+    "/api/rahaza/hr/reports/payroll-summary.xlsx",
+    "/api/rahaza/hr/reports/turnover",
+    "/api/rahaza/hr/reports/turnover.xlsx",
+    "/api/rahaza/integration-settings",
+    "/api/rahaza/integration-settings/test/{}",
+    "/api/rahaza/integration-settings/{}",
+    "/api/rahaza/journals",
+    "/api/rahaza/journals/{}",
+    "/api/rahaza/journals/{}/post",
+    "/api/rahaza/journals/{}/void",
+    "/api/rahaza/leave-balances",
+    "/api/rahaza/leave-balances/allocate-year",
+    "/api/rahaza/leave-balances/my",
+    "/api/rahaza/leave-balances/{}",
+    "/api/rahaza/leave-types",
+    "/api/rahaza/leave-types/{}",
+    "/api/rahaza/leaves",
+    "/api/rahaza/leaves/balance",
+    "/api/rahaza/leaves/bulk-approve",
+    "/api/rahaza/leaves/request",
+    "/api/rahaza/leaves/upload-document",
+    "/api/rahaza/leaves/working-days",
+    "/api/rahaza/leaves/{}",
+    "/api/rahaza/leaves/{}/approve",
+    "/api/rahaza/leaves/{}/cancel",
+    "/api/rahaza/leaves/{}/reject",
+    "/api/rahaza/line-assignments",
+    "/api/rahaza/line-assignments/{}",
+    "/api/rahaza/line-board",
+    "/api/rahaza/lines",
+    "/api/rahaza/lines/{}",
+    "/api/rahaza/lkp",
+    "/api/rahaza/lkp-bulk-today",
+    "/api/rahaza/lkp/{}",
+    "/api/rahaza/lkp/{}/pdf",
+    "/api/rahaza/lkp/{}/photos",
+    "/api/rahaza/lkp/{}/photos/{}",
+    "/api/rahaza/lkp/{}/regenerate",
+    "/api/rahaza/locations",
+    "/api/rahaza/locations/{}",
+    "/api/rahaza/machines",
+    "/api/rahaza/machines/{}",
+    "/api/rahaza/management/daily-output",
+    "/api/rahaza/management/on-time-delivery",
+    "/api/rahaza/management/overview",
+    "/api/rahaza/management/payroll-summary",
+    "/api/rahaza/management/top-customers",
+    "/api/rahaza/management/top-models",
+    "/api/rahaza/material-reservations",
+    "/api/rahaza/materials/reservation/{}",
+    "/api/rahaza/materials/reserve",
+    "/api/rahaza/materials/{}/availability",
+    "/api/rahaza/materials/{}/reservations",
+    "/api/rahaza/models",
+    "/api/rahaza/models/{}",
+    "/api/rahaza/models/{}/bom",
+    "/api/rahaza/models/{}/images",
+    "/api/rahaza/monitoring/alerts",
+    "/api/rahaza/monitoring/line/{}/detail",
+    "/api/rahaza/monitoring/live-status",
+    "/api/rahaza/next-actions",
+    "/api/rahaza/oee/daily",
+    "/api/rahaza/oee/line/{}",
+    "/api/rahaza/oee/summary",
+    "/api/rahaza/orders",
+    "/api/rahaza/orders-statuses",
+    "/api/rahaza/orders/{}",
+    "/api/rahaza/orders/{}/generate-work-orders",
+    "/api/rahaza/orders/{}/status",
+    "/api/rahaza/overtime",
+    "/api/rahaza/overtime/summary",
+    "/api/rahaza/overtime/{}",
+    "/api/rahaza/overtime/{}/approve",
+    "/api/rahaza/overtime/{}/reject",
+    "/api/rahaza/payroll-allowances",
+    "/api/rahaza/payroll-allowances/{}",
+    "/api/rahaza/payroll-profiles",
+    "/api/rahaza/payroll-profiles/{}",
+    "/api/rahaza/payroll-runs",
+    "/api/rahaza/payroll-runs/{}",
+    "/api/rahaza/payroll-runs/{}/export-excel",
+    "/api/rahaza/payroll-runs/{}/finalize",
+    "/api/rahaza/payroll-runs/{}/pay",
+    "/api/rahaza/payroll-runs/{}/pay-bpjs",
+    "/api/rahaza/payroll-runs/{}/pay-pph21",
+    "/api/rahaza/payroll-runs/{}/pdf",
+    "/api/rahaza/payroll-runs/{}/post-to-gl",
+    "/api/rahaza/payroll-runs/{}/retry-post",
+    "/api/rahaza/payroll-runs/{}/void-payment",
+    "/api/rahaza/payslips",
+    "/api/rahaza/payslips/{}",
+    "/api/rahaza/payslips/{}/pdf",
+    "/api/rahaza/periods",
+    "/api/rahaza/periods/ensure-year",
+    "/api/rahaza/periods/{}/close",
+    "/api/rahaza/periods/{}/lock",
+    "/api/rahaza/periods/{}/reopen",
+    "/api/rahaza/posting-profiles",
+    "/api/rahaza/posting-profiles/seed",
+    "/api/rahaza/posting-profiles/seed-da",
+    "/api/rahaza/posting-profiles/{}",
+    "/api/rahaza/processes",
+    "/api/rahaza/processes/{}",
+    "/api/rahaza/production-calendar",
+    "/api/rahaza/production-calendar/seed-national",
+    "/api/rahaza/production-calendar/working-days",
+    "/api/rahaza/production-calendar/{}",
+    "/api/rahaza/purchase-orders",
+    "/api/rahaza/purchase-orders/bulk-import",
+    "/api/rahaza/purchase-orders/{}",
+    "/api/rahaza/purchase-orders/{}/approve",
+    "/api/rahaza/purchase-orders/{}/cancel",
+    "/api/rahaza/purchase-orders/{}/create-gr",
+    "/api/rahaza/purchase-orders/{}/grs",
+    "/api/rahaza/purchase-orders/{}/reject",
+    "/api/rahaza/purchase-orders/{}/remaining",
+    "/api/rahaza/purchase-orders/{}/submit",
+    "/api/rahaza/qc-events",
+    "/api/rahaza/qc/fpy",
+    "/api/rahaza/qc/pareto",
+    "/api/rahaza/qc/summary",
+    "/api/rahaza/reports/{}",
+    "/api/rahaza/resignation/accept/{}",
+    "/api/rahaza/resignation/clearance/{}",
+    "/api/rahaza/resignation/exit-interview/{}",
+    "/api/rahaza/resignation/list",
+    "/api/rahaza/resignation/submit/{}",
+    "/api/rahaza/rework/bundle/{}/close-manual",
+    "/api/rahaza/rework/open",
+    "/api/rahaza/rework/settings",
+    "/api/rahaza/rework/summary",
+    "/api/rahaza/rework/work-order/{}/guard",
+    "/api/rahaza/salary-adjustments",
+    "/api/rahaza/salary-adjustments/generate-from-kpi/{}",
+    "/api/rahaza/salary-adjustments/my/pending-approvals",
+    "/api/rahaza/salary-adjustments/stats/summary",
+    "/api/rahaza/salary-adjustments/{}",
+    "/api/rahaza/salary-adjustments/{}/approve-hr",
+    "/api/rahaza/salary-adjustments/{}/approve-manager",
+    "/api/rahaza/salary-adjustments/{}/reject",
+    "/api/rahaza/salary-grades",
+    "/api/rahaza/salary-grades/audit",
+    "/api/rahaza/salary-grades/{}",
+    "/api/rahaza/seed-demo",
+    "/api/rahaza/self/admin/link-employee",
+    "/api/rahaza/self/attendance",
+    "/api/rahaza/self/payslip/{}",
+    "/api/rahaza/self/payslips",
+    "/api/rahaza/self/profile",
+    "/api/rahaza/setup/dismiss",
+    "/api/rahaza/setup/reset",
+    "/api/rahaza/setup/seed-sample",
+    "/api/rahaza/setup/skip",
+    "/api/rahaza/setup/status",
+    "/api/rahaza/shift-handovers",
+    "/api/rahaza/shift-handovers/latest",
+    "/api/rahaza/shift-handovers/today",
+    "/api/rahaza/shift-handovers/{}",
+    "/api/rahaza/shift-handovers/{}/pdf",
+    "/api/rahaza/shift-handovers/{}/sign-off",
+    "/api/rahaza/shifts",
+    "/api/rahaza/shifts/{}",
+    "/api/rahaza/shipments",
+    "/api/rahaza/shipments/customer-statement/{}",
+    "/api/rahaza/shipments/{}",
+    "/api/rahaza/shipments/{}/pdf",
+    "/api/rahaza/shipments/{}/post-cogs",
+    "/api/rahaza/shipments/{}/status",
+    "/api/rahaza/sizes",
+    "/api/rahaza/sizes/{}",
+    "/api/rahaza/sop",
+    "/api/rahaza/sop/by-context",
+    "/api/rahaza/sop/{}",
+    "/api/rahaza/styles",
+    "/api/rahaza/styles/{}",
+    "/api/rahaza/styles/{}/images",
+    "/api/rahaza/styles/{}/images/{}",
+    "/api/rahaza/styles/{}/techpack",
+    "/api/rahaza/styles/{}/variants",
+    "/api/rahaza/styles/{}/variants/{}",
+    "/api/rahaza/supervisor/assignments/bulk",
+    "/api/rahaza/supervisor/assignments/yesterday",
+    "/api/rahaza/supervisor/bulk-mi/generate",
+    "/api/rahaza/supervisor/bulk-mi/preview",
+    "/api/rahaza/supervisor/line-balance",
+    "/api/rahaza/wip/events",
+    "/api/rahaza/wip/summary",
+    "/api/rahaza/wizard/preview-production",
+    "/api/rahaza/wizard/start-production",
+    "/api/rahaza/work-orders",
+    "/api/rahaza/work-orders-statuses",
+    "/api/rahaza/work-orders/{}",
+    "/api/rahaza/work-orders/{}/lkp",
+    "/api/rahaza/work-orders/{}/release-reservations",
+    "/api/rahaza/work-orders/{}/reservations",
+    "/api/rahaza/work-orders/{}/retry-wip-posting",
+    "/api/rahaza/work-orders/{}/status",
+    "/api/reminders",
+    "/api/reminders/{}",
+    "/api/reports/executive/finance-snapshot",
+    "/api/reports/executive/hr-snapshot",
+    "/api/reports/executive/kpi-comparison",
+    "/api/reports/executive/marketing-snapshot",
+    "/api/reports/executive/production-snapshot",
+    "/api/reports/executive/summary",
+    "/api/reports/executive/trend",
+    "/api/reports/{}",
+    "/api/roles",
+    "/api/roles/audit",
+    "/api/roles/matrix/bulk",
+    "/api/roles/{}",
+    "/api/roles/{}/permissions",
+    "/api/scan/history",
+    "/api/scan/resolve",
+    "/api/scan/{}",
+    "/api/search",
+    "/api/seed/production-full",
+    "/api/serial-list",
+    "/api/serial-trace",
+    "/api/tv/alerts",
+    "/api/tv/clock",
+    "/api/tv/floor",
+    "/api/tv/line/{}",
+    "/api/upload",
+    "/api/users",
+    "/api/users/{}",
+    "/api/vendor-portal/accounts",
+    "/api/vendor-portal/accounts/{}",
+    "/api/vendor-portal/jobs",
+    "/api/vendor-portal/me",
+    "/api/vendor-portal/my-jobs",
+    "/api/vendor-portal/my-jobs/{}",
+    "/api/vendor-portal/my-jobs/{}/progress",
+    "/api/vendor-portal/my-jobs/{}/progress-history",
+    "/api/vendor-portal/my-jobs/{}/progress/{}",
+    "/api/vendor-portal/partners",
+    "/api/vendor-portal/partners/{}",
+    "/api/vendor-portal/progress-audit",
+    "/api/vendor/dashboard",
+    "/api/warehouse/alerts",
+    "/api/warehouse/dashboard",
+    "/api/warehouse/dashboard-kpi",
+    "/api/warehouse/locations",
+    "/api/warehouse/locations/{}",
+    "/api/warehouse/movements",
+    "/api/warehouse/opname",
+    "/api/warehouse/opname/{}",
+    "/api/warehouse/putaway",
+    "/api/warehouse/receiving",
+    "/api/warehouse/receiving/{}",
+    "/api/warehouse/smart-reorder",
+    "/api/warehouse/smart-reorder/{}",
+    "/api/warehouse/stock",
+    "/api/warehouse/stock-adjustments/undo-history",
+    "/api/warehouse/stock-adjustments/{}/restore",
+    "/api/warehouse/stock-adjustments/{}/undo",
+    "/api/warehouse/stock/summary",
+    "/api/wh/returns",
+    "/api/wh/returns/summary",
+    "/api/wh/returns/{}",
+    "/api/wh/returns/{}/cancel",
+    "/api/wh/returns/{}/inspect",
+    "/api/wh/returns/{}/receive",
+    "/api/wh/returns/{}/resolve",
+    "/api/wms/ai/cmt-dispatches/smart-recommendations",
+    "/api/wms/ai/fabric-rolls/quality-analysis",
+    "/api/wms/ai/health",
+    "/api/wms/ai/opname/predict-variances",
+    "/api/wms/alerts/occupancy",
+    "/api/wms/audit/adjustments",
+    "/api/wms/audit/adjustments/export-csv",
+    "/api/wms/audit/adjustments/stats",
+    "/api/wms/audit/hotspot/{}/rca",
+    "/api/wms/buildings",
+    "/api/wms/buildings/{}",
+    "/api/wms/cmt-dispatches",
+    "/api/wms/cmt-dispatches/by-wo/{}",
+    "/api/wms/cmt-dispatches/{}",
+    "/api/wms/cmt-dispatches/{}/cancel",
+    "/api/wms/cmt-dispatches/{}/dispatch",
+    "/api/wms/cmt-dispatches/{}/return-line",
+    "/api/wms/delivery-notes",
+    "/api/wms/delivery-notes/{}",
+    "/api/wms/delivery-notes/{}/cancel",
+    "/api/wms/delivery-notes/{}/issue",
+    "/api/wms/delivery-notes/{}/pdf",
+    "/api/wms/delivery-notes/{}/receive",
+    "/api/wms/fabric-rolls",
+    "/api/wms/fabric-rolls/by-lot/{}",
+    "/api/wms/fabric-rolls/by-material/{}",
+    "/api/wms/fabric-rolls/stats/summary",
+    "/api/wms/fabric-rolls/{}",
+    "/api/wms/fabric-rolls/{}/adjust",
+    "/api/wms/fabric-rolls/{}/issue",
+    "/api/wms/fabric-rolls/{}/label-pdf",
+    "/api/wms/fabric-rolls/{}/putaway",
+    "/api/wms/fabric-rolls/{}/reject",
+    "/api/wms/fabric-rolls/{}/return",
+    "/api/wms/fg/label-pdf/custom",
+    "/api/wms/fg/labels/batch-pdf",
+    "/api/wms/fg/{}/label-pdf",
+    "/api/wms/labels/batch-pdf",
+    "/api/wms/legacy/dashboard",
+    "/api/wms/legacy/dashboard-kpi",
+    "/api/wms/legacy/locations",
+    "/api/wms/legacy/locations/{}",
+    "/api/wms/legacy/movements",
+    "/api/wms/legacy/opname",
+    "/api/wms/legacy/opname/{}",
+    "/api/wms/legacy/putaway",
+    "/api/wms/legacy/receiving",
+    "/api/wms/legacy/receiving/{}",
+    "/api/wms/legacy/stock",
+    "/api/wms/legacy/stock/summary",
+    "/api/wms/map/{}",
+    "/api/wms/materials/labels/batch-pdf",
+    "/api/wms/materials/{}/label-pdf",
+    "/api/wms/opname",
+    "/api/wms/opname/start",
+    "/api/wms/opname/{}",
+    "/api/wms/opname/{}/cancel",
+    "/api/wms/opname/{}/complete",
+    "/api/wms/opname/{}/scan",
+    "/api/wms/opname2",
+    "/api/wms/opname2/start",
+    "/api/wms/opname2/stats",
+    "/api/wms/opname2/{}",
+    "/api/wms/opname2/{}/approve",
+    "/api/wms/opname2/{}/cancel",
+    "/api/wms/opname2/{}/count-sheet-pdf",
+    "/api/wms/opname2/{}/scan",
+    "/api/wms/opname2/{}/submit",
+    "/api/wms/pending",
+    "/api/wms/pending/create-from-material-issue",
+    "/api/wms/pending/create-from-production",
+    "/api/wms/pending/create-from-shipment",
+    "/api/wms/pending/summary",
+    "/api/wms/pending/{}/cancel",
+    "/api/wms/pending/{}/scan-in",
+    "/api/wms/pending/{}/scan-out",
+    "/api/wms/picklist",
+    "/api/wms/picklist/source/{}/{}",
+    "/api/wms/picklist/{}",
+    "/api/wms/picklist/{}/complete",
+    "/api/wms/picklist/{}/item/{}/pick",
+    "/api/wms/picklist/{}/pdf",
+    "/api/wms/positions",
+    "/api/wms/positions/by-barcode/{}",
+    "/api/wms/positions/{}",
+    "/api/wms/positions/{}/label-pdf",
+    "/api/wms/rack-alerts",
+    "/api/wms/rack-alerts/scan-all",
+    "/api/wms/rack-alerts/{}/acknowledge",
+    "/api/wms/racks",
+    "/api/wms/racks/{}",
+    "/api/wms/racks/{}/labels-pdf",
+    "/api/wms/search",
+    "/api/wms/stock/reset-all",
+    "/api/wms/stock/status",
+    "/api/wms/stock/unified",
+    "/api/wms/stock/unified/adjust",
+    "/api/wms/stock/unified/adjustments",
+    "/api/wms/stock/unified/summary",
+    "/api/wms/structure/seed-demo",
+    "/api/wms/unit-conversions",
+    "/api/wms/unit-conversions/{}",
+    "/api/wms/units",
+    "/api/wms/units/all-codes",
+    "/api/wms/units/convert",
+    "/api/wms/units/seed",
+    "/api/wms/units/{}",
+    "/api/wms/zones",
+    "/api/wms/zones/{}",
+    "/api/workspace/documents",
+    "/api/workspace/documents/import-excel",
+    "/api/workspace/documents/import-excel-mapped",
+    "/api/workspace/documents/import-from-module",
+    "/api/workspace/documents/preview-excel",
+    "/api/workspace/documents/{}",
+    "/api/workspace/documents/{}/export-excel",
+    "/api/workspace/documents/{}/share",
+    "/api/workspace/documents/{}/share/{}",
+    "/api/workspace/documents/{}/versions",
+    "/api/workspace/documents/{}/versions/{}/restore",
+    "/attendance/approvals",
+    "/attendance/approvals/{}/approve",
+    "/attendance/approvals/{}/reject",
+    "/attendance/auto-config",
+    "/attendance/my-status",
+    "/attendance/selfie/clock-in",
+    "/attendance/selfie/clock-out",
+    "/attendance/webauthn/auth/options",
+    "/attendance/webauthn/clock-in",
+    "/attendance/webauthn/clock-out",
+    "/attendance/webauthn/devices",
+    "/attendance/webauthn/devices/{}",
+    "/attendance/webauthn/register/options",
+    "/attendance/webauthn/register/verify",
+    "/batch-depreciate/{}",
+    "/bulk-import/execute",
+    "/bulk-import/execute-file",
+    "/bulk-import/preview",
+    "/bulk-import/template",
+    "/bundles",
+    "/bundles-rework",
+    "/bundles-statuses",
+    "/bundles/by-number/{}",
+    "/bundles/{}",
+    "/bundles/{}/qr.png",
+    "/bundles/{}/scan-submit",
+    "/bundles/{}/ticket.pdf",
+    "/calendar",
+    "/calendar/combined",
+    "/calendar/{}",
+    "/categories",
+    "/categories/{}",
+    "/channels",
+    "/channels/{}",
+    "/channels/{}/archive",
+    "/channels/{}/members",
+    "/channels/{}/members/{}",
+    "/channels/{}/messages",
+    "/channels/{}/pinned",
+    "/channels/{}/unarchive",
+    "/channels/{}/upload",
+    "/conversations",
+    "/conversations/{}/messages",
+    "/creator-portal/auth/login",
+    "/creator-portal/auth/profile",
+    "/creator-portal/catalog",
+    "/creator-portal/my-kpi",
+    "/creator-portal/my-performance",
+    "/creator-portal/my-requests",
+    "/creator-portal/requests",
+    "/dashboard",
+    "/devices/zkteco",
+    "/devices/zkteco/{}",
+    "/devices/zkteco/{}/last-sync",
+    "/devices/zkteco/{}/sync",
+    "/disposal-requests",
+    "/disposal-requests/{}/approve",
+    "/disposal-requests/{}/reject",
+    "/distribusi-kerja",
+    "/expiring-alerts",
+    "/fg-issue",
+    "/fg-issues",
+    "/fg-movements",
+    "/hpp-calculator",
+    "/hpp-calculator/preview",
+    "/hpp-calculator/{}",
+    "/internal-requests",
+    "/internal-requests/{}",
+    "/items",
+    "/items/{}",
+    "/kol/catalog",
+    "/kol/catalog/{}",
+    "/kol/creators",
+    "/kol/creators/{}",
+    "/kol/fg-products",
+    "/kol/leaderboard",
+    "/kol/requests",
+    "/kol/requests/{}/approve",
+    "/kol/requests/{}/reject",
+    "/kol/seed-demo",
+    "/kol/sessions",
+    "/kol/sessions/{}",
+    "/leave",
+    "/leave-types",
+    "/leave/{}",
+    "/loans",
+    "/loans/{}/return",
+    "/material-adjust",
+    "/material-issues",
+    "/material-issues/draft-from-wo",
+    "/material-issues/{}",
+    "/material-issues/{}/approve",
+    "/material-issues/{}/cancel",
+    "/material-issues/{}/confirm",
+    "/material-issues/{}/post-to-gl",
+    "/material-issues/{}/reject",
+    "/material-issues/{}/submit",
+    "/material-movements",
+    "/material-movements/{}/post-to-gl",
+    "/material-receive",
+    "/material-stock",
+    "/material-stock/summary",
+    "/material-transfer",
+    "/materials",
+    "/materials/reorder-alerts",
+    "/materials/{}",
+    "/messages/{}",
+    "/messages/{}/pin",
+    "/messages/{}/reaction",
+    "/messages/{}/thread",
+    "/messages/{}/thread/reply",
+    "/my-assets",
+    "/notes",
+    "/notes/{}",
+    "/notifications",
+    "/notifications/{}/read",
+    "/online-users",
+    "/opname",
+    "/opname/{}",
+    "/opname/{}/cancel",
+    "/opname/{}/complete",
+    "/opname/{}/count",
+    "/overtime",
+    "/patterns",
+    "/patterns/{}",
+    "/patterns/{}/approve",
+    "/patterns/{}/attach-media",
+    "/patterns/{}/media/{}",
+    "/payslips",
+    "/predictive-maintenance/acknowledge",
+    "/predictive-maintenance/acknowledgments",
+    "/predictive-maintenance/alerts",
+    "/production-job-items",
+    "/production-jobs",
+    "/production-jobs/{}",
+    "/production-monitoring-v2",
+    "/production-progress",
+    "/production-returns",
+    "/production-returns/{}",
+    "/production-variances",
+    "/production-variances/stats",
+    "/production-variances/{}",
+    "/production-variances/{}/post-gl",
+    "/production-variances/{}/retry-posting",
+    "/profile",
+    "/profile/photo",
+    "/purchase-requests",
+    "/purchase-requests/{}",
+    "/purge-demo-data",
+    "/quick-links",
+    "/quick-links/reorder",
+    "/quick-links/{}",
+    "/read/{}",
+    "/recalculate-jobs",
+    "/reminders",
+    "/reminders/due",
+    "/reminders/{}",
+    "/reports/utilization",
+    "/reports/utilization/export.csv",
+    "/reset-and-seed",
+    "/revisions",
+    "/revisions/{}",
+    "/sample-costing",
+    "/sample-costing/{}",
+    "/sample-requests",
+    "/sample-requests/{}",
+    "/sample-requests/{}/approve",
+    "/sample-requests/{}/reject",
+    "/sample-requests/{}/submit",
+    "/scan-by-number/{}",
+    "/search",
+    "/seed",
+    "/seed-all-accounting",
+    "/seed-coa",
+    "/seed-demo-data",
+    "/seed-posting-profiles",
+    "/stock",
+    "/stock/issue",
+    "/stock/movements",
+    "/stock/receive",
+    "/styles",
+    "/styles/pending-review",
+    "/styles/{}",
+    "/styles/{}/overview",
+    "/styles/{}/owner-approve",
+    "/styles/{}/owner-reject",
+    "/styles/{}/promote-to-production",
+    "/styles/{}/submit-for-review",
+    "/tech-packs",
+    "/tech-packs/{}",
+    "/tech-packs/{}/approve",
+    "/todos",
+    "/todos/{}",
+    "/training",
+    "/training/{}/certificate",
+    "/unread",
+    "/variants",
+    "/variants/{}",
+    "/work-orders",
+    "/work-orders/{}",
+    "/work-orders/{}/bundle-tickets.pdf",
+    "/work-orders/{}/bundles-summary",
+    "/work-orders/{}/generate-bundles",
+    "/{}",
+    "/{}/assign",
+    "/{}/assignments",
+    "/{}/barcode",
+    "/{}/depreciate/{}",
+    "/{}/depreciation-history",
+    "/{}/dispose",
+    "/{}/label-pdf",
+    "/{}/maintenance",
+    "/{}/qrcode",
+    "/{}/request-disposal",
+    "/{}/scan",
+    "/{}/scan-history",
+    "/{}/transfer",
+    "/{}/transfer-history",
+    "/{}/unassign",
+    "/{}/upload-photo"
+  ]
+}

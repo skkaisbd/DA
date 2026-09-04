@@ -1,0 +1,42 @@
+toko uji: TikTok Shop DEMO
+
+[96m[1m▶ H — Ekspor A TikTok: alasan penolakan baris harus DISEBUT satu per satu[0m
+  [92m✓ H1[0m commit: 93 masuk · 0 ditolak
+  [92m✓ H2[0m 0 baris ditolak dengan alasan; contoh: -
+
+[96m[1m▶ I — Ekspor C TikTok di atas pesanan itu: status berubah lewat SSOT[0m
+  [92m✓ I1[0m pratinjau Ekspor C: {'baru': 0, 'diperbarui': 0, 'sebagian': 0, 'dilewati': 0, 'ditolak': 4, 'total': 4}
+  [92m✓ I2[0m commit Ekspor C: 0 diperbarui · 4 ditolak · undo=0
+  [91m✗ I3[0m 0 pesanan diperbarui — jalur update_only tidak pernah teruji. row_notes contoh: {'row': 2, 'action': 'ditolak', 'why': ["Pesanan '585166387862931356' belum pernah diimpor — impor 'Pesanan Marketplace (ekspor Seller Center)' dulu. Berkas status pengiriman tidak boleh membuat pesanan baru (pesanan tanpa item & tanpa omzet)."]}
+
+[96m[1m▶ L — Ekspor B/C SINTETIS: status maju, status terminal, dan status MUNDUR[0m
+      sebaran status hasil Ekspor A: {'completed': 58, 'cancelled': 21, 'shipped': 14}
+  [92m✓ L1[0m pemetaan ready=True missing=[]
+  [92m✓ L2b[0m pratinjau = hasil commit (6 diperbarui · 1 ditolak)
+  [92m✓ L2[0m commit: 6 diperbarui · 1 ditolak · undo=6
+  [92m✓ L3[0m tidak membuat baris baru
+      · baris 2: diperbarui — []
+      · baris 3: diperbarui — []
+      · baris 4: diperbarui — []
+      · baris 5: diperbarui — []
+      · baris 6: diperbarui — []
+      · baris 7: diperbarui — []
+      · baris 8: ditolak — ["Pesanan '585319053961823454-TIDAKADA' belum pernah diimpor — impor 'Pesanan Marketplace (ekspor Seller Center)' dulu. Berkas status pengiriman tidak boleh membuat pesanan baru (pesanan tanpa item & tanpa omzet)."]
+  [92m✓ L4[0m nomor pesanan tak dikenal ditolak dengan alasan
+      status awal: [('585319053961823454', 'shipped'), ('585318938933692011', 'shipped'), ('585318361859589469', 'shipped'), ('585317749146027335', 'shipped'), ('585317655222584843', 'shipped'), ('585317039293564291', 'shipped')]
+  [92m✓ L5[0m 3 status berubah di DB: [('585317749146027335', 'shipped', 'completed'), ('585317655222584843', 'shipped', 'completed'), ('585317039293564291', 'shipped', 'cancelled')]
+  [92m✓ L6[0m 5 pesanan menerima No. Resi dari berkas
+  [92m✓ L7[0m jejak UNDO = jumlah baris diperbarui (6)
+
+[96m[1m▶ M — ROLLBACK Ekspor B/C sintetis[0m
+  [92m✓ M1[0m restore=5 hanya_field=1 hilang=0
+  [92m✓ M2[0m status yang TIDAK kembali hanyalah yang terminal, dan laporan menyebutnya (1 'hanya field'): [('585317039293564291', 'shipped', 'cancelled')]
+  [92m✓ M3[0m kolom dari berkas dibersihkan (kecuali penjelas status terminal)
+  [92m✓ M4[0m jejak UNDO menggantung = 0
+
+[96m[1m▶ K — bersih-bersih[0m
+  [92m✓ K1[0m sisa pesanan artefak = 0
+
+==============================================================================
+HASIL: 17 OK · 1 TEMUAN
+  TEMUAN I3: 0 pesanan diperbarui — jalur update_only tidak pernah teruji. row_notes contoh: {'row': 2, 'action': 'ditolak', 'why': ["Pesanan '585166387862931356' belum pernah diimpor — impor 'Pesanan Marketplace (ekspor Seller Center)' dulu. Berkas status pengiriman tidak boleh membuat pesanan baru (pesanan tanpa item & tanpa omzet)."]}

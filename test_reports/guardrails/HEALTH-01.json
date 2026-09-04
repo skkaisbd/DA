@@ -1,0 +1,14 @@
+{
+  "gate": "HEALTH-01",
+  "title": "Endpoint kritis reachable",
+  "checked": 9,
+  "counts": {},
+  "blocking": 0,
+  "block_sev": [
+    "CRIT",
+    "HIGH"
+  ],
+  "duration_s": 0.12,
+  "ts": "2026-08-26 03:26:21",
+  "findings": []
+}

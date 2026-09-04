@@ -1,0 +1,26 @@
+{
+  "summary": "Iteration 101 — 'Tautan Mutasi Bank' (bank statement line ↔ Pencairan Marketplace). Backend: 17 pytest cases in /app/backend/tests/test_iter101_bank_settlement_link.py all PASS (existing link state, settlement-candidates sorting/filtering/exact_count, link-settlement guards 400/404/409, PUT/DELETE locks, full happy path create→link→lock→unmatch→delete). Frontend: verified bank-recon session detail rows (badge/unmatch/link buttons, credit row has no link button), settlement picker with disabled mismatched candidates, unmatch→relink of T1 to STL-TEST-001 with toast + Matched KPI=1, and settlement list bank-linked/unlinked badges + KPI hint. No console errors. Final state restored: T1 linked to STL-TEST-001, temp STL-BANK-* settlement deleted, 4 pre-existing settlements intact, session + 3 txns intact.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Finance > Pencairan Marketplace (fin-marketplace-settlement)", "issues": ["Date-range filter uses native browser date inputs (mm/dd/yyyy placeholders) instead of the shadcn calendar component; the leading period input renders as '--------' which reads like broken data. Pre-existing, not part of this feature.", "'mutasi 2026-08-16' link badge is 10px emerald text on white — readable but at the lower bound of legibility for an audit-critical marker."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_iter101_bank_settlement_link.py", "/app/test_reports/pytest/iter101_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "NOTE (expected, verified): for STL-TEST-001 the PUT/DELETE rejection message is the JOURNAL guard ('Pencairan ini sudah punya jurnal (JE-20260815-0001)…' / 'sudah terbit jurnal…'), not the bank-link message, because _je_still_binding() is checked before the bank_txn_id guard. Both return 400. The bank-specific messages ('…TERTAUT ke mutasi bank…' on PUT, '…tertaut ke mutasi bank…' on DELETE) were verified on a fresh un-journaled settlement. Consider mentioning both locks in one message so a user who voids the JE isn't surprised by a second refusal.",
+    "POST /link-settlement writes the txn and the settlement in two separate update_one calls with no transaction; a crash between them leaves a txn matched with no settlement back-reference (unmatch would then not clear anything). Low probability, but the reverse guard in /unmatch already filters on bank_txn_id so the inconsistency would be silent.",
+    "settlement-candidates loads up to 2000 settlement docs into memory and sorts in Python; fine now (4 docs) but will need a query-side amount/date filter as data grows."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter101_bank_settlement_link.py"],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "100% (all specified assertions passed)"},
+  "seed_data_creation": "Created and then deleted one temporary settlement STL-BANK-<ts> (tiktokshop, 2026-08-17, net 5.900.000) for the happy-path test. No residual data.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123",
+  "context_for_next_testing_agent": "Regression suite for this feature: /app/backend/tests/test_iter101_bank_settlement_link.py (run with `-n 0` — it must run serially because several cases contend over txn T2). It asserts and restores the fixed state: session a6f8da0f-…, T1 f72a28ff-… linked to STL-TEST-001 (49f6a7ca-…), T2 2c435066-… unmatched, T3 6844f1d6-… credit. Frontend deep-links: /?portal=finance&module=fin-bank-recon (click card text '2026-08') and /?portal=finance&module=fin-marketplace-settlement. Not retested (covered in iter 98-100): settlement CRUD/journal/import/mapping/period filter.",
+  "rca_of_the_issue": "No defect found in the feature under test."
+}

@@ -1,0 +1,6841 @@
+{
+ "totals": {
+  "modules_scanned": 247,
+  "card_only": 68,
+  "thin_tables_lt5_cols": 46,
+  "tables_without_toggle": 138,
+  "with_toggle": 30
+ },
+ "card_only": [
+  "AIContentGeneratorModule.jsx",
+  "AIImageGeneratorModule.jsx",
+  "MarketingAIInsightsDashboard.jsx",
+  "MarketingOverviewDashboard.jsx",
+  "PaymentTab.jsx",
+  "AIActionsModule.jsx",
+  "AIBusinessDashboard.jsx",
+  "AIInsightsModule.jsx",
+  "ActivityLogModule.jsx",
+  "AdminSetupPanelModule.jsx",
+  "AnnouncementModule.jsx",
+  "ApprovalInboxModule.jsx",
+  "BackupRestoreModule.jsx",
+  "CapacityPlanningModule.jsx",
+  "CompanySettingsModule.jsx",
+  "DocNumberingModule.jsx",
+  "EmployeePerDiemAdminModule.jsx",
+  "FinanceDashboard.jsx",
+  "FinancialRecapModule.jsx",
+  "FulfillmentModule.jsx",
+  "HRApprovalInboxModule.jsx",
+  "HRDashboard.jsx",
+  "HRLeaveBalancesModule.jsx",
+  "HROnboardingModule.jsx",
+  "KPIGamificationTab.jsx",
+  "KPIPortalModule.jsx",
+  "MaklonAIQuoteModule.jsx",
+  "MaklonHppModule.jsx",
+  "MaklonSLADashboard.jsx",
+  "MaklonSystemConfigModule.jsx",
+  "ManagementDashboard.jsx",
+  "ManagementOverviewModule.jsx",
+  "ManagementToolsModule.jsx",
+  "MarketingTaskHubModule.jsx",
+  "MultiLevelApprovalModule.jsx",
+  "OKRTrackerModule.jsx",
+  "PDFConfigModule.jsx",
+  "PdfDocSettingsModule.jsx",
+  "PortalSayaDashboard.jsx",
+  "ProductionControlTowerModule.jsx",
+  "ProductionDashboardOverview.jsx",
+  "PutAwayModule.jsx",
+  "RahazaAIModule.jsx",
+  "RahazaAQLCalculatorModule.jsx",
+  "RahazaAlertSettingsModule.jsx",
+  "RahazaCoaAutoModule.jsx",
+  "RahazaLeaveModule.jsx",
+  "RahazaLineBalancingModule.jsx",
+  "RahazaPeriodsModule.jsx",
+  "RahazaPostingProfilesModule.jsx",
+  "RahazaProductionCalendarModule.jsx",
+  "RahazaSOPModule.jsx",
+  "RahazaShiftHandoverModule.jsx",
+  "RnDAnalyticsModule.jsx",
+  "RnDCostingTab.jsx",
+  "RnDStyleDetailPage.jsx",
+  "RoleManagementModule.jsx",
+  "SetupWizard.jsx",
+  "TaskManagementModule.jsx",
+  "TaskTemplatesModule.jsx",
+  "TokoCSReturnsModule.jsx",
+  "TokoDashboard.jsx",
+  "TokoDashboardModule.jsx",
+  "TokoOrdersModule.jsx",
+  "TokoPricingFlashsaleModule.jsx",
+  "VendorAccountsAdminModule.jsx",
+  "VendorPortalModule.jsx",
+  "WarehouseDashboard.jsx"
+ ],
+ "thin_tables": [
+  {
+   "name": "AccountHealthDashboard.jsx",
+   "th": 1,
+   "fields_used": 2
+  },
+  {
+   "name": "AdsPerformanceDashboard.jsx",
+   "th": 1,
+   "fields_used": 7
+  },
+  {
+   "name": "ComplaintsManagementModule.jsx",
+   "th": 1,
+   "fields_used": 7
+  },
+  {
+   "name": "LiveSessionModule.jsx",
+   "th": 1,
+   "fields_used": 0
+  },
+  {
+   "name": "MarketingChangeLogModule.jsx",
+   "th": 1,
+   "fields_used": 11
+  },
+  {
+   "name": "SalesPerformanceDashboard.jsx",
+   "th": 1,
+   "fields_used": 5
+  },
+  {
+   "name": "WeeklyMeetingReportModule.jsx",
+   "th": 1,
+   "fields_used": 3
+  },
+  {
+   "name": "AccessoriesDashboard.jsx",
+   "th": 1,
+   "fields_used": 13
+  },
+  {
+   "name": "ApprovalModule.jsx",
+   "th": 1,
+   "fields_used": 6
+  },
+  {
+   "name": "HRLMSModule.jsx",
+   "th": 1,
+   "fields_used": 2
+  },
+  {
+   "name": "HRShiftManagementModule.jsx",
+   "th": 1,
+   "fields_used": 1
+  },
+  {
+   "name": "KREATORRequestModule.jsx",
+   "th": 1,
+   "fields_used": 13
+  },
+  {
+   "name": "KasbonStaffModule.jsx",
+   "th": 1,
+   "fields_used": 20
+  },
+  {
+   "name": "NotificationCenterModule.jsx",
+   "th": 1,
+   "fields_used": 16
+  },
+  {
+   "name": "RbacAuditModule.jsx",
+   "th": 1,
+   "fields_used": 7
+  },
+  {
+   "name": "RnDPatternModule.jsx",
+   "th": 1,
+   "fields_used": 14
+  },
+  {
+   "name": "RnDSamplesTab.jsx",
+   "th": 1,
+   "fields_used": 4
+  },
+  {
+   "name": "UserManagementModule.jsx",
+   "th": 1,
+   "fields_used": 9
+  },
+  {
+   "name": "CatalogFromMasterModule.jsx",
+   "th": 2,
+   "fields_used": 18
+  },
+  {
+   "name": "FulfillmentMonitorModule.jsx",
+   "th": 2,
+   "fields_used": 19
+  },
+  {
+   "name": "CMTComponentRequestModule.jsx",
+   "th": 2,
+   "fields_used": 19
+  },
+  {
+   "name": "EmployeeExpenseApprovalModule.jsx",
+   "th": 2,
+   "fields_used": 11
+  },
+  {
+   "name": "FinanceKasbonModule.jsx",
+   "th": 2,
+   "fields_used": 14
+  },
+  {
+   "name": "FixedAssetsModule.jsx",
+   "th": 2,
+   "fields_used": 4
+  },
+  {
+   "name": "HRKasbonModule.jsx",
+   "th": 2,
+   "fields_used": 16
+  },
+  {
+   "name": "HROrgChartModule.jsx",
+   "th": 2,
+   "fields_used": 10
+  },
+  {
+   "name": "NotificationSettingsModule.jsx",
+   "th": 2,
+   "fields_used": 3
+  },
+  {
+   "name": "ProcurementRequestModule.jsx",
+   "th": 2,
+   "fields_used": 38
+  },
+  {
+   "name": "ReportsHubModule.jsx",
+   "th": 2,
+   "fields_used": 4
+  },
+  {
+   "name": "ReportsModule.jsx",
+   "th": 2,
+   "fields_used": 14
+  },
+  {
+   "name": "RnDSizeMappingModule.jsx",
+   "th": 2,
+   "fields_used": 7
+  },
+  {
+   "name": "AdvancedAIModule.jsx",
+   "th": 3,
+   "fields_used": 4
+  },
+  {
+   "name": "UnifiedOrdersDashboard.jsx",
+   "th": 3,
+   "fields_used": 20
+  },
+  {
+   "name": "DataTable.jsx",
+   "th": 3,
+   "fields_used": 0
+  },
+  {
+   "name": "DataTableV2.jsx",
+   "th": 3,
+   "fields_used": 2
+  },
+  {
+   "name": "HRATSModule.jsx",
+   "th": 3,
+   "fields_used": 4
+  },
+  {
+   "name": "ProductionCMTBillingModule.jsx",
+   "th": 3,
+   "fields_used": 17
+  },
+  {
+   "name": "RahazaExpensesModule.jsx",
+   "th": 3,
+   "fields_used": 5
+  },
+  {
+   "name": "RahazaModelsModule.jsx",
+   "th": 3,
+   "fields_used": 20
+  },
+  {
+   "name": "RahazaOrdersModule.jsx",
+   "th": 3,
+   "fields_used": 13
+  },
+  {
+   "name": "RahazaProductCategoriesModule.jsx",
+   "th": 3,
+   "fields_used": 12
+  },
+  {
+   "name": "RahazaShipmentsModule.jsx",
+   "th": 3,
+   "fields_used": 9
+  },
+  {
+   "name": "RnDPortalDashboard.jsx",
+   "th": 3,
+   "fields_used": 32
+  },
+  {
+   "name": "RnDRevisionsTab.jsx",
+   "th": 3,
+   "fields_used": 11
+  },
+  {
+   "name": "WMSDeliveryNotesModule.jsx",
+   "th": 3,
+   "fields_used": 25
+  },
+  {
+   "name": "MarketingARBridgeModule.jsx",
+   "th": 4,
+   "fields_used": 14
+  }
+ ],
+ "with_toggle": [
+  "AccountBulkReviewModule.jsx",
+  "AccountTargetsModule.jsx",
+  "ContentCalendarModule.jsx",
+  "DailyReportModule.jsx",
+  "KOLLeaderboardModule.jsx",
+  "MarketingSchedulerModule.jsx",
+  "MarketingWebhooksModule.jsx",
+  "ProductLaunchModule.jsx",
+  "RatingReviewModule.jsx",
+  "ReturnsRefundsModule.jsx",
+  "SampleDeliveryModule.jsx",
+  "AccessoriesDashboard.jsx",
+  "AccountManagementModule.jsx",
+  "BudgetModule.jsx",
+  "CatalogManagementModule.jsx",
+  "EmployeeExpenseApprovalModule.jsx",
+  "EmployeeExpenseModule.jsx",
+  "EmployeeTravelModule.jsx",
+  "FinanceKasbonModule.jsx",
+  "FixedAssetsModule.jsx",
+  "HRKasbonModule.jsx",
+  "HRShiftManagementModule.jsx",
+  "KPIPortalModule.jsx",
+  "KasbonStaffModule.jsx",
+  "MarketingARBridgeModule.jsx",
+  "ProcurementRequestModule.jsx",
+  "ReceivingModule.jsx",
+  "WMSDeliveryNotesModule.jsx",
+  "WMSFabricRollsModule.jsx",
+  "WeeklyShoppingListModule.jsx"
+ ],
+ "modules": [
+  {
+   "file": "frontend/src/components/erp/marketing/AccountHealthDashboard.jsx",
+   "name": "AccountHealthDashboard.jsx",
+   "lines": 528,
+   "cards": 2,
+   "grids": 4,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 2,
+    "grids": 4,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [
+    "api/marketing/health/accounts",
+    "api/marketing/health/manual-snapshot",
+    "api/marketing/health/ocr-screenshot",
+    "api/marketing/health/summary",
+    "api/marketing/health/timeline"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AdsPerformanceDashboard.jsx",
+   "name": "AdsPerformanceDashboard.jsx",
+   "lines": 419,
+   "cards": 10,
+   "grids": 4,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 10,
+    "grids": 4,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/marketing/ads/ai-recommendations",
+    "api/marketing/ads/campaigns",
+    "api/marketing/ads/campaigns/${c.id}",
+    "api/marketing/ads/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AdvancedAIModule.jsx",
+   "name": "AdvancedAIModule.jsx",
+   "lines": 1099,
+   "cards": 14,
+   "grids": 8,
+   "tables": 3,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 14,
+    "grids": 8,
+    "tables": 3,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [
+    "api/marketing/advanced-ai/ab-tests",
+    "api/marketing/advanced-ai/ab-tests/${exp.id}/conclude",
+    "api/marketing/advanced-ai/ab-tests/${exp.id}/status",
+    "api/marketing/advanced-ai/ab-tests/${showRecord.id}/record",
+    "api/marketing/advanced-ai/churn/run",
+    "api/marketing/advanced-ai/churn/scores",
+    "api/marketing/advanced-ai/pricing/events",
+    "api/marketing/advanced-ai/pricing/run",
+    "api/marketing/advanced-ai/pricing/settings",
+    "api/marketing/advanced-ai/pricing/suggestions",
+    "api/marketing/advanced-ai/pricing/suggestions/${id}/${action}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ApprovalModule.jsx",
+   "name": "ApprovalModule.jsx",
+   "lines": 477,
+   "cards": 0,
+   "grids": 5,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CMTComponentRequestModule.jsx",
+   "name": "CMTComponentRequestModule.jsx",
+   "lines": 709,
+   "cards": 15,
+   "grids": 7,
+   "tables": 2,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 7,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 19,
+   "apis": [
+    "api/dewi/cmt-component-requests",
+    "api/dewi/cmt-component-requests/${delId}",
+    "api/dewi/cmt-component-requests/${editing}",
+    "api/dewi/cmt-component-requests/${id}/set-status",
+    "api/dewi/cmt-component-requests/stats/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/CatalogFromMasterModule.jsx",
+   "name": "CatalogFromMasterModule.jsx",
+   "lines": 393,
+   "cards": 0,
+   "grids": 1,
+   "tables": 2,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 18,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/catalogs/assign-from-master",
+    "api/marketing/catalogs/master-products"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/ComplaintsManagementModule.jsx",
+   "name": "ComplaintsManagementModule.jsx",
+   "lines": 558,
+   "cards": 2,
+   "grids": 2,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 2,
+    "grids": 2,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/marketing/complaints",
+    "api/marketing/complaints/${detail.id}",
+    "api/marketing/complaints/${detail.id}/ai-classify",
+    "api/marketing/complaints/${detail.id}/notes",
+    "api/marketing/complaints/${detail.id}/status",
+    "api/marketing/complaints/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/DataTable.jsx",
+   "name": "DataTable.jsx",
+   "lines": 265,
+   "cards": 3,
+   "grids": 0,
+   "tables": 2,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 0,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/FulfillmentMonitorModule.jsx",
+   "name": "FulfillmentMonitorModule.jsx",
+   "lines": 456,
+   "cards": 0,
+   "grids": 2,
+   "tables": 2,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 19,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/accounts/${store.account_id}/ship-sla",
+    "api/marketing/orders/fulfillment-monitor"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRATSModule.jsx",
+   "name": "HRATSModule.jsx",
+   "lines": 1478,
+   "cards": 15,
+   "grids": 15,
+   "tables": 2,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 15,
+    "tables": 2,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRLMSModule.jsx",
+   "name": "HRLMSModule.jsx",
+   "lines": 567,
+   "cards": 11,
+   "grids": 10,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 10,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HROrgChartModule.jsx",
+   "name": "HROrgChartModule.jsx",
+   "lines": 468,
+   "cards": 19,
+   "grids": 5,
+   "tables": 2,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 19,
+    "grids": 5,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/KREATORRequestModule.jsx",
+   "name": "KREATORRequestModule.jsx",
+   "lines": 699,
+   "cards": 13,
+   "grids": 7,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 7,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [
+    "api/dewi/kreator-requests",
+    "api/dewi/kreator-requests/${actionModal.id}/approve-by-rnd",
+    "api/dewi/kreator-requests/${actionModal.id}/mark-delivered",
+    "api/dewi/kreator-requests/${actionModal.id}/reject",
+    "api/dewi/kreator-requests/${delId}",
+    "api/dewi/kreator-requests/${editing}",
+    "api/dewi/kreator-requests/${id}/mark-sample-ready",
+    "api/dewi/kreator-requests/${id}/submit",
+    "api/dewi/kreator-requests/stats/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/LiveSessionModule.jsx",
+   "name": "LiveSessionModule.jsx",
+   "lines": 306,
+   "cards": 4,
+   "grids": 4,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 4,
+    "grids": 4,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/marketing/live/sessions",
+    "api/marketing/live/sessions/${s.id}",
+    "api/marketing/live/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MarketingChangeLogModule.jsx",
+   "name": "MarketingChangeLogModule.jsx",
+   "lines": 418,
+   "cards": 11,
+   "grids": 3,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 3,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/marketing/change-log",
+    "api/marketing/change-log/stats"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/NotificationCenterModule.jsx",
+   "name": "NotificationCenterModule.jsx",
+   "lines": 658,
+   "cards": 23,
+   "grids": 5,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 23,
+    "grids": 5,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/NotificationSettingsModule.jsx",
+   "name": "NotificationSettingsModule.jsx",
+   "lines": 151,
+   "cards": 5,
+   "grids": 0,
+   "tables": 1,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 0,
+    "tables": 1,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [
+    "api/notifications/category-config"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ProductionCMTBillingModule.jsx",
+   "name": "ProductionCMTBillingModule.jsx",
+   "lines": 490,
+   "cards": 0,
+   "grids": 4,
+   "tables": 3,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 4,
+    "tables": 3,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaExpensesModule.jsx",
+   "name": "RahazaExpensesModule.jsx",
+   "lines": 125,
+   "cards": 3,
+   "grids": 0,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 5,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaModelsModule.jsx",
+   "name": "RahazaModelsModule.jsx",
+   "lines": 758,
+   "cards": 3,
+   "grids": 3,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 20,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaOrdersModule.jsx",
+   "name": "RahazaOrdersModule.jsx",
+   "lines": 417,
+   "cards": 1,
+   "grids": 3,
+   "tables": 2,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 1,
+    "grids": 3,
+    "tables": 1,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 13,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaProductCategoriesModule.jsx",
+   "name": "RahazaProductCategoriesModule.jsx",
+   "lines": 266,
+   "cards": 3,
+   "grids": 1,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 12,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaShipmentsModule.jsx",
+   "name": "RahazaShipmentsModule.jsx",
+   "lines": 633,
+   "cards": 3,
+   "grids": 7,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 7,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 9,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RbacAuditModule.jsx",
+   "name": "RbacAuditModule.jsx",
+   "lines": 210,
+   "cards": 11,
+   "grids": 3,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 3,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/admin/rbac-audit"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ReportsHubModule.jsx",
+   "name": "ReportsHubModule.jsx",
+   "lines": 328,
+   "cards": 7,
+   "grids": 6,
+   "tables": 1,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 6,
+    "tables": 1,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ReportsModule.jsx",
+   "name": "ReportsModule.jsx",
+   "lines": 646,
+   "cards": 0,
+   "grids": 8,
+   "tables": 1,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 1,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDPatternModule.jsx",
+   "name": "RnDPatternModule.jsx",
+   "lines": 572,
+   "cards": 3,
+   "grids": 4,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 4,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [
+    "api/dewi/rnd/hpp/fabric-estimate",
+    "api/dewi/rnd/patterns",
+    "api/dewi/rnd/patterns/${delId}",
+    "api/dewi/rnd/patterns/${editing}",
+    "api/dewi/rnd/patterns/${editing}/attach-media",
+    "api/dewi/rnd/patterns/${editing}/media/${attachmentId}",
+    "api/dewi/rnd/patterns/${id}/approve",
+    "api/dewi/rnd/styles",
+    "api/files/${upData.storage_path}",
+    "api/upload"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDPortalDashboard.jsx",
+   "name": "RnDPortalDashboard.jsx",
+   "lines": 727,
+   "cards": 13,
+   "grids": 11,
+   "tables": 3,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 8,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [
+    "RnDRevisionCompare.jsx"
+   ],
+   "fields_used": 32,
+   "apis": [
+    "api/dewi/rnd/approvals/history",
+    "api/dewi/rnd/approvals/pending",
+    "api/dewi/rnd/dashboard",
+    "api/dewi/rnd/lifecycle",
+    "api/dewi/rnd/reports/weekly-decisions",
+    "api/dewi/rnd/reports/weekly-decisions/send"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDRevisionsTab.jsx",
+   "name": "RnDRevisionsTab.jsx",
+   "lines": 289,
+   "cards": 5,
+   "grids": 5,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "RnDRevisionCompare.jsx"
+   ],
+   "fields_used": 11,
+   "apis": [
+    "api/dewi/rnd/revisions",
+    "api/dewi/rnd/revisions${qs.toString",
+    "api/dewi/rnd/revisions/${delId}",
+    "api/dewi/rnd/styles"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDSamplesTab.jsx",
+   "name": "RnDSamplesTab.jsx",
+   "lines": 543,
+   "cards": 3,
+   "grids": 4,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 4,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDSizeMappingModule.jsx",
+   "name": "RnDSizeMappingModule.jsx",
+   "lines": 377,
+   "cards": 9,
+   "grids": 2,
+   "tables": 1,
+   "th": 2,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 2,
+    "tables": 1,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/dewi/rnd/size-mapping",
+    "api/dewi/rnd/size-mapping/apply",
+    "api/dewi/rnd/size-mapping/auto"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 2 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/SalesPerformanceDashboard.jsx",
+   "name": "SalesPerformanceDashboard.jsx",
+   "lines": 286,
+   "cards": 6,
+   "grids": 6,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 6,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/performance/overview",
+    "api/marketing/performance/top-products"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/UnifiedOrdersDashboard.jsx",
+   "name": "UnifiedOrdersDashboard.jsx",
+   "lines": 737,
+   "cards": 2,
+   "grids": 2,
+   "tables": 2,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 2,
+    "grids": 2,
+    "tables": 2,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [
+    "api/marketing/orders",
+    "api/marketing/orders/${order.id}/status",
+    "api/marketing/orders/bulk-status",
+    "api/marketing/orders/picking-list",
+    "api/marketing/orders/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/UserManagementModule.jsx",
+   "name": "UserManagementModule.jsx",
+   "lines": 358,
+   "cards": 3,
+   "grids": 1,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataTable.jsx"
+   ],
+   "fields_used": 9,
+   "apis": [
+    "api/rahaza/employees",
+    "api/rahaza/self/admin/link-employee"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/WeeklyMeetingReportModule.jsx",
+   "name": "WeeklyMeetingReportModule.jsx",
+   "lines": 355,
+   "cards": 0,
+   "grids": 2,
+   "tables": 1,
+   "th": 1,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 1,
+    "th": 1,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/reports/weekly",
+    "api/marketing/reports/weekly/export-${fmt}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tabel hanya 1 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AIUsageMonitorModule.jsx",
+   "name": "AIUsageMonitorModule.jsx",
+   "lines": 512,
+   "cards": 33,
+   "grids": 9,
+   "tables": 2,
+   "th": 14,
+   "toggle": false,
+   "own": {
+    "cards": 33,
+    "grids": 9,
+    "tables": 2,
+    "th": 14,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ARLifecycleModule.jsx",
+   "name": "ARLifecycleModule.jsx",
+   "lines": 595,
+   "cards": 13,
+   "grids": 10,
+   "tables": 2,
+   "th": 15,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 10,
+    "tables": 2,
+    "th": 15,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/rahaza/ar-360/aging",
+    "api/rahaza/ar-360/customer/${customerId}/statement",
+    "api/rahaza/ar-360/dashboard"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AccessoryModule.jsx",
+   "name": "AccessoryModule.jsx",
+   "lines": 1621,
+   "cards": 0,
+   "grids": 14,
+   "tables": 5,
+   "th": 28,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 4,
+    "th": 28,
+    "toggle": false
+   },
+   "via": [
+    "AccessoryValuationTab.jsx"
+   ],
+   "fields_used": 35,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AccountDetailPage.jsx",
+   "name": "AccountDetailPage.jsx",
+   "lines": 682,
+   "cards": 9,
+   "grids": 8,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 8,
+    "tables": 2,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [
+    "api/marketing/accounts/${account.id}/sales",
+    "api/marketing/complaints",
+    "api/marketing/kol/creators",
+    "api/marketing/livehost",
+    "api/marketing/orders",
+    "api/marketing/reviews",
+    "api/marketing/targets",
+    "api/marketing/targets/creator"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AccrualsModule.jsx",
+   "name": "AccrualsModule.jsx",
+   "lines": 270,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AnalyticsTab.jsx",
+   "name": "AnalyticsTab.jsx",
+   "lines": 206,
+   "cards": 6,
+   "grids": 2,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 2,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/marketing/livehost/analytics/host-performance",
+    "api/marketing/livehost/analytics/shift-analysis"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AssetDepreciationModule.jsx",
+   "name": "AssetDepreciationModule.jsx",
+   "lines": 252,
+   "cards": 7,
+   "grids": 2,
+   "tables": 2,
+   "th": 13,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 2,
+    "tables": 2,
+    "th": 13,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AssetDisposalModule.jsx",
+   "name": "AssetDisposalModule.jsx",
+   "lines": 263,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 10,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 10,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/BadDebtWriteOffModule.jsx",
+   "name": "BadDebtWriteOffModule.jsx",
+   "lines": 253,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/BankTransferModule.jsx",
+   "name": "BankTransferModule.jsx",
+   "lines": 475,
+   "cards": 8,
+   "grids": 3,
+   "tables": 4,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 8,
+    "grids": 3,
+    "tables": 4,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [
+    "api/finance/bank-transfers"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/BudgetAllocationTab.jsx",
+   "name": "BudgetAllocationTab.jsx",
+   "lines": 476,
+   "cards": 15,
+   "grids": 2,
+   "tables": 2,
+   "th": 13,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 2,
+    "tables": 2,
+    "th": 13,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/marketing/budget",
+    "api/marketing/budget/kol-cost",
+    "api/marketing/budget/kol-cost/${creator.creator_id}",
+    "api/marketing/budget/period-settings",
+    "api/marketing/budget/spend",
+    "api/marketing/budget/spend/${id}",
+    "api/marketing/budget/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CMTLifecycleModule.jsx",
+   "name": "CMTLifecycleModule.jsx",
+   "lines": 830,
+   "cards": 23,
+   "grids": 19,
+   "tables": 3,
+   "th": 23,
+   "toggle": false,
+   "own": {
+    "cards": 23,
+    "grids": 19,
+    "tables": 3,
+    "th": 23,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 28,
+   "apis": [
+    "api/dewi/cmt/lifecycle",
+    "api/dewi/cmt/lifecycle/${vendorId}",
+    "api/dewi/cmt/lifecycle/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CMTMonitorModule.jsx",
+   "name": "CMTMonitorModule.jsx",
+   "lines": 815,
+   "cards": 0,
+   "grids": 14,
+   "tables": 7,
+   "th": 40,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 14,
+    "tables": 7,
+    "th": 40,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 31,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CMTOverridePortalModule.jsx",
+   "name": "CMTOverridePortalModule.jsx",
+   "lines": 611,
+   "cards": 0,
+   "grids": 12,
+   "tables": 14,
+   "th": 22,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [
+    "VendorMaterialInspection.jsx",
+    "VendorMaterialRequests.jsx",
+    "VendorProductionJobs.jsx",
+    "VendorProgress.jsx",
+    "VendorBuyerShipments.jsx",
+    "VendorVarianceReport.jsx"
+   ],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CMTPermakModule.jsx",
+   "name": "CMTPermakModule.jsx",
+   "lines": 671,
+   "cards": 0,
+   "grids": 7,
+   "tables": 1,
+   "th": 11,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 7,
+    "tables": 1,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/DataImportWizard.jsx",
+   "name": "DataImportWizard.jsx",
+   "lines": 2278,
+   "cards": 14,
+   "grids": 4,
+   "tables": 10,
+   "th": 34,
+   "toggle": false,
+   "own": {
+    "cards": 12,
+    "grids": 4,
+    "tables": 8,
+    "th": 34,
+    "toggle": false
+   },
+   "via": [
+    "SkuMappingPanel.jsx",
+    "ImportPlanPanel.jsx"
+   ],
+   "fields_used": 8,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/accounts/${accountId}/learn-warehouse",
+    "api/marketing/data-import"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/DataTableV2.jsx",
+   "name": "DataTableV2.jsx",
+   "lines": 609,
+   "cards": 0,
+   "grids": 0,
+   "tables": 1,
+   "th": 3,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 1,
+    "th": 3,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "tabel hanya 3 kolom",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/DiscountCampaignModule.jsx",
+   "name": "DiscountCampaignModule.jsx",
+   "lines": 465,
+   "cards": 6,
+   "grids": 3,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 3,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [
+    "api/marketing/discounts",
+    "api/marketing/discounts/${editTarget.id}",
+    "api/marketing/discounts/${id}",
+    "api/marketing/discounts/summary"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeExpenseCategoryMasterModule.jsx",
+   "name": "EmployeeExpenseCategoryMasterModule.jsx",
+   "lines": 528,
+   "cards": 10,
+   "grids": 1,
+   "tables": 4,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 10,
+    "grids": 1,
+    "tables": 4,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/hr/expenses/master-categories",
+    "api/hr/expenses/master-categories/${category.id}",
+    "api/hr/expenses/master-categories/${deleteTarget.id}",
+    "api/hr/expenses/master-categories/seed-default"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeExpenseGLMappingModule.jsx",
+   "name": "EmployeeExpenseGLMappingModule.jsx",
+   "lines": 384,
+   "cards": 2,
+   "grids": 0,
+   "tables": 4,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 2,
+    "grids": 0,
+    "tables": 4,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeLoansModule.jsx",
+   "name": "EmployeeLoansModule.jsx",
+   "lines": 316,
+   "cards": 9,
+   "grids": 4,
+   "tables": 2,
+   "th": 11,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 4,
+    "tables": 2,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeTravelSettlementModule.jsx",
+   "name": "EmployeeTravelSettlementModule.jsx",
+   "lines": 1020,
+   "cards": 0,
+   "grids": 8,
+   "tables": 3,
+   "th": 19,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 3,
+    "th": 19,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 18,
+   "apis": [
+    "api/hr/expenses/outstanding-advances",
+    "api/hr/expenses/settlement-summary",
+    "api/hr/expenses/settlements",
+    "api/hr/expenses/settlements/${stl.id}/${endpoint}",
+    "api/hr/expenses/settlements/bulk-approve",
+    "api/hr/expenses/settlements/bulk-post",
+    "api/hr/expenses/settlements/export",
+    "api/hr/expenses/travel",
+    "api/hr/expenses/travel/${travel.id}/settlements"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ExecutiveReportModule.jsx",
+   "name": "ExecutiveReportModule.jsx",
+   "lines": 592,
+   "cards": 18,
+   "grids": 10,
+   "tables": 2,
+   "th": 11,
+   "toggle": false,
+   "own": {
+    "cards": 18,
+    "grids": 10,
+    "tables": 2,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [
+    "api/reports/executive/ai-narrative",
+    "api/reports/executive/kpi-comparison",
+    "api/reports/executive/summary",
+    "api/reports/executive/trend"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FinChannelGLMappingModule.jsx",
+   "name": "FinChannelGLMappingModule.jsx",
+   "lines": 393,
+   "cards": 3,
+   "grids": 0,
+   "tables": 1,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 0,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRAdminModule.jsx",
+   "name": "HRAdminModule.jsx",
+   "lines": 406,
+   "cards": 0,
+   "grids": 5,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 2,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [
+    "api/rahaza/attendance/office-location",
+    "api/rahaza/hr-seed/run",
+    "api/rahaza/resignation/accept/${emp.id}",
+    "api/rahaza/resignation/clearance/${emp.id}",
+    "api/rahaza/resignation/exit-interview/${emp.id}",
+    "api/rahaza/resignation/list",
+    "api/rahaza/salary-grades",
+    "api/rahaza/salary-grades/${form.id}",
+    "api/rahaza/salary-grades/${id}",
+    "api/rahaza/salary-grades/audit"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRAssetModule.jsx",
+   "name": "HRAssetModule.jsx",
+   "lines": 683,
+   "cards": 0,
+   "grids": 8,
+   "tables": 2,
+   "th": 13,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 2,
+    "th": 13,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/dewi/assets${path}",
+    "api/dewi/assets/${a.asset_id}/label",
+    "api/dewi/assets/labels/bulk${params}",
+    "api/rahaza/employees"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRAttendanceSessionsModule.jsx",
+   "name": "HRAttendanceSessionsModule.jsx",
+   "lines": 465,
+   "cards": 8,
+   "grids": 4,
+   "tables": 1,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 8,
+    "grids": 4,
+    "tables": 1,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [
+    "api/rahaza/attendance/permits",
+    "api/rahaza/attendance/permits/${item.id}/${mode}",
+    "api/rahaza/attendance/sessions",
+    "api/rahaza/attendance/sessions/export.xlsx",
+    "api/rahaza/employees"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HREmployeeModule.jsx",
+   "name": "HREmployeeModule.jsx",
+   "lines": 823,
+   "cards": 0,
+   "grids": 12,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 12,
+    "tables": 2,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [
+    "api/attachments/${attId}",
+    "api/attachments/${data.id}/meta",
+    "api/auth/users",
+    "api/files/${d.storage_path}",
+    "api/rahaza/employees",
+    "api/rahaza/employees/${emp.id}",
+    "api/rahaza/employees/${form.id}",
+    "api/rahaza/employees/${form.id}/documents",
+    "api/rahaza/employees/${form.id}/photo",
+    "api/rahaza/employees/${linkTarget.id}/link-user",
+    "api/rahaza/locations",
+    "api/upload"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRKPIModule.jsx",
+   "name": "HRKPIModule.jsx",
+   "lines": 1957,
+   "cards": 0,
+   "grids": 8,
+   "tables": 4,
+   "th": 26,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 4,
+    "th": 26,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 51,
+   "apis": [
+    "api/dewi/kpi${path}",
+    "api/dewi/kpi/results/${selectedPeriod.period_id}/${r.employee_id}/pdf",
+    "api/rahaza/employees"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRPerformanceModule.jsx",
+   "name": "HRPerformanceModule.jsx",
+   "lines": 729,
+   "cards": 9,
+   "grids": 12,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 12,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ImportCenterModule.jsx",
+   "name": "ImportCenterModule.jsx",
+   "lines": 28,
+   "cards": 12,
+   "grids": 4,
+   "tables": 8,
+   "th": 34,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "DataImportWizard.jsx"
+   ],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/InventoryScrapModule.jsx",
+   "name": "InventoryScrapModule.jsx",
+   "lines": 287,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/KOLCreatorModule.jsx",
+   "name": "KOLCreatorModule.jsx",
+   "lines": 1207,
+   "cards": 13,
+   "grids": 23,
+   "tables": 4,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 17,
+    "tables": 2,
+    "th": 2,
+    "toggle": false
+   },
+   "via": [
+    "CreatorIncentivePanel.jsx",
+    "CreatorWeeklyReportPanel.jsx"
+   ],
+   "fields_used": 23,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/kol/catalog",
+    "api/marketing/kol/catalog/${id}",
+    "api/marketing/kol/creators",
+    "api/marketing/kol/creators/${editCreator.id}",
+    "api/marketing/kol/creators/${id}",
+    "api/marketing/kol/fg-products",
+    "api/marketing/kol/leaderboard",
+    "api/marketing/kol/requests",
+    "api/marketing/kol/requests/${id}/approve",
+    "api/marketing/kol/requests/${id}/reject",
+    "api/marketing/kol/seed-demo"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/LiveHostModule.jsx",
+   "name": "LiveHostModule.jsx",
+   "lines": 97,
+   "cards": 14,
+   "grids": 3,
+   "tables": 3,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "AnalyticsTab.jsx",
+    "LiveHostsTab.jsx",
+    "ShiftsTab.jsx"
+   ],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/LiveSessionAnalyticsDashboard.jsx",
+   "name": "LiveSessionAnalyticsDashboard.jsx",
+   "lines": 548,
+   "cards": 16,
+   "grids": 4,
+   "tables": 5,
+   "th": 38,
+   "toggle": false,
+   "own": {
+    "cards": 16,
+    "grids": 4,
+    "tables": 5,
+    "th": 38,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 18,
+   "apis": [
+    "api/marketing/live/analytics/account-health",
+    "api/marketing/live/analytics/host-leaderboard",
+    "api/marketing/live/analytics/overview",
+    "api/marketing/live/analytics/product-performance",
+    "api/marketing/live/analytics/revenue-trend",
+    "api/marketing/live/analytics/sessions-comparison"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonBillingModule.jsx",
+   "name": "MaklonBillingModule.jsx",
+   "lines": 503,
+   "cards": 9,
+   "grids": 8,
+   "tables": 3,
+   "th": 20,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 8,
+    "tables": 3,
+    "th": 20,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonBuyerCatalogModule.jsx",
+   "name": "MaklonBuyerCatalogModule.jsx",
+   "lines": 944,
+   "cards": 10,
+   "grids": 11,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 8,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "MaklonBuyerCatalogDetailDialog.jsx"
+   ],
+   "fields_used": 15,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonDashboard.jsx",
+   "name": "MaklonDashboard.jsx",
+   "lines": 555,
+   "cards": 15,
+   "grids": 8,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 8,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonPO360Module.jsx",
+   "name": "MaklonPO360Module.jsx",
+   "lines": 1231,
+   "cards": 53,
+   "grids": 13,
+   "tables": 7,
+   "th": 49,
+   "toggle": false,
+   "own": {
+    "cards": 53,
+    "grids": 13,
+    "tables": 7,
+    "th": 49,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 31,
+   "apis": [
+    "api/dewi/maklon/bom-templates",
+    "api/dewi/maklon/pos",
+    "api/dewi/maklon/pos/${poId}/bom-sync",
+    "api/dewi/maklon/pos/${poId}/material-expectation",
+    "api/dewi/maklon/pos/${selectedPoId}/360",
+    "api/dewi/maklon/pos/${selectedPoId}/timeline"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MarketingDashboard.jsx",
+   "name": "MarketingDashboard.jsx",
+   "lines": 355,
+   "cards": 16,
+   "grids": 17,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 9,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "AccountDetailPage.jsx"
+   ],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaterialCostHistoryModule.jsx",
+   "name": "MaterialCostHistoryModule.jsx",
+   "lines": 366,
+   "cards": 11,
+   "grids": 5,
+   "tables": 1,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 5,
+    "tables": 1,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 18,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MonthlyReportModule.jsx",
+   "name": "MonthlyReportModule.jsx",
+   "lines": 292,
+   "cards": 3,
+   "grids": 3,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 3,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/marketing/reports/monthly",
+    "api/marketing/reports/monthly/export-pdf"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PayrollDashboardModule.jsx",
+   "name": "PayrollDashboardModule.jsx",
+   "lines": 416,
+   "cards": 14,
+   "grids": 5,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 14,
+    "grids": 5,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/payroll/automation/alerts",
+    "api/payroll/automation/dashboard",
+    "api/payroll/automation/history",
+    "api/payroll/automation/trigger"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PettyCashModule.jsx",
+   "name": "PettyCashModule.jsx",
+   "lines": 644,
+   "cards": 16,
+   "grids": 3,
+   "tables": 4,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 16,
+    "grids": 3,
+    "tables": 4,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/finance/petty-cash",
+    "api/hr/expenses/master-categories"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/Phase7ReportingModule.jsx",
+   "name": "Phase7ReportingModule.jsx",
+   "lines": 1130,
+   "cards": 57,
+   "grids": 8,
+   "tables": 5,
+   "th": 31,
+   "toggle": false,
+   "own": {
+    "cards": 57,
+    "grids": 8,
+    "tables": 5,
+    "th": 31,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [
+    "api/dewi/maklon/pos",
+    "api/dewi/reports/actual-vs-target",
+    "api/dewi/reports/daily",
+    "api/dewi/reports/export/daily.csv",
+    "api/dewi/reports/export/monthly.csv",
+    "api/dewi/reports/monthly",
+    "api/dewi/reports/po/${selectedPO}",
+    "api/dewi/reports/production-trend"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PredictiveMaintenanceModule.jsx",
+   "name": "PredictiveMaintenanceModule.jsx",
+   "lines": 471,
+   "cards": 15,
+   "grids": 4,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 4,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PurchaseDiscountModule.jsx",
+   "name": "PurchaseDiscountModule.jsx",
+   "lines": 298,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PurchaseOrderModule.jsx",
+   "name": "PurchaseOrderModule.jsx",
+   "lines": 1489,
+   "cards": 3,
+   "grids": 5,
+   "tables": 4,
+   "th": 19,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 5,
+    "tables": 4,
+    "th": 19,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 27,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/QuarantineModule.jsx",
+   "name": "QuarantineModule.jsx",
+   "lines": 626,
+   "cards": 0,
+   "grids": 3,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 3,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 23,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAPAgingModule.jsx",
+   "name": "RahazaAPAgingModule.jsx",
+   "lines": 142,
+   "cards": 7,
+   "grids": 2,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 2,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaARInvoicesModule.jsx",
+   "name": "RahazaARInvoicesModule.jsx",
+   "lines": 474,
+   "cards": 9,
+   "grids": 6,
+   "tables": 2,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 6,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAttendanceApprovalModule.jsx",
+   "name": "RahazaAttendanceApprovalModule.jsx",
+   "lines": 325,
+   "cards": 0,
+   "grids": 2,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAttendanceModule.jsx",
+   "name": "RahazaAttendanceModule.jsx",
+   "lines": 311,
+   "cards": 7,
+   "grids": 4,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 4,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAutoAttendanceModule.jsx",
+   "name": "RahazaAutoAttendanceModule.jsx",
+   "lines": 651,
+   "cards": 0,
+   "grids": 3,
+   "tables": 1,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 3,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 23,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaBOMModuleV2.jsx",
+   "name": "RahazaBOMModuleV2.jsx",
+   "lines": 957,
+   "cards": 15,
+   "grids": 5,
+   "tables": 14,
+   "th": 21,
+   "toggle": false,
+   "own": {
+    "cards": 15,
+    "grids": 3,
+    "tables": 10,
+    "th": 21,
+    "toggle": false
+   },
+   "via": [
+    "RequirementsPreviewCard.jsx"
+   ],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaBalanceSheetModule.jsx",
+   "name": "RahazaBalanceSheetModule.jsx",
+   "lines": 146,
+   "cards": 9,
+   "grids": 6,
+   "tables": 1,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 6,
+    "tables": 1,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaCOAModule.jsx",
+   "name": "RahazaCOAModule.jsx",
+   "lines": 281,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaCashAccountsModule.jsx",
+   "name": "RahazaCashAccountsModule.jsx",
+   "lines": 112,
+   "cards": 9,
+   "grids": 3,
+   "tables": 1,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 3,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaCashFlowModule.jsx",
+   "name": "RahazaCashFlowModule.jsx",
+   "lines": 195,
+   "cards": 11,
+   "grids": 2,
+   "tables": 2,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 2,
+    "tables": 2,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaColorsModule.jsx",
+   "name": "RahazaColorsModule.jsx",
+   "lines": 207,
+   "cards": 3,
+   "grids": 1,
+   "tables": 4,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 1,
+    "tables": 4,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaCostCentersModule.jsx",
+   "name": "RahazaCostCentersModule.jsx",
+   "lines": 102,
+   "cards": 5,
+   "grids": 0,
+   "tables": 1,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 0,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaDowntimeModule.jsx",
+   "name": "RahazaDowntimeModule.jsx",
+   "lines": 218,
+   "cards": 2,
+   "grids": 2,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 2,
+    "grids": 2,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [
+    "api/rahaza/downtime",
+    "api/rahaza/downtime/${showClose.id}",
+    "api/rahaza/downtime/reason-codes",
+    "api/rahaza/downtime/summary",
+    "api/rahaza/machines"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaFGInventoryModule.jsx",
+   "name": "RahazaFGInventoryModule.jsx",
+   "lines": 578,
+   "cards": 14,
+   "grids": 8,
+   "tables": 4,
+   "th": 20,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 4,
+    "tables": 3,
+    "th": 20,
+    "toggle": false
+   },
+   "via": [
+    "FGStockMatrixView.jsx"
+   ],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaGeneralLedgerModule.jsx",
+   "name": "RahazaGeneralLedgerModule.jsx",
+   "lines": 160,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaHPPModule.jsx",
+   "name": "RahazaHPPModule.jsx",
+   "lines": 775,
+   "cards": 37,
+   "grids": 14,
+   "tables": 5,
+   "th": 24,
+   "toggle": false,
+   "own": {
+    "cards": 37,
+    "grids": 14,
+    "tables": 5,
+    "th": 24,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaHRReportsModule.jsx",
+   "name": "RahazaHRReportsModule.jsx",
+   "lines": 757,
+   "cards": 23,
+   "grids": 14,
+   "tables": 5,
+   "th": 25,
+   "toggle": false,
+   "own": {
+    "cards": 23,
+    "grids": 14,
+    "tables": 5,
+    "th": 25,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaJournalEntryModule.jsx",
+   "name": "RahazaJournalEntryModule.jsx",
+   "lines": 367,
+   "cards": 7,
+   "grids": 5,
+   "tables": 2,
+   "th": 10,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 5,
+    "tables": 2,
+    "th": 10,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaJournalListModule.jsx",
+   "name": "RahazaJournalListModule.jsx",
+   "lines": 231,
+   "cards": 9,
+   "grids": 2,
+   "tables": 2,
+   "th": 11,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 2,
+    "tables": 2,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 12,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaMaterialIssueModule.jsx",
+   "name": "RahazaMaterialIssueModule.jsx",
+   "lines": 948,
+   "cards": 3,
+   "grids": 6,
+   "tables": 3,
+   "th": 18,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 6,
+    "tables": 3,
+    "th": 18,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 19,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaMaterialRequirementsModule.jsx",
+   "name": "RahazaMaterialRequirementsModule.jsx",
+   "lines": 502,
+   "cards": 0,
+   "grids": 5,
+   "tables": 7,
+   "th": 15,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 7,
+    "th": 15,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaMaterialsModule.jsx",
+   "name": "RahazaMaterialsModule.jsx",
+   "lines": 424,
+   "cards": 3,
+   "grids": 5,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 5,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 22,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaModelsAndBOMModule.jsx",
+   "name": "RahazaModelsAndBOMModule.jsx",
+   "lines": 117,
+   "cards": 23,
+   "grids": 6,
+   "tables": 18,
+   "th": 21,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "RahazaBOMModuleV2.jsx",
+    "RahazaVariantsModule.jsx",
+    "RahazaColorsModule.jsx"
+   ],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaOvertimeModule.jsx",
+   "name": "RahazaOvertimeModule.jsx",
+   "lines": 346,
+   "cards": 0,
+   "grids": 2,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [
+    "api/rahaza/employees",
+    "api/rahaza/overtime",
+    "api/rahaza/overtime${statusParam}",
+    "api/rahaza/overtime/${id}",
+    "api/rahaza/overtime/${id}/approve",
+    "api/rahaza/overtime/${id}/reject"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPayrollAllowancesModule.jsx",
+   "name": "RahazaPayrollAllowancesModule.jsx",
+   "lines": 371,
+   "cards": 0,
+   "grids": 1,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/rahaza/employees",
+    "api/rahaza/payroll-allowances",
+    "api/rahaza/payroll-allowances/${form.allowance_id}",
+    "api/rahaza/payroll-allowances/${id}",
+    "api/rahaza/payroll-allowances/${item.allowance_id}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPayrollProfilesModule.jsx",
+   "name": "RahazaPayrollProfilesModule.jsx",
+   "lines": 278,
+   "cards": 5,
+   "grids": 6,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 6,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPayrollRunModule.jsx",
+   "name": "RahazaPayrollRunModule.jsx",
+   "lines": 855,
+   "cards": 7,
+   "grids": 2,
+   "tables": 2,
+   "th": 18,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 2,
+    "tables": 2,
+    "th": 18,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPnLModule.jsx",
+   "name": "RahazaPnLModule.jsx",
+   "lines": 167,
+   "cards": 13,
+   "grids": 2,
+   "tables": 1,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 2,
+    "tables": 1,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaSalaryAdjustmentModule.jsx",
+   "name": "RahazaSalaryAdjustmentModule.jsx",
+   "lines": 1136,
+   "cards": 6,
+   "grids": 6,
+   "tables": 2,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 6,
+    "tables": 2,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/dewi/kpi/periods",
+    "api/rahaza${path}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaStockModule.jsx",
+   "name": "RahazaStockModule.jsx",
+   "lines": 546,
+   "cards": 3,
+   "grids": 3,
+   "tables": 2,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 3,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [
+    "DataTableV2.jsx"
+   ],
+   "fields_used": 19,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaTrialBalanceModule.jsx",
+   "name": "RahazaTrialBalanceModule.jsx",
+   "lines": 172,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaVariantsModule.jsx",
+   "name": "RahazaVariantsModule.jsx",
+   "lines": 260,
+   "cards": 5,
+   "grids": 2,
+   "tables": 4,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 4,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDHPPCalculatorModule.jsx",
+   "name": "RnDHPPCalculatorModule.jsx",
+   "lines": 1004,
+   "cards": 17,
+   "grids": 8,
+   "tables": 2,
+   "th": 10,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 8,
+    "tables": 2,
+    "th": 10,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 44,
+   "apis": [
+    "api/dewi/rnd/hpp-calculator",
+    "api/dewi/rnd/hpp-calculator/${delId}",
+    "api/dewi/rnd/hpp-calculator/${editing}",
+    "api/dewi/rnd/hpp-calculator/${endpoint}",
+    "api/dewi/rnd/hpp-calculator/${id}/stale-check",
+    "api/dewi/rnd/hpp-calculator/cmt-suggestions",
+    "api/dewi/rnd/hpp-calculator/cost-lines/from-techpack",
+    "api/dewi/rnd/hpp/fabric-estimate",
+    "api/dewi/rnd/material-options",
+    "api/dewi/rnd/styles"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDMaterialsTab.jsx",
+   "name": "RnDMaterialsTab.jsx",
+   "lines": 365,
+   "cards": 5,
+   "grids": 2,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDModule.jsx",
+   "name": "RnDModule.jsx",
+   "lines": 164,
+   "cards": 30,
+   "grids": 15,
+   "tables": 3,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "RnDStylesTab.jsx",
+    "RnDSamplesTab.jsx",
+    "RnDMaterialsTab.jsx"
+   ],
+   "fields_used": 0,
+   "apis": [
+    "api/dewi/rnd/analytics"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDStylesTab.jsx",
+   "name": "RnDStylesTab.jsx",
+   "lines": 811,
+   "cards": 9,
+   "grids": 6,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 6,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDTechPackModule.jsx",
+   "name": "RnDTechPackModule.jsx",
+   "lines": 1162,
+   "cards": 9,
+   "grids": 10,
+   "tables": 5,
+   "th": 13,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 10,
+    "tables": 5,
+    "th": 13,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [
+    "api/dewi/rnd/material-options",
+    "api/dewi/rnd/styles",
+    "api/dewi/rnd/styles/${sid}/size-list",
+    "api/dewi/rnd/tech-packs",
+    "api/dewi/rnd/tech-packs/${delId}",
+    "api/dewi/rnd/tech-packs/${editing}",
+    "api/dewi/rnd/tech-packs/${id}/approve",
+    "api/dewi/rnd/techpack/import/${mode}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDVariantModule.jsx",
+   "name": "RnDVariantModule.jsx",
+   "lines": 879,
+   "cards": 7,
+   "grids": 2,
+   "tables": 2,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 2,
+    "tables": 2,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 22,
+   "apis": [
+    "api/dewi/rnd/color-options",
+    "api/dewi/rnd/styles",
+    "api/dewi/rnd/styles/${sid}/size-list",
+    "api/dewi/rnd/styles/${styleId}/size-list",
+    "api/dewi/rnd/variants",
+    "api/dewi/rnd/variants/${delId}",
+    "api/dewi/rnd/variants/${editing}",
+    "api/dewi/rnd/variants/${vid}/fix-sku",
+    "api/dewi/rnd/variants/bulk",
+    "api/dewi/rnd/variants/sku-audit${qs}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/SalesDataEntryModule.jsx",
+   "name": "SalesDataEntryModule.jsx",
+   "lines": 725,
+   "cards": 5,
+   "grids": 7,
+   "tables": 1,
+   "th": 8,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 7,
+    "tables": 1,
+    "th": 8,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/SkuBridgeModule.jsx",
+   "name": "SkuBridgeModule.jsx",
+   "lines": 803,
+   "cards": 10,
+   "grids": 9,
+   "tables": 4,
+   "th": 13,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 5,
+    "tables": 2,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [
+    "VariantOnboardingPanel.jsx"
+   ],
+   "fields_used": 20,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/StockSchemaHealthModule.jsx",
+   "name": "StockSchemaHealthModule.jsx",
+   "lines": 572,
+   "cards": 0,
+   "grids": 6,
+   "tables": 3,
+   "th": 18,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 6,
+    "tables": 3,
+    "th": 18,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 22,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/StockThresholdsModule.jsx",
+   "name": "StockThresholdsModule.jsx",
+   "lines": 607,
+   "cards": 7,
+   "grids": 3,
+   "tables": 2,
+   "th": 15,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 3,
+    "tables": 2,
+    "th": 15,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 31,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/SupplierScorecardModule.jsx",
+   "name": "SupplierScorecardModule.jsx",
+   "lines": 720,
+   "cards": 7,
+   "grids": 10,
+   "tables": 1,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 10,
+    "tables": 1,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/SyncAuditModule.jsx",
+   "name": "SyncAuditModule.jsx",
+   "lines": 338,
+   "cards": 11,
+   "grids": 3,
+   "tables": 1,
+   "th": 5,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 3,
+    "tables": 1,
+    "th": 5,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 12,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ThreeWayMatchModule.jsx",
+   "name": "ThreeWayMatchModule.jsx",
+   "lines": 675,
+   "cards": 17,
+   "grids": 9,
+   "tables": 2,
+   "th": 19,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 9,
+    "tables": 2,
+    "th": 19,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/rahaza/3way-match${q}",
+    "api/rahaza/3way-match/${poId}",
+    "api/rahaza/ap-invoices/from-gr",
+    "api/rahaza/grs/available-for-invoice"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoChannelManagerModule.jsx",
+   "name": "TokoChannelManagerModule.jsx",
+   "lines": 462,
+   "cards": 5,
+   "grids": 6,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 6,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/UnifiedInventoryModule.jsx",
+   "name": "UnifiedInventoryModule.jsx",
+   "lines": 781,
+   "cards": 7,
+   "grids": 5,
+   "tables": 1,
+   "th": 11,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 5,
+    "tables": 1,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [
+    "api/rahaza/material-movements",
+    "api/wms/stock/unified",
+    "api/wms/stock/unified/adjust"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WHReturnsModule.jsx",
+   "name": "WHReturnsModule.jsx",
+   "lines": 1216,
+   "cards": 0,
+   "grids": 15,
+   "tables": 1,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 15,
+    "tables": 1,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSBarcodeModule.jsx",
+   "name": "WMSBarcodeModule.jsx",
+   "lines": 428,
+   "cards": 9,
+   "grids": 2,
+   "tables": 3,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 2,
+    "tables": 3,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSCMTDispatchesModule.jsx",
+   "name": "WMSCMTDispatchesModule.jsx",
+   "lines": 1040,
+   "cards": 0,
+   "grids": 15,
+   "tables": 2,
+   "th": 9,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 15,
+    "tables": 2,
+    "th": 9,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSModule.jsx",
+   "name": "WMSModule.jsx",
+   "lines": 1498,
+   "cards": 0,
+   "grids": 33,
+   "tables": 2,
+   "th": 10,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 33,
+    "tables": 2,
+    "th": 10,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 28,
+   "apis": [
+    "api/wms/${type}s/${id}",
+    "api/wms/${t}s",
+    "api/wms/${t}s/${modal.data.id}",
+    "api/wms/alerts/occupancy",
+    "api/wms/audit/adjustments",
+    "api/wms/audit/adjustments/export-csv",
+    "api/wms/audit/adjustments/stats${qStr",
+    "api/wms/audit/hotspot/${encodeURIComponent",
+    "api/wms/buildings",
+    "api/wms/map/${selectedBldg}",
+    "api/wms/pending${qs}",
+    "api/wms/pending/${movement.id}/${endpoint}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSOpnameScanModule.jsx",
+   "name": "WMSOpnameScanModule.jsx",
+   "lines": 406,
+   "cards": 21,
+   "grids": 6,
+   "tables": 1,
+   "th": 6,
+   "toggle": false,
+   "own": {
+    "cards": 21,
+    "grids": 6,
+    "tables": 1,
+    "th": 6,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSPickListModule.jsx",
+   "name": "WMSPickListModule.jsx",
+   "lines": 572,
+   "cards": 0,
+   "grids": 4,
+   "tables": 3,
+   "th": 19,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 4,
+    "tables": 3,
+    "th": 19,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 26,
+   "apis": [
+    "api/rahaza/employees",
+    "api/rahaza/material-issues",
+    "api/rahaza/shipments",
+    "api/wms/picklist",
+    "api/wms/picklist${statusParam}",
+    "api/wms/picklist/${id}",
+    "api/wms/picklist/${id}/complete",
+    "api/wms/picklist/${picklist_id}/item/${pick_item_id}/pick",
+    "api/wms/picklist/${pl.picklist_id}/pdf",
+    "api/wms/picklist/source/${sourceType}/${sourceId}"
+   ],
+   "verdict": [
+    "campur tanpa pengalih",
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AIActionsModule.jsx",
+   "name": "AIActionsModule.jsx",
+   "lines": 428,
+   "cards": 0,
+   "grids": 6,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 6,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/dewi/ai-actions",
+    "api/dewi/ai-actions/${action.action_id}",
+    "api/dewi/ai-actions/${form.action_id}",
+    "api/dewi/ai-actions/${id}",
+    "api/dewi/ai-actions/stats",
+    "api/rahaza/employees"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AIBusinessDashboard.jsx",
+   "name": "AIBusinessDashboard.jsx",
+   "lines": 482,
+   "cards": 10,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 10,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AIContentGeneratorModule.jsx",
+   "name": "AIContentGeneratorModule.jsx",
+   "lines": 387,
+   "cards": 6,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 6,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AIImageGeneratorModule.jsx",
+   "name": "AIImageGeneratorModule.jsx",
+   "lines": 271,
+   "cards": 6,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 6,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AIInsightsModule.jsx",
+   "name": "AIInsightsModule.jsx",
+   "lines": 334,
+   "cards": 0,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [
+    "api/analytics/ai/${type",
+    "api/analytics/ai/history"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AccessoriesDashboard.jsx",
+   "name": "AccessoriesDashboard.jsx",
+   "lines": 459,
+   "cards": 0,
+   "grids": 8,
+   "tables": 1,
+   "th": 1,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 1,
+    "th": 1,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [
+    "api/acc/dashboard",
+    "api/acc/stock"
+   ],
+   "verdict": [
+    "tabel hanya 1 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ActivityLogModule.jsx",
+   "name": "ActivityLogModule.jsx",
+   "lines": 204,
+   "cards": 0,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AdminSetupPanelModule.jsx",
+   "name": "AdminSetupPanelModule.jsx",
+   "lines": 323,
+   "cards": 12,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 12,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/AnnouncementModule.jsx",
+   "name": "AnnouncementModule.jsx",
+   "lines": 560,
+   "cards": 3,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [
+    "api/announcements/",
+    "api/announcements/${announcement.id}",
+    "api/announcements/${id}",
+    "api/announcements/${id}/toggle",
+    "api/announcements/all"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ApprovalInboxModule.jsx",
+   "name": "ApprovalInboxModule.jsx",
+   "lines": 285,
+   "cards": 5,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/BackupRestoreModule.jsx",
+   "name": "BackupRestoreModule.jsx",
+   "lines": 811,
+   "cards": 13,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/BuyersModule.jsx",
+   "name": "BuyersModule.jsx",
+   "lines": 168,
+   "cards": 0,
+   "grids": 0,
+   "tables": 1,
+   "th": 7,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 1,
+    "th": 7,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "tanpa pengalih"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CapacityPlanningModule.jsx",
+   "name": "CapacityPlanningModule.jsx",
+   "lines": 415,
+   "cards": 18,
+   "grids": 6,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 18,
+    "grids": 6,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [
+    "api/capacity/bottlenecks",
+    "api/capacity/check-wo",
+    "api/capacity/overview",
+    "api/capacity/simulate",
+    "api/capacity/utilization"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/CompanySettingsModule.jsx",
+   "name": "CompanySettingsModule.jsx",
+   "lines": 286,
+   "cards": 0,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/DocNumberingModule.jsx",
+   "name": "DocNumberingModule.jsx",
+   "lines": 312,
+   "cards": 7,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 21,
+   "apis": [
+    "api/admin/doc-numbering"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeExpenseApprovalModule.jsx",
+   "name": "EmployeeExpenseApprovalModule.jsx",
+   "lines": 515,
+   "cards": 0,
+   "grids": 3,
+   "tables": 1,
+   "th": 2,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 3,
+    "tables": 1,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/hr/expenses/claims",
+    "api/hr/expenses/claims/${item.id}",
+    "api/hr/expenses/pending-approval",
+    "api/hr/expenses/summary",
+    "api/hr/expenses/travel/${item.id}"
+   ],
+   "verdict": [
+    "tabel hanya 2 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeePerDiemAdminModule.jsx",
+   "name": "EmployeePerDiemAdminModule.jsx",
+   "lines": 266,
+   "cards": 0,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [
+    "api/hr/expenses/per-diem-rates",
+    "api/hr/expenses/per-diem-rates/${rate.id}"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FinanceDashboard.jsx",
+   "name": "FinanceDashboard.jsx",
+   "lines": 94,
+   "cards": 3,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FinanceKasbonModule.jsx",
+   "name": "FinanceKasbonModule.jsx",
+   "lines": 494,
+   "cards": 0,
+   "grids": 4,
+   "tables": 1,
+   "th": 2,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 4,
+    "tables": 1,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [
+    "api/dewi/kasbon/requests",
+    "api/dewi/kasbon/requests/${req.id}/disburse",
+    "api/dewi/kasbon/requests/${req.id}/repay",
+    "api/dewi/kasbon/stats"
+   ],
+   "verdict": [
+    "tabel hanya 2 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FinancialRecapModule.jsx",
+   "name": "FinancialRecapModule.jsx",
+   "lines": 274,
+   "cards": 0,
+   "grids": 10,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 10,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FixedAssetsModule.jsx",
+   "name": "FixedAssetsModule.jsx",
+   "lines": 467,
+   "cards": 15,
+   "grids": 3,
+   "tables": 2,
+   "th": 2,
+   "toggle": true,
+   "own": {
+    "cards": 15,
+    "grids": 3,
+    "tables": 2,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "tabel hanya 2 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/FulfillmentModule.jsx",
+   "name": "FulfillmentModule.jsx",
+   "lines": 612,
+   "cards": 7,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [
+    "api/fulfillment/inventory/available",
+    "api/fulfillment/orders/${order.id}/${endpoint}",
+    "api/fulfillment/orders/${order.id}/allocate",
+    "api/fulfillment/orders/${order.id}/dispatch",
+    "api/fulfillment/queue",
+    "api/fulfillment/summary"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRApprovalInboxModule.jsx",
+   "name": "HRApprovalInboxModule.jsx",
+   "lines": 603,
+   "cards": 9,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/hr/inbox",
+    "api/hr/inbox/${item.type}/${item.id}/approve",
+    "api/hr/inbox/${item.type}/${item.id}/reject"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRDashboard.jsx",
+   "name": "HRDashboard.jsx",
+   "lines": 282,
+   "cards": 13,
+   "grids": 10,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 13,
+    "grids": 10,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRKasbonModule.jsx",
+   "name": "HRKasbonModule.jsx",
+   "lines": 398,
+   "cards": 0,
+   "grids": 3,
+   "tables": 1,
+   "th": 2,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 3,
+    "tables": 1,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [
+    "api/dewi/kasbon/requests",
+    "api/dewi/kasbon/requests/${req.id}/hr-review",
+    "api/dewi/kasbon/seed",
+    "api/dewi/kasbon/stats"
+   ],
+   "verdict": [
+    "tabel hanya 2 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRLeaveBalancesModule.jsx",
+   "name": "HRLeaveBalancesModule.jsx",
+   "lines": 234,
+   "cards": 0,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/rahaza/leave-balances",
+    "api/rahaza/leave-balances/${form.id}",
+    "api/rahaza/leave-balances/allocate-year"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HROnboardingModule.jsx",
+   "name": "HROnboardingModule.jsx",
+   "lines": 1052,
+   "cards": 9,
+   "grids": 15,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 15,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/HRShiftManagementModule.jsx",
+   "name": "HRShiftManagementModule.jsx",
+   "lines": 493,
+   "cards": 0,
+   "grids": 7,
+   "tables": 1,
+   "th": 1,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 7,
+    "tables": 1,
+    "th": 1,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [
+    "api/hr/shifts",
+    "api/hr/shifts/${editShift.id}",
+    "api/hr/shifts/${id}",
+    "api/hr/shifts/assignments",
+    "api/hr/shifts/seed-defaults",
+    "api/hr/shifts/summary"
+   ],
+   "verdict": [
+    "tabel hanya 1 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/KPIGamificationTab.jsx",
+   "name": "KPIGamificationTab.jsx",
+   "lines": 443,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/KPIPortalModule.jsx",
+   "name": "KPIPortalModule.jsx",
+   "lines": 556,
+   "cards": 0,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [
+    "api/dewi/kpi${path}"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/KasbonStaffModule.jsx",
+   "name": "KasbonStaffModule.jsx",
+   "lines": 505,
+   "cards": 0,
+   "grids": 2,
+   "tables": 1,
+   "th": 1,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 1,
+    "th": 1,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [
+    "api/dewi/kasbon/my-requests",
+    "api/dewi/kasbon/requests"
+   ],
+   "verdict": [
+    "tabel hanya 1 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonAIQuoteModule.jsx",
+   "name": "MaklonAIQuoteModule.jsx",
+   "lines": 433,
+   "cards": 7,
+   "grids": 9,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 9,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonHppModule.jsx",
+   "name": "MaklonHppModule.jsx",
+   "lines": 228,
+   "cards": 7,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonSLADashboard.jsx",
+   "name": "MaklonSLADashboard.jsx",
+   "lines": 361,
+   "cards": 8,
+   "grids": 6,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 8,
+    "grids": 6,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MaklonSystemConfigModule.jsx",
+   "name": "MaklonSystemConfigModule.jsx",
+   "lines": 162,
+   "cards": 5,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ManagementDashboard.jsx",
+   "name": "ManagementDashboard.jsx",
+   "lines": 303,
+   "cards": 0,
+   "grids": 10,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 10,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ManagementOverviewModule.jsx",
+   "name": "ManagementOverviewModule.jsx",
+   "lines": 608,
+   "cards": 0,
+   "grids": 9,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 9,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ManagementToolsModule.jsx",
+   "name": "ManagementToolsModule.jsx",
+   "lines": 315,
+   "cards": 12,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 12,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MarketingAIInsightsDashboard.jsx",
+   "name": "MarketingAIInsightsDashboard.jsx",
+   "lines": 591,
+   "cards": 34,
+   "grids": 7,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 34,
+    "grids": 7,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/marketing/ai-insights/forecast",
+    "api/marketing/ai-insights/overview",
+    "api/marketing/ai-insights/recommendations",
+    "api/marketing/ai-insights/sentiment"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MarketingARBridgeModule.jsx",
+   "name": "MarketingARBridgeModule.jsx",
+   "lines": 511,
+   "cards": 10,
+   "grids": 12,
+   "tables": 1,
+   "th": 4,
+   "toggle": true,
+   "own": {
+    "cards": 10,
+    "grids": 12,
+    "tables": 1,
+    "th": 4,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [
+    "api/marketing/settlements",
+    "api/marketing/settlements/${editId}",
+    "api/marketing/settlements/${r.id}",
+    "api/marketing/settlements/${r.id}/journal",
+    "api/marketing/settlements/coa-map",
+    "api/marketing/settlements/reconcile"
+   ],
+   "verdict": [
+    "tabel hanya 4 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MarketingOverviewDashboard.jsx",
+   "name": "MarketingOverviewDashboard.jsx",
+   "lines": 400,
+   "cards": 8,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 8,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [
+    "api/marketing/alerts/evaluate",
+    "api/marketing/alerts/preview",
+    "api/marketing/complaints/summary",
+    "api/marketing/content-calendar/summary",
+    "api/marketing/discounts/summary",
+    "api/marketing/health/summary",
+    "api/marketing/orders/summary",
+    "api/marketing/product-launches/summary"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MarketingTaskHubModule.jsx",
+   "name": "MarketingTaskHubModule.jsx",
+   "lines": 82,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [
+    "TaskManagementModule.jsx"
+   ],
+   "fields_used": 1,
+   "apis": [
+    "api/marketing/tasks"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/MultiLevelApprovalModule.jsx",
+   "name": "MultiLevelApprovalModule.jsx",
+   "lines": 467,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 11,
+   "apis": [
+    "api/approvals/chains",
+    "api/approvals/pending",
+    "api/approvals/requests",
+    "api/approvals/requests/${id}/approve",
+    "api/approvals/requests/${id}/reject",
+    "api/approvals/seed-missing-chains",
+    "api/approvals/summary"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/OKRTrackerModule.jsx",
+   "name": "OKRTrackerModule.jsx",
+   "lines": 582,
+   "cards": 11,
+   "grids": 9,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 9,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PDFConfigModule.jsx",
+   "name": "PDFConfigModule.jsx",
+   "lines": 465,
+   "cards": 0,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/PaymentTab.jsx",
+   "name": "PaymentTab.jsx",
+   "lines": 308,
+   "cards": 14,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 14,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/marketing/livehost/payment/calculate",
+    "api/marketing/livehost/payment/status",
+    "api/marketing/livehost/payment/sync-to-finance"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PdfDocSettingsModule.jsx",
+   "name": "PdfDocSettingsModule.jsx",
+   "lines": 452,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [
+    "api/pdf-doc-settings/${docType}",
+    "api/pdf-doc-settings/${selected}",
+    "api/pdf-doc-settings/doc-types"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PortalSayaDashboard.jsx",
+   "name": "PortalSayaDashboard.jsx",
+   "lines": 253,
+   "cards": 8,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 8,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [
+    "api/portal/dashboard"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ProcurementRequestModule.jsx",
+   "name": "ProcurementRequestModule.jsx",
+   "lines": 1450,
+   "cards": 0,
+   "grids": 5,
+   "tables": 1,
+   "th": 2,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 1,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 38,
+   "apis": [
+    "api/procurement/dashboard",
+    "api/procurement/inbox",
+    "api/procurement/price-lookup",
+    "api/procurement/request-types",
+    "api/procurement/requests",
+    "api/procurement/requests/${pr.id}/create-po",
+    "api/procurement/suppliers/options",
+    "api/rahaza/materials",
+    "api/rahaza/materials/uom-options"
+   ],
+   "verdict": [
+    "tabel hanya 2 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ProductionControlTowerModule.jsx",
+   "name": "ProductionControlTowerModule.jsx",
+   "lines": 481,
+   "cards": 17,
+   "grids": 7,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 7,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [
+    "api/prod/control-tower"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/ProductionDashboardOverview.jsx",
+   "name": "ProductionDashboardOverview.jsx",
+   "lines": 275,
+   "cards": 0,
+   "grids": 6,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 6,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/prod/dashboard"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/PutAwayModule.jsx",
+   "name": "PutAwayModule.jsx",
+   "lines": 312,
+   "cards": 7,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 15,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAIModule.jsx",
+   "name": "RahazaAIModule.jsx",
+   "lines": 352,
+   "cards": 14,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 14,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/dewi/ai-actions",
+    "api/rahaza/ai/daily-summary",
+    "api/rahaza/ai/predictive-delay",
+    "api/rahaza/ai/root-cause",
+    "api/rahaza/ai/smart-search"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAQLCalculatorModule.jsx",
+   "name": "RahazaAQLCalculatorModule.jsx",
+   "lines": 270,
+   "cards": 7,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaAlertSettingsModule.jsx",
+   "name": "RahazaAlertSettingsModule.jsx",
+   "lines": 491,
+   "cards": 7,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaCoaAutoModule.jsx",
+   "name": "RahazaCoaAutoModule.jsx",
+   "lines": 235,
+   "cards": 3,
+   "grids": 1,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 1,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaLeaveModule.jsx",
+   "name": "RahazaLeaveModule.jsx",
+   "lines": 819,
+   "cards": 7,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [
+    "api/rahaza/employees",
+    "api/rahaza/leave-types",
+    "api/rahaza/leave-types${editing",
+    "api/rahaza/leave-types/${lt.id}",
+    "api/rahaza/leaves",
+    "api/rahaza/leaves/${cancelModal.id}/cancel",
+    "api/rahaza/leaves/${id}/approve",
+    "api/rahaza/leaves/${rejectModal.id}/reject",
+    "api/rahaza/leaves/bulk-approve",
+    "api/rahaza/leaves/request",
+    "api/rahaza/leaves/upload-document",
+    "api/rahaza/leaves/working-days"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaLineBalancingModule.jsx",
+   "name": "RahazaLineBalancingModule.jsx",
+   "lines": 206,
+   "cards": 5,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPeriodsModule.jsx",
+   "name": "RahazaPeriodsModule.jsx",
+   "lines": 125,
+   "cards": 5,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaPostingProfilesModule.jsx",
+   "name": "RahazaPostingProfilesModule.jsx",
+   "lines": 207,
+   "cards": 11,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 11,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaProductionCalendarModule.jsx",
+   "name": "RahazaProductionCalendarModule.jsx",
+   "lines": 341,
+   "cards": 0,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaSOPModule.jsx",
+   "name": "RahazaSOPModule.jsx",
+   "lines": 358,
+   "cards": 5,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaShiftHandoverModule.jsx",
+   "name": "RahazaShiftHandoverModule.jsx",
+   "lines": 512,
+   "cards": 0,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDAnalyticsModule.jsx",
+   "name": "RnDAnalyticsModule.jsx",
+   "lines": 97,
+   "cards": 9,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 9,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/dewi/rnd/analytics"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDCostingTab.jsx",
+   "name": "RnDCostingTab.jsx",
+   "lines": 428,
+   "cards": 5,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 21,
+   "apis": [
+    "api/dewi/rnd/${path}",
+    "api/dewi/rnd/sample-costing",
+    "api/dewi/rnd/sample-costing/${delId}",
+    "api/dewi/rnd/sample-costing/${editing}",
+    "api/dewi/rnd/sample-costing/preview"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RnDStyleDetailPage.jsx",
+   "name": "RnDStyleDetailPage.jsx",
+   "lines": 406,
+   "cards": 17,
+   "grids": 4,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 4,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [
+    "api/dewi/rnd/styles/${styleId}/overview"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/RoleManagementModule.jsx",
+   "name": "RoleManagementModule.jsx",
+   "lines": 1024,
+   "cards": 17,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [
+    "api/permissions",
+    "api/roles",
+    "api/roles/${role.id}",
+    "api/roles/${selected.id}",
+    "api/roles/audit"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/SetupWizard.jsx",
+   "name": "SetupWizard.jsx",
+   "lines": 463,
+   "cards": 3,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 3,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TaskManagementModule.jsx",
+   "name": "TaskManagementModule.jsx",
+   "lines": 392,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 12,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 0,
+    "th": 12,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TaskTemplatesModule.jsx",
+   "name": "TaskTemplatesModule.jsx",
+   "lines": 556,
+   "cards": 5,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 2,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoCSReturnsModule.jsx",
+   "name": "TokoCSReturnsModule.jsx",
+   "lines": 921,
+   "cards": 25,
+   "grids": 6,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 25,
+    "grids": 6,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 5,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoDashboard.jsx",
+   "name": "TokoDashboard.jsx",
+   "lines": 100,
+   "cards": 7,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 7,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoDashboardModule.jsx",
+   "name": "TokoDashboardModule.jsx",
+   "lines": 233,
+   "cards": 19,
+   "grids": 8,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 19,
+    "grids": 8,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoOrdersModule.jsx",
+   "name": "TokoOrdersModule.jsx",
+   "lines": 1055,
+   "cards": 17,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 17,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 36,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/TokoPricingFlashsaleModule.jsx",
+   "name": "TokoPricingFlashsaleModule.jsx",
+   "lines": 265,
+   "cards": 5,
+   "grids": 2,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 5,
+    "grids": 2,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/VendorAccountsAdminModule.jsx",
+   "name": "VendorAccountsAdminModule.jsx",
+   "lines": 727,
+   "cards": 0,
+   "grids": 5,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 14,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/VendorPortalModule.jsx",
+   "name": "VendorPortalModule.jsx",
+   "lines": 568,
+   "cards": 0,
+   "grids": 3,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 3,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WMSDeliveryNotesModule.jsx",
+   "name": "WMSDeliveryNotesModule.jsx",
+   "lines": 1003,
+   "cards": 0,
+   "grids": 9,
+   "tables": 2,
+   "th": 3,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 9,
+    "tables": 2,
+    "th": 3,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 25,
+   "apis": [
+    "api/production-jobs",
+    "api/production-jobs/${selectedJobId}/bom-material-lines",
+    "api/wms/delivery-notes",
+    "api/wms/delivery-notes/${id}/issue",
+    "api/wms/delivery-notes/${id}/pdf",
+    "api/wms/delivery-notes/${id}/receive",
+    "api/wms/delivery-notes/sources"
+   ],
+   "verdict": [
+    "tabel hanya 3 kolom"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/WarehouseDashboard.jsx",
+   "name": "WarehouseDashboard.jsx",
+   "lines": 304,
+   "cards": 0,
+   "grids": 8,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 8,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 9,
+   "apis": [
+    "api/rahaza/material-stock/summary",
+    "api/rahaza/materials",
+    "api/rahaza/materials/reorder-alerts",
+    "api/wms/alerts/occupancy",
+    "api/wms/buildings",
+    "api/wms/legacy/dashboard-kpi",
+    "api/wms/map/${b.id}",
+    "api/wms/pending/summary${buildingFilter}"
+   ],
+   "verdict": [
+    "KARTU-SAJA"
+   ]
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AccountBulkReviewModule.jsx",
+   "name": "AccountBulkReviewModule.jsx",
+   "lines": 315,
+   "cards": 3,
+   "grids": 2,
+   "tables": 1,
+   "th": 8,
+   "toggle": true,
+   "own": {
+    "cards": 3,
+    "grids": 2,
+    "tables": 1,
+    "th": 8,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 7,
+   "apis": [
+    "api/auth/users",
+    "api/marketing/accounts",
+    "api/marketing/accounts/${id}",
+    "api/marketing/accounts/coa-options"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/AccountManagementModule.jsx",
+   "name": "AccountManagementModule.jsx",
+   "lines": 1272,
+   "cards": 5,
+   "grids": 11,
+   "tables": 4,
+   "th": 16,
+   "toggle": true,
+   "own": {
+    "cards": 5,
+    "grids": 11,
+    "tables": 1,
+    "th": 16,
+    "toggle": true
+   },
+   "via": [
+    "AccountAssignView.jsx"
+   ],
+   "fields_used": 25,
+   "apis": [
+    "api/auth/users",
+    "api/marketing/accounts",
+    "api/marketing/accounts/${acc.id}",
+    "api/marketing/accounts/${account.id}",
+    "api/marketing/accounts/${archiveTarget.id}",
+    "api/marketing/accounts/coa-options",
+    "api/marketing/accounts/health/recompute-all"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/AccountTargetsModule.jsx",
+   "name": "AccountTargetsModule.jsx",
+   "lines": 524,
+   "cards": 63,
+   "grids": 13,
+   "tables": 6,
+   "th": 25,
+   "toggle": true,
+   "own": {
+    "cards": 21,
+    "grids": 4,
+    "tables": 2,
+    "th": 11,
+    "toggle": false
+   },
+   "via": [
+    "BudgetAllocationTab.jsx",
+    "CycleView.jsx"
+   ],
+   "fields_used": 10,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/kol/creators",
+    "api/marketing/targets",
+    "api/marketing/targets/creator",
+    "api/marketing/targets/creator/export-pdf",
+    "api/marketing/targets/creator/monthly-summary",
+    "api/marketing/targets/monthly-summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/BudgetModule.jsx",
+   "name": "BudgetModule.jsx",
+   "lines": 481,
+   "cards": 13,
+   "grids": 3,
+   "tables": 3,
+   "th": 6,
+   "toggle": true,
+   "own": {
+    "cards": 13,
+    "grids": 3,
+    "tables": 3,
+    "th": 6,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/CatalogManagementModule.jsx",
+   "name": "CatalogManagementModule.jsx",
+   "lines": 1668,
+   "cards": 0,
+   "grids": 18,
+   "tables": 6,
+   "th": 22,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 15,
+    "tables": 3,
+    "th": 15,
+    "toggle": false
+   },
+   "via": [
+    "CatalogFromMasterModule.jsx",
+    "CatalogItemsView.jsx"
+   ],
+   "fields_used": 29,
+   "apis": [
+    "api/marketing/accounts",
+    "api/marketing/catalogs${path}",
+    "api/rahaza/product-categories",
+    "api/rahaza/variants"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/ContentCalendarModule.jsx",
+   "name": "ContentCalendarModule.jsx",
+   "lines": 717,
+   "cards": 39,
+   "grids": 11,
+   "tables": 8,
+   "th": 31,
+   "toggle": true,
+   "own": {
+    "cards": 8,
+    "grids": 6,
+    "tables": 1,
+    "th": 7,
+    "toggle": true
+   },
+   "via": [
+    "ContentPerformanceView.jsx",
+    "CreatorScorecardView.jsx",
+    "PlatformKpiView.jsx"
+   ],
+   "fields_used": 12,
+   "apis": [
+    "api/marketing/content-calendar",
+    "api/marketing/content-calendar/${editTarget.id}",
+    "api/marketing/content-calendar/${entryId}/ai-hook",
+    "api/marketing/content-calendar/${entryId}/status",
+    "api/marketing/content-calendar/${id}",
+    "api/marketing/content-calendar/monthly",
+    "api/marketing/content-calendar/summary",
+    "api/marketing/content-calendar/types"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/DailyReportModule.jsx",
+   "name": "DailyReportModule.jsx",
+   "lines": 533,
+   "cards": 6,
+   "grids": 3,
+   "tables": 1,
+   "th": 16,
+   "toggle": true,
+   "own": {
+    "cards": 6,
+    "grids": 3,
+    "tables": 1,
+    "th": 16,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [
+    "api/marketing/reports/daily",
+    "api/marketing/tasks/${task.id}/complete-action"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeExpenseModule.jsx",
+   "name": "EmployeeExpenseModule.jsx",
+   "lines": 678,
+   "cards": 0,
+   "grids": 5,
+   "tables": 2,
+   "th": 12,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 5,
+    "tables": 2,
+    "th": 12,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 8,
+   "apis": [
+    "api/hr/expenses/categories",
+    "api/hr/expenses/claims",
+    "api/hr/expenses/claims/${claim.id}/${endpoint}",
+    "api/hr/expenses/claims/bulk-approve",
+    "api/hr/expenses/claims/export",
+    "api/hr/expenses/my-summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/EmployeeTravelModule.jsx",
+   "name": "EmployeeTravelModule.jsx",
+   "lines": 638,
+   "cards": 0,
+   "grids": 7,
+   "tables": 1,
+   "th": 7,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 7,
+    "tables": 1,
+    "th": 7,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 17,
+   "apis": [
+    "api/hr/expenses/my-summary",
+    "api/hr/expenses/travel",
+    "api/hr/expenses/travel/${req.id}/${endpoint}",
+    "api/hr/expenses/travel/bulk-approve",
+    "api/hr/expenses/travel/export"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/HR360FeedbackModule.jsx",
+   "name": "HR360FeedbackModule.jsx",
+   "lines": 317,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [
+    "api/rahaza/360-feedback/cycles",
+    "api/rahaza/360-feedback/cycles/${cycle.cycle_id}/submit",
+    "api/rahaza/360-feedback/cycles/${id}/close",
+    "api/rahaza/employees",
+    "api/users"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/IntegrationSettingsModule.jsx",
+   "name": "IntegrationSettingsModule.jsx",
+   "lines": 381,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/KOLLeaderboardModule.jsx",
+   "name": "KOLLeaderboardModule.jsx",
+   "lines": 348,
+   "cards": 6,
+   "grids": 3,
+   "tables": 1,
+   "th": 10,
+   "toggle": true,
+   "own": {
+    "cards": 6,
+    "grids": 3,
+    "tables": 1,
+    "th": 10,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 3,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MarketingSchedulerModule.jsx",
+   "name": "MarketingSchedulerModule.jsx",
+   "lines": 244,
+   "cards": 2,
+   "grids": 0,
+   "tables": 2,
+   "th": 11,
+   "toggle": true,
+   "own": {
+    "cards": 2,
+    "grids": 0,
+    "tables": 2,
+    "th": 11,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/MarketingWebhooksModule.jsx",
+   "name": "MarketingWebhooksModule.jsx",
+   "lines": 504,
+   "cards": 4,
+   "grids": 3,
+   "tables": 1,
+   "th": 6,
+   "toggle": true,
+   "own": {
+    "cards": 4,
+    "grids": 3,
+    "tables": 1,
+    "th": 6,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [
+    "api/marketing/webhooks/events",
+    "api/marketing/webhooks/events/${eventId}/reprocess",
+    "api/marketing/webhooks/manual",
+    "api/marketing/webhooks/stats"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/ProductLaunchModule.jsx",
+   "name": "ProductLaunchModule.jsx",
+   "lines": 699,
+   "cards": 9,
+   "grids": 3,
+   "tables": 1,
+   "th": 7,
+   "toggle": true,
+   "own": {
+    "cards": 9,
+    "grids": 3,
+    "tables": 1,
+    "th": 7,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 20,
+   "apis": [
+    "api/marketing/product-launches",
+    "api/marketing/product-launches/${editTarget.id}",
+    "api/marketing/product-launches/${id}",
+    "api/marketing/product-launches/${id}/status",
+    "api/marketing/product-launches/summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/ProductionDashboardModule.jsx",
+   "name": "ProductionDashboardModule.jsx",
+   "lines": 41,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaEmployeesModule.jsx",
+   "name": "RahazaEmployeesModule.jsx",
+   "lines": 92,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaLinesModule.jsx",
+   "name": "RahazaLinesModule.jsx",
+   "lines": 48,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaLocationsModule.jsx",
+   "name": "RahazaLocationsModule.jsx",
+   "lines": 40,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaMachinesModule.jsx",
+   "name": "RahazaMachinesModule.jsx",
+   "lines": 51,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 1,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaProcessesModule.jsx",
+   "name": "RahazaProcessesModule.jsx",
+   "lines": 27,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaShiftsModule.jsx",
+   "name": "RahazaShiftsModule.jsx",
+   "lines": 28,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaSizesModule.jsx",
+   "name": "RahazaSizesModule.jsx",
+   "lines": 26,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/RahazaUserGuideModule.jsx",
+   "name": "RahazaUserGuideModule.jsx",
+   "lines": 38,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 0,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/RatingReviewModule.jsx",
+   "name": "RatingReviewModule.jsx",
+   "lines": 687,
+   "cards": 6,
+   "grids": 6,
+   "tables": 1,
+   "th": 12,
+   "toggle": true,
+   "own": {
+    "cards": 6,
+    "grids": 6,
+    "tables": 1,
+    "th": 12,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 13,
+   "apis": [
+    "api/marketing/reviews",
+    "api/marketing/reviews/${editTarget.id}",
+    "api/marketing/reviews/${id}",
+    "api/marketing/reviews/${reviewId}/ai-categorize",
+    "api/marketing/reviews/${showDetail.id}/respond",
+    "api/marketing/reviews/categories",
+    "api/marketing/reviews/platforms",
+    "api/marketing/reviews/summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/ReceivingModule.jsx",
+   "name": "ReceivingModule.jsx",
+   "lines": 1178,
+   "cards": 5,
+   "grids": 6,
+   "tables": 2,
+   "th": 6,
+   "toggle": true,
+   "own": {
+    "cards": 5,
+    "grids": 6,
+    "tables": 1,
+    "th": 2,
+    "toggle": true
+   },
+   "via": [
+    "RollLinesEditor.jsx"
+   ],
+   "fields_used": 36,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/ReturnsRefundsModule.jsx",
+   "name": "ReturnsRefundsModule.jsx",
+   "lines": 837,
+   "cards": 6,
+   "grids": 7,
+   "tables": 1,
+   "th": 14,
+   "toggle": true,
+   "own": {
+    "cards": 6,
+    "grids": 7,
+    "tables": 1,
+    "th": 14,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 16,
+   "apis": [
+    "api/marketing/returns",
+    "api/marketing/returns/${editTarget.id}",
+    "api/marketing/returns/${id}",
+    "api/marketing/returns/${id}/approve",
+    "api/marketing/returns/${id}/complete",
+    "api/marketing/returns/${id}/create-wh-return",
+    "api/marketing/returns/${id}/reject",
+    "api/marketing/returns/reasons",
+    "api/marketing/returns/summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/marketing/SampleDeliveryModule.jsx",
+   "name": "SampleDeliveryModule.jsx",
+   "lines": 812,
+   "cards": 6,
+   "grids": 8,
+   "tables": 1,
+   "th": 17,
+   "toggle": true,
+   "own": {
+    "cards": 6,
+    "grids": 8,
+    "tables": 1,
+    "th": 17,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 4,
+   "apis": [
+    "api/marketing/samples",
+    "api/marketing/samples/${editTarget.id}",
+    "api/marketing/samples/${id}",
+    "api/marketing/samples/${id}/deliver",
+    "api/marketing/samples/${id}/ship",
+    "api/marketing/samples/${showDetail.id}/update-progress",
+    "api/marketing/samples/summary"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/WMSFabricRollsModule.jsx",
+   "name": "WMSFabricRollsModule.jsx",
+   "lines": 1118,
+   "cards": 0,
+   "grids": 7,
+   "tables": 3,
+   "th": 6,
+   "toggle": true,
+   "own": {
+    "cards": 0,
+    "grids": 7,
+    "tables": 2,
+    "th": 3,
+    "toggle": true
+   },
+   "via": [
+    "RollLinesEditor.jsx"
+   ],
+   "fields_used": 24,
+   "apis": [
+    "api/wms/ai/fabric-rolls/quality-analysis",
+    "api/wms/fabric-rolls",
+    "api/wms/fabric-rolls/${issueDialog.id}/issue",
+    "api/wms/fabric-rolls/${putawayDialog.id}/putaway",
+    "api/wms/fabric-rolls/${roll.id}",
+    "api/wms/fabric-rolls/issue-from-receipt",
+    "api/wms/fabric-rolls/missing-from-receipts",
+    "api/wms/fabric-rolls/number-policy"
+   ],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/WarehouseSmartModule.jsx",
+   "name": "WarehouseSmartModule.jsx",
+   "lines": 372,
+   "cards": 0,
+   "grids": 0,
+   "tables": 0,
+   "th": 0,
+   "toggle": false,
+   "own": {
+    "cards": 0,
+    "grids": 0,
+    "tables": 0,
+    "th": 0,
+    "toggle": false
+   },
+   "via": [],
+   "fields_used": 10,
+   "apis": [],
+   "verdict": []
+  },
+  {
+   "file": "frontend/src/components/erp/WeeklyShoppingListModule.jsx",
+   "name": "WeeklyShoppingListModule.jsx",
+   "lines": 542,
+   "cards": 7,
+   "grids": 3,
+   "tables": 3,
+   "th": 21,
+   "toggle": true,
+   "own": {
+    "cards": 7,
+    "grids": 3,
+    "tables": 3,
+    "th": 21,
+    "toggle": true
+   },
+   "via": [],
+   "fields_used": 33,
+   "apis": [],
+   "verdict": []
+  }
+ ]
+}

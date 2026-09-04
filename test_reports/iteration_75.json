@@ -1,0 +1,35 @@
+{
+  "summary": "E2E verification of INV-F28 (Monitoring CMT potongan-sesuai-order bug + 3 features + end-to-end replacement tracker). Backend pytest test_inv_f28_monitoring_cmt.py: 5 passed, 1 skipped (no child REPLACEMENT vendor-shipment exists in DB, expected). Frontend Playwright: (a) Portal → Monitoring CMT — monitor-scope-running/all chips render, kpi-potongan-ke-cmt=250 with sub 'pcs sesuai order (kiriman NORMAL)', kpi-belum-ke-cmt=250 with sub 'masih di gudang · dari PO Draft: 0 pcs', kpi-ke-buyer=60 with sub 'sisa bisa kirim: 90 pcs'; scope=all click keeps chip active + reloads dashboard (values same because no Completed maklon PO in DB). (b) Dispatch ke Buyer → tab-dispatch-outstanding — outstanding-po-board renders with 3 po-board-row-* entries; board-dispatch-PO-MKL-202608-9433 labeled 'Dispatch Baru' & enabled (sisa 90), board-dispatch-PO-INT-DEMO-2 labeled 'Lanjut Dispatch' & disabled (sisa 0), board-dispatch-PO-MK-DEMO-2 labeled 'Dispatch Baru' & disabled (sisa 0). Clicking 'Dispatch Baru' for 9433 opens the 'Buat Buyer Shipment' modal with the PO items already filtered (only ARN-HD-NVY-M row, order 100) and sj-submit-btn present; continue-dispatch-banner correctly absent. (c) Admin 'Permintaan Pengganti' tab renders with the 'Surat Jalan Pengganti & Jejaknya' column ready for mr-tracker-{req_id}; no requests yet in DB so no tracker rendered. Hard invariant BUG1: qty_sent_cmt for PO-MKL-202608-9433 = 100 (not 105) — confirmed via API.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Buyer Shipment → Buat Buyer Shipment modal (opened from board-dispatch-PO-MKL-202608-9433)", "issues": ["The 'Pilih PO' select still shows placeholder '-- Pilih PO --' even though the item list is already filtered to that PO. Functionally correct (items pre-loaded, CMT-RCV-00198 checkbox available), but the label doesn't reflect openCreateForPO() preselection. Cosmetic only — main agent may want to bind the select's displayed label to the pre-set PO id."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_inv_f28_monitoring_cmt.py",
+    "/app/test_reports/pytest/inv_f28.xml"
+  ],
+  "action_items": [
+    "OPTIONAL (cosmetic): make 'Pilih PO' select show the pre-selected PO label when the modal is opened via board-dispatch-{no_po} (openCreateForPO in BuyerShipmentModule.jsx).",
+    "OPTIONAL: To exercise the mr-tracker-{req_id} UI end-to-end and the child_shipment API fields (is_child_shipment=true, po_accessories=[], material_request_number), seed one Approved REPLACEMENT vendor request against SJ-MTR-PO-MKL-202608-9433 so a '…-R1' child shipment is emitted. Current DB has zero REPLACEMENT requests approved.",
+    "OPTIONAL: seed one PO maklon in 'Completed' status so that clicking 'Semua PO' chip visibly increases total_po & the summary shows the difference from 'PO Berjalan' (currently the two scopes return identical numbers because no maklon PO is in a DONE status)."
+  ],
+  "critical_code_review_comments": [
+    "services/cmt_kejar.py PO_DONE_STATUSES is applied case-insensitively via _po_status().lower() — good; make sure any legacy PO with status 'Done'/'Selesai' capitalization is covered (it is).",
+    "openCreateForPO() in BuyerShipmentModule.jsx should also update the visible label of the PO select, not only the underlying value/items (see design issue above).",
+    "backend/routes/cmt_kejar.py _norm_scope() treats scope='1' as SCOPE_ALL — undocumented alias. Consider limiting the accepted vocabulary to 'running'/'all' only, or documenting the aliases in the OpenAPI Query description."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_inv_f28_monitoring_cmt.py (new)"
+  ],
+  "success_rate": {"backend": "100% (5/5 executed, 1 skipped due to missing seed)", "frontend": "100% of UI checks executed passed"},
+  "test_credentials": "admin@garment.com / Admin@123 (login returns key `token`, not `access_token`). cmtvendor@dewiaditya.id / Dewi@123 for /vendor-cmt (not re-exercised — already covered in iteration_74).",
+  "seed_data_creation": "None. Used the pre-seeded PO-MKL-202608-9433 + CMT-RCV-00198 + SJ-MTR-PO-MKL-202608-9433 as instructed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run backend tests with `REACT_APP_BACKEND_URL=... pytest backend/tests/test_inv_f28_monitoring_cmt.py -o addopts='' -v`. The env var MUST be exported into the pytest process — repo's global pytest.ini does NOT propagate frontend/.env. To hit the two skipped/absent branches (child shipment shape + mr-tracker UI), first approve a REPLACEMENT material-request against SJ-MTR-PO-MKL-202608-9433 to emit a '…-R1' child shipment. Also consider inserting a synthetic 'Completed' maklon PO to visibly differentiate scope=running vs scope=all on the dashboard.",
+  "rca of the issue": "n/a — INV-F28 shipped and remains GREEN. Backend correctly separates NORMAL vs REPLACEMENT/ADDITIONAL qty via shipment_kind(); potongan cap is qty_ordered and 'Sisa di CMT' is derived from qty_sent_normal − qty_returned so hantu-sisa is eliminated. The `scope` param on /api/dewi/cmt-kejar and /dashboard drops PO_DONE_STATUSES from the running set."
+}

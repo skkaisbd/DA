@@ -1,0 +1,34 @@
+{
+  "flow_id": "flow-produksi-material-wo",
+  "title": "Alur Material WO (Reservasi/Material Issue -> Pengeluaran/Issue+Auto-JE -> Retur ke Gudang)",
+  "portal": "produksi",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Produksi untuk material Work Order: buat Material Issue (reservasi kebutuhan material untuk WO, manual atau draft-from-wo berbasis BOM snapshot), submit untuk approval, approve yang mengeluarkan (issue) stok dari lokasi gudang dan otomatis posting jurnal Dr WIP / Cr Persediaan BB, lalu proses retur material sisa/rusak dari lantai produksi ke gudang (submit -> approve -> receive) yang menambah kembali stok.",
+  "modules_touched": ["wh-material-issue", "prod-material-returns"],
+  "critical_endpoints": [
+    "/api/rahaza/material-issues",
+    "/api/rahaza/material-issues/{mid}/approve",
+    "/api/production/material-returns"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/material-issues",
+    "/api/rahaza/material-issues/draft-from-wo",
+    "/api/rahaza/material-issues/{mid}/submit",
+    "/api/rahaza/material-issues/{mid}/reject",
+    "/api/production/material-returns/{return_id}/submit",
+    "/api/production/material-returns/{return_id}/approve",
+    "/api/production/material-returns/{return_id}/receive",
+    "/api/rahaza/material-stock"
+  ],
+  "test_script": "tests/flow_produksi_material_wo_test.py",
+  "doc": "docs/user-guide/produksi/flow-produksi-material-wo.md",
+  "db_collections": ["rahaza_material_issues", "rahaza_material_stock", "production_material_returns", "rahaza_materials", "rahaza_journal_entries"],
+  "happy_path_steps": [
+    "Buat Material Issue (reservasi material untuk WO) -> status draft",
+    "Submit -> pending_approval; Approve -> issued (pengeluaran stok) + auto-post JE (Dr WIP / Cr Persediaan BB)",
+    "Retur material sisa: create -> submit -> approve -> receive (stok bertambah kembali)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-produksi-material-wo_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (issue posting_ok=True Dr WIP/Cr Persediaan; retur receive OK); E2E UI pending batch"
+}

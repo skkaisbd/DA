@@ -1,0 +1,1823 @@
+{
+  "generated_at": "2026-07-21T17:21:39.656119",
+  "result": {
+    "pass": 51,
+    "fail": 0,
+    "failed": []
+  },
+  "steps": [
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "M1 Buat Vendor Partner (master)",
+      "action": "POST /api/vendor-portal/partners",
+      "input": {
+        "name": "CMT Alpha Jaya",
+        "code": "CMT-ALP",
+        "contact_name": "PIC CMT-ALP",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "capacity_pcs": 500
+      },
+      "output_code": 200,
+      "output": {
+        "id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "name": "CMT Alpha Jaya",
+        "code": "CMT-ALP",
+        "contact_name": "PIC CMT-ALP",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "notes": "",
+        "is_active": true,
+        "capacity_pcs": 500,
+        "capacity_note": "",
+        "created_at": "2026-07-21T17:21:38.834107+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + partner tersimpan",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "M2 Buat Akun Login Vendor (master)",
+      "action": "POST /api/vendor-portal/accounts",
+      "input": {
+        "email": "alpha.cmt@dewi.test",
+        "name": "CMT Alpha Jaya (User)",
+        "password": "***",
+        "partner_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "b7487ba6-794a-434c-b189-4ed1139b0463",
+        "email": "alpha.cmt@dewi.test",
+        "name": "CMT Alpha Jaya (User)",
+        "role": "cmt_vendor",
+        "cmt_vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "is_active": true,
+        "created_at": "2026-07-21T17:21:38.896419+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + akun cmt_vendor terhubung partner",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "M3 Login Portal Vendor",
+      "action": "POST /api/auth/login",
+      "input": {
+        "email": "alpha.cmt@dewi.test",
+        "password": "***"
+      },
+      "output_code": 200,
+      "output": {
+        "ok": true
+      },
+      "expected": "vendor bisa login (role cmt_vendor)",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "O1 Buat PO Maklon",
+      "action": "POST /api/production-pos",
+      "input": {
+        "po_number": "PO-VP-S1",
+        "business_type": "maklon",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "items": [
+          {
+            "product_name": "Hoodie Alpha",
+            "sku": "ALP-M",
+            "size": "M",
+            "color": "Navy",
+            "serial_number": "SN-VP-S1-A",
+            "qty": 100,
+            "cmt_price_snapshot": 12000
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_date": "2026-07-21T17:21:38.971840+00:00",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Draft",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:38.971843+00:00",
+        "updated_at": "2026-07-21T17:21:38.971844+00:00",
+        "items": [
+          {
+            "id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+            "po_number": "PO-VP-S1",
+            "product_id": null,
+            "catalog_item_id": null,
+            "product_name": "Hoodie Alpha",
+            "variant_id": null,
+            "rahaza_variant_id": null,
+            "maklon_variant_id": null,
+            "buyer_ref_code": "",
+            "model_id": null,
+            "size_id": null,
+            "size": "M",
+            "color": "Navy",
+            "color_code": "",
+            "sku": "ALP-M",
+            "qty": 100,
+            "serial_number": "SN-VP-S1-A",
+            "selling_price_snapshot": 0.0,
+            "cmt_price_snapshot": 12000.0,
+            "created_at": "2026-07-21T17:21:38.972351+00:00"
+          }
+        ]
+      },
+      "expected": "201 + business_type=maklon",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "O2 Konfirmasi PO (Draft\u2192Confirmed)",
+      "action": "POST /api/production-pos/8208f679-7ca7-43bd-91a9-637ca46d45dc/status",
+      "input": {
+        "status": "Confirmed"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_date": "2026-07-21T17:21:38.971000",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Confirmed",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:38.971000",
+        "updated_at": "2026-07-21T17:21:38.978000"
+      },
+      "expected": "200 status=Confirmed",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "D1 DA Dispatch Potongan ke CMT",
+      "action": "POST /api/vendor-shipments",
+      "input": {
+        "shipment_number": "SJ-VP-S1",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "items": [
+          {
+            "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "qty_sent": 100
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+        "shipment_number": "SJ-VP-S1",
+        "delivery_note_number": "",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "shipment_date": "2026-07-21T17:21:38.991659+00:00",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Sent",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:38.991661+00:00",
+        "updated_at": "2026-07-21T17:21:38.991662+00:00",
+        "items": [
+          {
+            "id": "df79b9b5-14e0-4bc3-877b-ed4e04f3bc5e",
+            "shipment_id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+            "shipment_number": "SJ-VP-S1",
+            "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+            "po_number": null,
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "source_po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "product_name": "Hoodie Alpha",
+            "serial_number": "SN-VP-S1-A",
+            "size": "M",
+            "color": "Navy",
+            "sku": "ALP-M",
+            "qty_sent": 100,
+            "ordered_qty": 100,
+            "shipment_type": "NORMAL",
+            "parent_shipment_id": null,
+            "created_at": "2026-07-21T17:21:38.992246+00:00"
+          }
+        ]
+      },
+      "expected": "201 shipment Sent",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "D2 Tandai Shipment Received",
+      "action": "PUT /api/vendor-shipments/aa3d73c7-5da4-4b71-b973-40a03912db12",
+      "input": {
+        "status": "Received"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+        "shipment_number": "SJ-VP-S1",
+        "delivery_note_number": "",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "shipment_date": "2026-07-21T17:21:38.991000",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Received",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:38.991000",
+        "updated_at": "2026-07-21T17:21:38.997000"
+      },
+      "expected": "200 status=Received",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "V1 Vendor Inspeksi Material (100 diterima)",
+      "action": "POST /api/vendor-material-inspections",
+      "input": {
+        "shipment_id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+        "items": [
+          {
+            "shipment_item_id": "df79b9b5-14e0-4bc3-877b-ed4e04f3bc5e",
+            "sku": "ALP-M",
+            "product_name": "Hoodie Alpha",
+            "size": "M",
+            "ordered_qty": 100,
+            "received_qty": 100,
+            "missing_qty": 0
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "a846a236-fa1e-4a84-a4b6-6945fd5725ec",
+        "shipment_id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+        "shipment_number": "SJ-VP-S1",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "inspection_date": "2026-07-21T17:21:39.005263+00:00",
+        "total_received": 100,
+        "total_missing": 0,
+        "total_acc_received": 0,
+        "total_acc_missing": 0,
+        "overall_notes": "",
+        "status": "Submitted",
+        "submitted_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.005265+00:00",
+        "updated_at": "2026-07-21T17:21:39.005265+00:00",
+        "items": [
+          {
+            "id": "2a95e297-6826-4022-af2d-681c661ada8e",
+            "inspection_id": "a846a236-fa1e-4a84-a4b6-6945fd5725ec",
+            "item_type": "material",
+            "shipment_item_id": "df79b9b5-14e0-4bc3-877b-ed4e04f3bc5e",
+            "sku": "ALP-M",
+            "product_name": "Hoodie Alpha",
+            "size": "M",
+            "color": "",
+            "ordered_qty": 100,
+            "received_qty": 100,
+            "missing_qty": 0,
+            "condition_notes": "",
+            "created_at": "2026-07-21T17:21:39.005000"
+          }
+        ],
+        "accessory_items": []
+      },
+      "expected": "201 received 100 missing 0",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "V2 Vendor Buat Job Produksi",
+      "action": "POST /api/production-jobs",
+      "input": {
+        "vendor_shipment_id": "aa3d73c7-5da4-4b71-b973-40a03912db12"
+      },
+      "output_code": 201,
+      "output": {
+        "id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "job_number": "JOB-0005",
+        "parent_job_id": null,
+        "parent_job_number": null,
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "customer_name": "PT Aruna Activewear",
+        "vendor_shipment_id": "aa3d73c7-5da4-4b71-b973-40a03912db12",
+        "shipment_number": "SJ-VP-S1",
+        "shipment_type": "NORMAL",
+        "business_type": "maklon",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "In Progress",
+        "notes": "",
+        "created_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.012406+00:00",
+        "updated_at": "2026-07-21T17:21:39.012408+00:00",
+        "items": [
+          {
+            "id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+            "job_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+            "job_number": "JOB-0005",
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "vendor_shipment_item_id": "df79b9b5-14e0-4bc3-877b-ed4e04f3bc5e",
+            "product_name": "Hoodie Alpha",
+            "sku": "ALP-M",
+            "size": "M",
+            "color": "Navy",
+            "catalog_item_id": null,
+            "maklon_variant_id": null,
+            "model_id": null,
+            "rahaza_variant_id": null,
+            "buyer_ref_code": "",
+            "color_code": "",
+            "serial_number": "SN-VP-S1-A",
+            "ordered_qty": 100,
+            "shipment_qty": 100,
+            "available_qty": 100,
+            "produced_qty": 0,
+            "created_at": "2026-07-21T17:21:39.013573+00:00"
+          }
+        ]
+      },
+      "expected": "201 + item available_qty=100",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "V3 Vendor Lapor Progress 100 (selesai)",
+      "action": "POST /api/production-progress",
+      "input": {
+        "job_item_id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+        "completed_quantity": 100
+      },
+      "output_code": 201,
+      "output": {
+        "id": "fd107505-4eee-424d-9cab-ae835ae04156",
+        "job_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "job_item_id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+        "sku": "ALP-M",
+        "product_name": "Hoodie Alpha",
+        "size": "M",
+        "color": "Navy",
+        "progress_date": "2026-07-21T17:21:39.019594+00:00",
+        "completed_quantity": 100,
+        "notes": "",
+        "recorded_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.019596+00:00",
+        "new_total": 100
+      },
+      "expected": "201 progress tercatat",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "V4 Vendor Deklarasi Setoran ke DA",
+      "action": "POST /api/buyer-shipments",
+      "input": {
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "job_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "receiver_type": "da",
+        "items": [
+          {
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "job_item_id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+            "ordered_qty": 100,
+            "qty_shipped": 100
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "c5ea027f-5a31-4261-84fa-800b5aa57c61",
+        "shipment_number": "SJ-CMT-DA-202607-0005",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "po_ids": [
+          "8208f679-7ca7-43bd-91a9-637ca46d45dc"
+        ],
+        "customer_name": "PT Aruna Activewear",
+        "job_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "ship_status": "Partially Shipped",
+        "business_type": "maklon",
+        "receiver_type": "da",
+        "source_receipt_ids": [],
+        "related_cmt_receipt_id": "b8348440-0d72-4c76-b1b0-992c38562744",
+        "created_by_da": false,
+        "consolidated": false,
+        "notes": "",
+        "created_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.029273+00:00",
+        "updated_at": "2026-07-21T17:21:39.029274+00:00",
+        "dispatch_seq": 1,
+        "is_new": true,
+        "items": [
+          {
+            "id": "29495fd3-d70d-4dd5-9c4f-027242ce490e",
+            "shipment_id": "c5ea027f-5a31-4261-84fa-800b5aa57c61",
+            "dispatch_seq": 1,
+            "dispatch_date": "2026-07-21T17:21:39.030133+00:00",
+            "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+            "po_number": "PO-VP-S1",
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "job_item_id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+            "job_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+            "product_name": "Hoodie Alpha",
+            "serial_number": "SN-VP-S1-A",
+            "size": "M",
+            "color": "Navy",
+            "sku": "ALP-M",
+            "ordered_qty": 100,
+            "qty_shipped": 100,
+            "created_at": "2026-07-21T17:21:39.030521+00:00"
+          }
+        ]
+      },
+      "expected": "201 receiver_type=da + auto cmt_receipt Draft",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "A1 DA Temukan CMT Receipt (auto)",
+      "action": "GET /api/prod/cmt-receipts",
+      "input": {
+        "related_shipment_id": "c5ea027f-5a31-4261-84fa-800b5aa57c61"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "b8348440-0d72-4c76-b1b0-992c38562744",
+        "receipt_code": "CMT-RCV-00005",
+        "cmt_name": "CMT Alpha Jaya",
+        "cmt_vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "wo_number": "PO-VP-S1",
+        "wo_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "business_type": "maklon",
+        "receipt_date": "2026-07-21",
+        "delivery_note": "SJ-CMT-DA-202607-0005",
+        "notes": "Auto-generated dari CMT declaration SJ-CMT-DA-202607-0005 (Phase B).",
+        "status": "Draft",
+        "submitted_at": "",
+        "submitted_by": "",
+        "approved_at": "",
+        "approved_by": "",
+        "reject_reason": "",
+        "related_shipment_id": "c5ea027f-5a31-4261-84fa-800b5aa57c61",
+        "total_shipped_by_cmt": 100,
+        "total_actual": 0,
+        "total_rejected": 0,
+        "variance_reason": "",
+        "defect_photos": [],
+        "created_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.032000",
+        "updated_at": "2026-07-21T17:21:39.033000",
+        "line_count": 1,
+        "total_qty_expected": 100,
+        "total_qty_actual": 0,
+        "total_qty_reject": 0,
+        "pass_rate": 0.0,
+        "reject_rate": 0.0
+      },
+      "expected": "receipt Draft auto-terbentuk",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "A2 DA Isi Qty Aktual (100 lolos, 0 reject)",
+      "action": "PUT /api/prod/cmt-receipts/b8348440-0d72-4c76-b1b0-992c38562744/lines/bdf87869-0f0c-473b-b77e-8e8f55d05d39",
+      "input": {
+        "qty_actual": 100,
+        "reject_qty": 0
+      },
+      "output_code": 200,
+      "output": {
+        "id": "bdf87869-0f0c-473b-b77e-8e8f55d05d39",
+        "receipt_id": "b8348440-0d72-4c76-b1b0-992c38562744",
+        "sku_code": "ALP-M",
+        "product_name": "Hoodie Alpha",
+        "color": "Navy",
+        "size": "M",
+        "qty_expected": 100,
+        "qty_shipped_by_cmt": 100,
+        "qty_actual": 100,
+        "reject_qty": 0,
+        "reject_reason": "",
+        "photos": [],
+        "source_buyer_shipment_item_id": "29495fd3-d70d-4dd5-9c4f-027242ce490e",
+        "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+        "job_item_id": "d6d57d7f-1c14-4a0d-8486-e6563f68ced2",
+        "notes": "",
+        "created_at": "2026-07-21T17:21:39.032000",
+        "updated_at": "2026-07-21T17:21:39.060467+00:00"
+      },
+      "expected": "200 qty_actual=100",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "A3 DA Submit Receipt",
+      "action": "POST /api/prod/cmt-receipts/b8348440-0d72-4c76-b1b0-992c38562744/submit",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "id": "b8348440-0d72-4c76-b1b0-992c38562744",
+        "receipt_code": "CMT-RCV-00005",
+        "cmt_name": "CMT Alpha Jaya",
+        "cmt_vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "wo_number": "PO-VP-S1",
+        "wo_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "business_type": "maklon",
+        "receipt_date": "2026-07-21",
+        "delivery_note": "SJ-CMT-DA-202607-0005",
+        "notes": "Auto-generated dari CMT declaration SJ-CMT-DA-202607-0005 (Phase B).",
+        "status": "Submitted",
+        "submitted_at": "2026-07-21T17:21:39.070279+00:00",
+        "submitted_by": "Super Admin",
+        "approved_at": "",
+        "approved_by": "",
+        "reject_reason": "",
+        "related_shipment_id": "c5ea027f-5a31-4261-84fa-800b5aa57c61",
+        "total_shipped_by_cmt": 100,
+        "total_actual": 100,
+        "total_rejected": 0,
+        "variance_reason": "",
+        "defect_photos": [],
+        "created_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.032000",
+        "updated_at": "2026-07-21T17:21:39.070288+00:00"
+      },
+      "expected": "200 status=Submitted",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "A4 DA Approve Receipt (FG masuk)",
+      "action": "POST /api/prod/cmt-receipts/b8348440-0d72-4c76-b1b0-992c38562744/approve",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "id": "b8348440-0d72-4c76-b1b0-992c38562744",
+        "receipt_code": "CMT-RCV-00005",
+        "cmt_name": "CMT Alpha Jaya",
+        "cmt_vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "wo_number": "PO-VP-S1",
+        "wo_id": "c49ea57e-e455-45d5-ab62-fdef4d084321",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "business_type": "maklon",
+        "receipt_date": "2026-07-21",
+        "delivery_note": "SJ-CMT-DA-202607-0005",
+        "notes": "Auto-generated dari CMT declaration SJ-CMT-DA-202607-0005 (Phase B).",
+        "status": "Approved",
+        "submitted_at": "2026-07-21T17:21:39.070279+00:00",
+        "submitted_by": "Super Admin",
+        "approved_at": "2026-07-21T17:21:39.080216+00:00",
+        "approved_by": "Super Admin",
+        "reject_reason": "",
+        "related_shipment_id": "c5ea027f-5a31-4261-84fa-800b5aa57c61",
+        "total_shipped_by_cmt": 100,
+        "total_actual": 100,
+        "total_rejected": 0,
+        "variance_reason": "",
+        "defect_photos": [],
+        "created_by": "CMT Alpha Jaya (User)",
+        "created_at": "2026-07-21T17:21:39.032000",
+        "updated_at": "2026-07-21T17:21:39.080218+00:00",
+        "ap_mature": {
+          "ok": true,
+          "already_matured": false,
+          "payment_id": "f1c4a8f9-b409-48a8-95d4-c9f2cdc29dbc",
+          "payment_code": "PAY-CMT-00005",
+          "amount": 1200000.0,
+          "total_pcs": 100,
+          "total_rejected": 0,
+          "variance_flagged": false
+        }
+      },
+      "expected": "200 status=Approved",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "A5 DA Kirim ke Buyer (COMPLETE)",
+      "action": "POST /api/buyer-shipments",
+      "input": {
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "receiver_type": "buyer",
+        "source_receipt_ids": [
+          "b8348440-0d72-4c76-b1b0-992c38562744"
+        ],
+        "items": [
+          {
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "ordered_qty": 100,
+            "qty_shipped": 100
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "9aef1a1d-e791-4c7f-ba79-aa7528950ceb",
+        "shipment_number": "SJ-BYR-202607-0003",
+        "vendor_id": "8332edf6-55ce-4de1-88f8-d6d2963a0486",
+        "vendor_name": "CMT Alpha Jaya",
+        "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+        "po_number": "PO-VP-S1",
+        "po_ids": [
+          "8208f679-7ca7-43bd-91a9-637ca46d45dc"
+        ],
+        "customer_name": "PT Aruna Activewear",
+        "job_id": null,
+        "ship_status": "Partially Shipped",
+        "business_type": "maklon",
+        "receiver_type": "buyer",
+        "source_receipt_ids": [
+          "b8348440-0d72-4c76-b1b0-992c38562744"
+        ],
+        "related_cmt_receipt_id": null,
+        "created_by_da": true,
+        "consolidated": false,
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.090576+00:00",
+        "updated_at": "2026-07-21T17:21:39.090577+00:00",
+        "dispatch_seq": 1,
+        "is_new": true,
+        "items": [
+          {
+            "id": "9920c5f8-469b-466d-b52f-83233e2e680a",
+            "shipment_id": "9aef1a1d-e791-4c7f-ba79-aa7528950ceb",
+            "dispatch_seq": 1,
+            "dispatch_date": "2026-07-21T17:21:39.091254+00:00",
+            "po_id": "8208f679-7ca7-43bd-91a9-637ca46d45dc",
+            "po_number": "PO-VP-S1",
+            "po_item_id": "52ef400d-647a-4de4-8e20-4a5103f4bc6c",
+            "job_item_id": null,
+            "job_id": null,
+            "product_name": "Hoodie Alpha",
+            "serial_number": "SN-VP-S1-A",
+            "size": "M",
+            "color": "Navy",
+            "sku": "ALP-M",
+            "ordered_qty": 100,
+            "qty_shipped": 100,
+            "created_at": "2026-07-21T17:21:39.095361+00:00"
+          }
+        ]
+      },
+      "expected": "201/200 buyer shipment dari receipt approved",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-1 HAPPY PATH",
+      "step": "X1 Ringkasan PO (produced=100)",
+      "action": "GET /api/production-pos/8208f679-7ca7-43bd-91a9-637ca46d45dc/quantity-summary",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "ordered": 100,
+        "received": 100,
+        "missing": 0,
+        "defect": 0,
+        "available": 100,
+        "produced": 100,
+        "shipped": 200,
+        "returned": 0,
+        "overproduction": 0,
+        "underproduction": 0
+      },
+      "expected": "produced=100",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "M1 Buat Vendor Partner (master)",
+      "action": "POST /api/vendor-portal/partners",
+      "input": {
+        "name": "CMT Beta Karya",
+        "code": "CMT-BET",
+        "contact_name": "PIC CMT-BET",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "capacity_pcs": 500
+      },
+      "output_code": 200,
+      "output": {
+        "id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "name": "CMT Beta Karya",
+        "code": "CMT-BET",
+        "contact_name": "PIC CMT-BET",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "notes": "",
+        "is_active": true,
+        "capacity_pcs": 500,
+        "capacity_note": "",
+        "created_at": "2026-07-21T17:21:39.123228+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + partner tersimpan",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "M2 Buat Akun Login Vendor (master)",
+      "action": "POST /api/vendor-portal/accounts",
+      "input": {
+        "email": "beta.cmt@dewi.test",
+        "name": "CMT Beta Karya (User)",
+        "password": "***",
+        "partner_id": "c2405abb-6907-4ce8-8752-615557347de3"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "79322450-db4d-4b3b-b18b-f785d1ab22cc",
+        "email": "beta.cmt@dewi.test",
+        "name": "CMT Beta Karya (User)",
+        "role": "cmt_vendor",
+        "cmt_vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "is_active": true,
+        "created_at": "2026-07-21T17:21:39.184772+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + akun cmt_vendor terhubung partner",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "M3 Login Portal Vendor",
+      "action": "POST /api/auth/login",
+      "input": {
+        "email": "beta.cmt@dewi.test",
+        "password": "***"
+      },
+      "output_code": 200,
+      "output": {
+        "ok": true
+      },
+      "expected": "vendor bisa login (role cmt_vendor)",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "O1 Buat PO Maklon",
+      "action": "POST /api/production-pos",
+      "input": {
+        "po_number": "PO-VP-S2",
+        "business_type": "maklon",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "items": [
+          {
+            "product_name": "Polo Beta",
+            "sku": "BET-M",
+            "size": "M",
+            "color": "Merah",
+            "serial_number": "SN-VP-S2-A",
+            "qty": 100,
+            "cmt_price_snapshot": 15000
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "po_date": "2026-07-21T17:21:39.261501+00:00",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Draft",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.261504+00:00",
+        "updated_at": "2026-07-21T17:21:39.261505+00:00",
+        "items": [
+          {
+            "id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+            "po_number": "PO-VP-S2",
+            "product_id": null,
+            "catalog_item_id": null,
+            "product_name": "Polo Beta",
+            "variant_id": null,
+            "rahaza_variant_id": null,
+            "maklon_variant_id": null,
+            "buyer_ref_code": "",
+            "model_id": null,
+            "size_id": null,
+            "size": "M",
+            "color": "Merah",
+            "color_code": "",
+            "sku": "BET-M",
+            "qty": 100,
+            "serial_number": "SN-VP-S2-A",
+            "selling_price_snapshot": 0.0,
+            "cmt_price_snapshot": 15000.0,
+            "created_at": "2026-07-21T17:21:39.262049+00:00"
+          }
+        ]
+      },
+      "expected": "201 + business_type=maklon",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "O2 Konfirmasi PO (Draft\u2192Confirmed)",
+      "action": "POST /api/production-pos/6c5ec5b0-37ec-48ab-807a-eb955c84bddf/status",
+      "input": {
+        "status": "Confirmed"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "po_date": "2026-07-21T17:21:39.261000",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Confirmed",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.261000",
+        "updated_at": "2026-07-21T17:21:39.267000"
+      },
+      "expected": "200 status=Confirmed",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "D1 DA Dispatch Potongan ke CMT",
+      "action": "POST /api/vendor-shipments",
+      "input": {
+        "shipment_number": "SJ-VP-S2",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "items": [
+          {
+            "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+            "po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "qty_sent": 100
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "081c858d-d86a-4bd1-8114-676330b7318c",
+        "shipment_number": "SJ-VP-S2",
+        "delivery_note_number": "",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "shipment_date": "2026-07-21T17:21:39.282382+00:00",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Sent",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.282385+00:00",
+        "updated_at": "2026-07-21T17:21:39.282385+00:00",
+        "items": [
+          {
+            "id": "dbda6fd9-7e62-417a-ba7a-0747556fdc26",
+            "shipment_id": "081c858d-d86a-4bd1-8114-676330b7318c",
+            "shipment_number": "SJ-VP-S2",
+            "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+            "po_number": null,
+            "po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "source_po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "product_name": "Polo Beta",
+            "serial_number": "SN-VP-S2-A",
+            "size": "M",
+            "color": "Merah",
+            "sku": "BET-M",
+            "qty_sent": 100,
+            "ordered_qty": 100,
+            "shipment_type": "NORMAL",
+            "parent_shipment_id": null,
+            "created_at": "2026-07-21T17:21:39.283201+00:00"
+          }
+        ]
+      },
+      "expected": "201 shipment Sent",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "D2 Tandai Shipment Received",
+      "action": "PUT /api/vendor-shipments/081c858d-d86a-4bd1-8114-676330b7318c",
+      "input": {
+        "status": "Received"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "081c858d-d86a-4bd1-8114-676330b7318c",
+        "shipment_number": "SJ-VP-S2",
+        "delivery_note_number": "",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "shipment_date": "2026-07-21T17:21:39.282000",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Received",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.282000",
+        "updated_at": "2026-07-21T17:21:39.289000"
+      },
+      "expected": "200 status=Received",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "V1 Vendor Inspeksi (95 diterima, 5 KURANG)",
+      "action": "POST /api/vendor-material-inspections",
+      "input": {
+        "shipment_id": "081c858d-d86a-4bd1-8114-676330b7318c",
+        "items": [
+          {
+            "shipment_item_id": "dbda6fd9-7e62-417a-ba7a-0747556fdc26",
+            "sku": "BET-M",
+            "product_name": "Polo Beta",
+            "size": "M",
+            "ordered_qty": 100,
+            "received_qty": 95,
+            "missing_qty": 5
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "a0ab4da5-0c68-4953-8afe-70485dc6b231",
+        "shipment_id": "081c858d-d86a-4bd1-8114-676330b7318c",
+        "shipment_number": "SJ-VP-S2",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "inspection_date": "2026-07-21T17:21:39.296156+00:00",
+        "total_received": 95,
+        "total_missing": 5,
+        "total_acc_received": 0,
+        "total_acc_missing": 0,
+        "overall_notes": "",
+        "status": "Submitted",
+        "submitted_by": "CMT Beta Karya (User)",
+        "created_at": "2026-07-21T17:21:39.296159+00:00",
+        "updated_at": "2026-07-21T17:21:39.296159+00:00",
+        "items": [
+          {
+            "id": "588c33cb-1093-456a-a56e-3dd43cb1f97a",
+            "inspection_id": "a0ab4da5-0c68-4953-8afe-70485dc6b231",
+            "item_type": "material",
+            "shipment_item_id": "dbda6fd9-7e62-417a-ba7a-0747556fdc26",
+            "sku": "BET-M",
+            "product_name": "Polo Beta",
+            "size": "M",
+            "color": "",
+            "ordered_qty": 100,
+            "received_qty": 95,
+            "missing_qty": 5,
+            "condition_notes": "",
+            "created_at": "2026-07-21T17:21:39.296000"
+          }
+        ],
+        "accessory_items": []
+      },
+      "expected": "201 received 95 missing 5",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "V2 Vendor Buat Job (available=95 ikut inspeksi)",
+      "action": "POST /api/production-jobs",
+      "input": {
+        "vendor_shipment_id": "081c858d-d86a-4bd1-8114-676330b7318c"
+      },
+      "output_code": 201,
+      "output": {
+        "available_qty": 95
+      },
+      "expected": "201 available_qty=95",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "V3 Vendor Progress 95",
+      "action": "POST /api/production-progress",
+      "input": {
+        "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+        "completed_quantity": 95
+      },
+      "output_code": 201,
+      "output": {
+        "id": "e3740198-f9c0-4cf0-a6f0-57d679f90633",
+        "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+        "sku": "BET-M",
+        "product_name": "Polo Beta",
+        "size": "M",
+        "color": "Merah",
+        "progress_date": "2026-07-21T17:21:39.311751+00:00",
+        "completed_quantity": 95,
+        "notes": "",
+        "recorded_by": "CMT Beta Karya (User)",
+        "created_at": "2026-07-21T17:21:39.311752+00:00",
+        "new_total": 95
+      },
+      "expected": "201",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "V4 Vendor Deklarasi Setoran 95",
+      "action": "POST /api/buyer-shipments",
+      "input": {
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "receiver_type": "da",
+        "items": [
+          {
+            "po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+            "ordered_qty": 100,
+            "qty_shipped": 95
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "5b3f234d-40fd-4f98-b594-b3fb0800e9da",
+        "shipment_number": "SJ-CMT-DA-202607-0006",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "po_ids": [
+          "6c5ec5b0-37ec-48ab-807a-eb955c84bddf"
+        ],
+        "customer_name": "PT Aruna Activewear",
+        "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "ship_status": "Partially Shipped",
+        "business_type": "maklon",
+        "receiver_type": "da",
+        "source_receipt_ids": [],
+        "related_cmt_receipt_id": "c93a06de-463d-4cdf-b980-77b8caecc958",
+        "created_by_da": false,
+        "consolidated": false,
+        "notes": "",
+        "created_by": "CMT Beta Karya (User)",
+        "created_at": "2026-07-21T17:21:39.319165+00:00",
+        "updated_at": "2026-07-21T17:21:39.319167+00:00",
+        "dispatch_seq": 1,
+        "is_new": true,
+        "items": [
+          {
+            "id": "62f3f914-d637-4e39-b7f9-7473ee9785b3",
+            "shipment_id": "5b3f234d-40fd-4f98-b594-b3fb0800e9da",
+            "dispatch_seq": 1,
+            "dispatch_date": "2026-07-21T17:21:39.319763+00:00",
+            "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+            "po_number": "PO-VP-S2",
+            "po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+            "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+            "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+            "product_name": "Polo Beta",
+            "serial_number": "SN-VP-S2-A",
+            "size": "M",
+            "color": "Merah",
+            "sku": "BET-M",
+            "ordered_qty": 100,
+            "qty_shipped": 95,
+            "created_at": "2026-07-21T17:21:39.320283+00:00"
+          }
+        ]
+      },
+      "expected": "201 receiver_type=da",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "V5 Vendor Lapor Variance UNDER (5)",
+      "action": "POST /api/production-variances",
+      "input": {
+        "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "variance_type": "UNDERPRODUCTION",
+        "reason": "Bahan kurang 5",
+        "items": [
+          {
+            "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+            "sku": "BET-M",
+            "ordered_qty": 100,
+            "produced_qty": 95,
+            "variance_qty": 5
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "5c6d0587-9595-411c-a2d1-3ee06e93cd29",
+        "vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "vendor_name": "CMT Beta Karya",
+        "job_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "job_number": "JOB-0006",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "variance_type": "UNDERPRODUCTION",
+        "business_type": "maklon",
+        "reason": "Bahan kurang 5",
+        "notes": "",
+        "items": [
+          {
+            "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+            "sku": "BET-M",
+            "ordered_qty": 100,
+            "produced_qty": 95,
+            "variance_qty": 5
+          }
+        ],
+        "total_variance_qty": 5,
+        "reported_by": "CMT Beta Karya (User)",
+        "status": "Reported",
+        "created_at": "2026-07-21T17:21:39.328644+00:00",
+        "updated_at": "2026-07-21T17:21:39.328645+00:00"
+      },
+      "expected": "201 variance tercatat",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "A1 DA Temukan Receipt",
+      "action": "GET /api/prod/cmt-receipts",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "id": "c93a06de-463d-4cdf-b980-77b8caecc958",
+        "receipt_code": "CMT-RCV-00006",
+        "cmt_name": "CMT Beta Karya",
+        "cmt_vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "wo_number": "PO-VP-S2",
+        "wo_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "business_type": "maklon",
+        "receipt_date": "2026-07-21",
+        "delivery_note": "SJ-CMT-DA-202607-0006",
+        "notes": "Auto-generated dari CMT declaration SJ-CMT-DA-202607-0006 (Phase B).",
+        "status": "Draft",
+        "submitted_at": "",
+        "submitted_by": "",
+        "approved_at": "",
+        "approved_by": "",
+        "reject_reason": "",
+        "related_shipment_id": "5b3f234d-40fd-4f98-b594-b3fb0800e9da",
+        "total_shipped_by_cmt": 95,
+        "total_actual": 0,
+        "total_rejected": 0,
+        "variance_reason": "",
+        "defect_photos": [],
+        "created_by": "CMT Beta Karya (User)",
+        "created_at": "2026-07-21T17:21:39.322000",
+        "updated_at": "2026-07-21T17:21:39.322000",
+        "line_count": 1,
+        "total_qty_expected": 95,
+        "total_qty_actual": 0,
+        "total_qty_reject": 0,
+        "pass_rate": 0.0,
+        "reject_rate": 0.0
+      },
+      "expected": "auto receipt Draft",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "A2 DA Isi Aktual (88 lolos, 7 REJECT)",
+      "action": "PUT .../lines/a257d881-4efe-435e-9355-df5ca9b39d88",
+      "input": {
+        "qty_actual": 88,
+        "reject_qty": 7
+      },
+      "output_code": 200,
+      "output": {
+        "id": "a257d881-4efe-435e-9355-df5ca9b39d88",
+        "receipt_id": "c93a06de-463d-4cdf-b980-77b8caecc958",
+        "sku_code": "BET-M",
+        "product_name": "Polo Beta",
+        "color": "Merah",
+        "size": "M",
+        "qty_expected": 95,
+        "qty_shipped_by_cmt": 95,
+        "qty_actual": 88,
+        "reject_qty": 7,
+        "reject_reason": "Jahitan cacat",
+        "photos": [],
+        "source_buyer_shipment_item_id": "62f3f914-d637-4e39-b7f9-7473ee9785b3",
+        "po_item_id": "571ecae7-0d3c-43a1-9aaa-c9561955792e",
+        "job_item_id": "297baf18-9470-4786-b9e8-c743db723a9d",
+        "notes": "",
+        "created_at": "2026-07-21T17:21:39.322000",
+        "updated_at": "2026-07-21T17:21:39.354509+00:00"
+      },
+      "expected": "200",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "A3 DA Approve (reject tercatat)",
+      "action": "POST .../approve",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "id": "c93a06de-463d-4cdf-b980-77b8caecc958",
+        "receipt_code": "CMT-RCV-00006",
+        "cmt_name": "CMT Beta Karya",
+        "cmt_vendor_id": "c2405abb-6907-4ce8-8752-615557347de3",
+        "wo_number": "PO-VP-S2",
+        "wo_id": "cda07f46-39e9-4575-b980-bfd367563267",
+        "po_id": "6c5ec5b0-37ec-48ab-807a-eb955c84bddf",
+        "po_number": "PO-VP-S2",
+        "business_type": "maklon",
+        "receipt_date": "2026-07-21",
+        "delivery_note": "SJ-CMT-DA-202607-0006",
+        "notes": "Auto-generated dari CMT declaration SJ-CMT-DA-202607-0006 (Phase B).",
+        "status": "Approved",
+        "submitted_at": "2026-07-21T17:21:39.364203+00:00",
+        "submitted_by": "Super Admin",
+        "approved_at": "2026-07-21T17:21:39.374170+00:00",
+        "approved_by": "Super Admin",
+        "reject_reason": "",
+        "related_shipment_id": "5b3f234d-40fd-4f98-b594-b3fb0800e9da",
+        "total_shipped_by_cmt": 95,
+        "total_actual": 88,
+        "total_rejected": 7,
+        "variance_reason": "",
+        "defect_photos": [],
+        "created_by": "CMT Beta Karya (User)",
+        "created_at": "2026-07-21T17:21:39.322000",
+        "updated_at": "2026-07-21T17:21:39.374173+00:00",
+        "ap_mature": {
+          "ok": true,
+          "already_matured": false,
+          "payment_id": "7bf0d522-e874-4199-bbb7-81062d725ef0",
+          "payment_code": "PAY-CMT-00006",
+          "amount": 1320000.0,
+          "total_pcs": 88,
+          "total_rejected": 7,
+          "variance_flagged": false
+        }
+      },
+      "expected": "200 Approved total_rejected=7",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-2 REJECT & VARIANCE",
+      "step": "X1 QC: total_actual=88 total_rejected=7",
+      "action": "GET /api/prod/cmt-receipts/c93a06de-463d-4cdf-b980-77b8caecc958",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "total_actual": 88,
+        "total_rejected": 7
+      },
+      "expected": "actual 88 reject 7",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "M1 Buat Vendor Partner (master)",
+      "action": "POST /api/vendor-portal/partners",
+      "input": {
+        "name": "CMT Gamma Sentosa",
+        "code": "CMT-GAM",
+        "contact_name": "PIC CMT-GAM",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "capacity_pcs": 500
+      },
+      "output_code": 200,
+      "output": {
+        "id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "name": "CMT Gamma Sentosa",
+        "code": "CMT-GAM",
+        "contact_name": "PIC CMT-GAM",
+        "contact_phone": "0812-0000-0001",
+        "address": "Solo",
+        "notes": "",
+        "is_active": true,
+        "capacity_pcs": 500,
+        "capacity_note": "",
+        "created_at": "2026-07-21T17:21:39.408590+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + partner tersimpan",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "M2 Buat Akun Login Vendor (master)",
+      "action": "POST /api/vendor-portal/accounts",
+      "input": {
+        "email": "gamma.cmt@dewi.test",
+        "name": "CMT Gamma Sentosa (User)",
+        "password": "***",
+        "partner_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "0effdeb2-9f88-4904-9a80-63f0cdca3515",
+        "email": "gamma.cmt@dewi.test",
+        "name": "CMT Gamma Sentosa (User)",
+        "role": "cmt_vendor",
+        "cmt_vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "is_active": true,
+        "created_at": "2026-07-21T17:21:39.471767+00:00",
+        "created_by": "74202cee-58ef-4610-a59b-31892df58e34"
+      },
+      "expected": "201/200 + akun cmt_vendor terhubung partner",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "M3 Login Portal Vendor",
+      "action": "POST /api/auth/login",
+      "input": {
+        "email": "gamma.cmt@dewi.test",
+        "password": "***"
+      },
+      "output_code": 200,
+      "output": {
+        "ok": true
+      },
+      "expected": "vendor bisa login (role cmt_vendor)",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "O1 Buat PO Maklon",
+      "action": "POST /api/production-pos",
+      "input": {
+        "po_number": "PO-VP-S3",
+        "business_type": "maklon",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "items": [
+          {
+            "product_name": "Kaos Gamma",
+            "sku": "GAM-M",
+            "size": "M",
+            "color": "Putih",
+            "serial_number": "SN-VP-S3-A",
+            "qty": 50,
+            "cmt_price_snapshot": 9000
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "607e519d-e13a-4870-ab34-b953bada4570",
+        "po_number": "PO-VP-S3",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_date": "2026-07-21T17:21:39.547937+00:00",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Draft",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.547940+00:00",
+        "updated_at": "2026-07-21T17:21:39.547940+00:00",
+        "items": [
+          {
+            "id": "fbea1cec-cc87-4ca8-bb8e-a12e6d87134f",
+            "po_id": "607e519d-e13a-4870-ab34-b953bada4570",
+            "po_number": "PO-VP-S3",
+            "product_id": null,
+            "catalog_item_id": null,
+            "product_name": "Kaos Gamma",
+            "variant_id": null,
+            "rahaza_variant_id": null,
+            "maklon_variant_id": null,
+            "buyer_ref_code": "",
+            "model_id": null,
+            "size_id": null,
+            "size": "M",
+            "color": "Putih",
+            "color_code": "",
+            "sku": "GAM-M",
+            "qty": 50,
+            "serial_number": "SN-VP-S3-A",
+            "selling_price_snapshot": 0.0,
+            "cmt_price_snapshot": 9000.0,
+            "created_at": "2026-07-21T17:21:39.548410+00:00"
+          }
+        ]
+      },
+      "expected": "201 + business_type=maklon",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "O2 Konfirmasi PO (Draft\u2192Confirmed)",
+      "action": "POST /api/production-pos/607e519d-e13a-4870-ab34-b953bada4570/status",
+      "input": {
+        "status": "Confirmed"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "607e519d-e13a-4870-ab34-b953bada4570",
+        "po_number": "PO-VP-S3",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_date": "2026-07-21T17:21:39.547000",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Confirmed",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.547000",
+        "updated_at": "2026-07-21T17:21:39.553000"
+      },
+      "expected": "200 status=Confirmed",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "D1 DA Dispatch Potongan ke CMT",
+      "action": "POST /api/vendor-shipments",
+      "input": {
+        "shipment_number": "SJ-VP-S3",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "items": [
+          {
+            "po_id": "607e519d-e13a-4870-ab34-b953bada4570",
+            "po_item_id": "fbea1cec-cc87-4ca8-bb8e-a12e6d87134f",
+            "qty_sent": 50
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "2194b2fb-5057-4db4-ab61-adb9d7de5447",
+        "shipment_number": "SJ-VP-S3",
+        "delivery_note_number": "",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_id": "607e519d-e13a-4870-ab34-b953bada4570",
+        "po_number": "PO-VP-S3",
+        "shipment_date": "2026-07-21T17:21:39.567244+00:00",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Sent",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.567247+00:00",
+        "updated_at": "2026-07-21T17:21:39.567247+00:00",
+        "items": [
+          {
+            "id": "75c58f16-e448-4bcc-8f13-0d5b29b85c65",
+            "shipment_id": "2194b2fb-5057-4db4-ab61-adb9d7de5447",
+            "shipment_number": "SJ-VP-S3",
+            "po_id": "607e519d-e13a-4870-ab34-b953bada4570",
+            "po_number": null,
+            "po_item_id": "fbea1cec-cc87-4ca8-bb8e-a12e6d87134f",
+            "source_po_item_id": "fbea1cec-cc87-4ca8-bb8e-a12e6d87134f",
+            "product_name": "Kaos Gamma",
+            "serial_number": "SN-VP-S3-A",
+            "size": "M",
+            "color": "Putih",
+            "sku": "GAM-M",
+            "qty_sent": 50,
+            "ordered_qty": 50,
+            "shipment_type": "NORMAL",
+            "parent_shipment_id": null,
+            "created_at": "2026-07-21T17:21:39.567940+00:00"
+          }
+        ]
+      },
+      "expected": "201 shipment Sent",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "D2 Tandai Shipment Received",
+      "action": "PUT /api/vendor-shipments/2194b2fb-5057-4db4-ab61-adb9d7de5447",
+      "input": {
+        "status": "Received"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "2194b2fb-5057-4db4-ab61-adb9d7de5447",
+        "shipment_number": "SJ-VP-S3",
+        "delivery_note_number": "",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_id": "607e519d-e13a-4870-ab34-b953bada4570",
+        "po_number": "PO-VP-S3",
+        "shipment_date": "2026-07-21T17:21:39.567000",
+        "shipment_type": "NORMAL",
+        "parent_shipment_id": null,
+        "business_type": "maklon",
+        "status": "Received",
+        "notes": "",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.567000",
+        "updated_at": "2026-07-21T17:21:39.573000"
+      },
+      "expected": "200 status=Received",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C1 Progress 51 > tersedia 50 \u2192 DITOLAK",
+      "action": "POST /api/production-progress",
+      "input": {
+        "job_item_id": "846213e0-2009-46b2-9e94-1e79acccef84",
+        "completed_quantity": 51
+      },
+      "output_code": 400,
+      "output": {
+        "detail": "Total produksi (51 pcs) melebihi material tersedia (50 pcs).",
+        "status": 400,
+        "request_id": "30daf8f899e0"
+      },
+      "expected": "400 ditolak",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C2 Progress 50 (pas) \u2192 OK",
+      "action": "POST /api/production-progress",
+      "input": {
+        "job_item_id": "846213e0-2009-46b2-9e94-1e79acccef84",
+        "completed_quantity": 50
+      },
+      "output_code": 201,
+      "output": {
+        "id": "25293b0c-942a-486f-ad4f-a92ca348726a",
+        "job_id": "fac38618-94b8-4f91-884c-f34c7f8feff1",
+        "job_item_id": "846213e0-2009-46b2-9e94-1e79acccef84",
+        "sku": "GAM-M",
+        "product_name": "Kaos Gamma",
+        "size": "M",
+        "color": "Putih",
+        "progress_date": "2026-07-21T17:21:39.597765+00:00",
+        "completed_quantity": 50,
+        "notes": "",
+        "recorded_by": "CMT Gamma Sentosa (User)",
+        "created_at": "2026-07-21T17:21:39.597766+00:00",
+        "new_total": 50
+      },
+      "expected": "201",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C3 Vendor buat PO \u2192 DITOLAK (RBAC)",
+      "action": "POST /api/production-pos",
+      "input": {
+        "po_number": "X-HACK"
+      },
+      "output_code": 403,
+      "output": {
+        "detail": "Forbidden",
+        "status": 403,
+        "request_id": "eca1aaa19379"
+      },
+      "expected": "403",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C4 Vendor hapus PO \u2192 DITOLAK (RBAC)",
+      "action": "DELETE /api/production-pos/607e519d-e13a-4870-ab34-b953bada4570",
+      "input": {},
+      "output_code": 403,
+      "output": {
+        "detail": "Forbidden",
+        "status": 403,
+        "request_id": "b5caac08faf2"
+      },
+      "expected": "403",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C5 Klien akses /production-pos \u2192 DITOLAK",
+      "action": "GET /api/production-pos",
+      "input": {},
+      "output_code": 403,
+      "output": {
+        "detail": "Akses klien maklon hanya melalui endpoint tracking (/api/maklon-client/*)",
+        "status": 403,
+        "request_id": "2211efa23006"
+      },
+      "expected": "403",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C6 DA kirim buyer tanpa source_receipt_ids \u2192 DITOLAK",
+      "action": "POST /api/buyer-shipments",
+      "input": {
+        "receiver_type": "buyer",
+        "source_receipt_ids": "MISSING"
+      },
+      "output_code": 400,
+      "output": {
+        "detail": "Buyer shipment dari DA wajib source_receipt_ids[] (mengacu ke cmt_receipts status Approved). Phase B enforcement.",
+        "status": 400,
+        "request_id": "0886fe0051b3"
+      },
+      "expected": "400 wajib source_receipt_ids",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C7 Vendor Gamma hanya lihat job sendiri (scope)",
+      "action": "GET /api/production-jobs",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "count": 1,
+        "all_own": true
+      },
+      "expected": "semua job vendor_id=light-mode-cards",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "O1 Buat PO Maklon",
+      "action": "POST /api/production-pos",
+      "input": {
+        "po_number": "PO-VP-S3B",
+        "business_type": "maklon",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "items": [
+          {
+            "product_name": "Kaos Gamma Dobel",
+            "sku": "GAM-L",
+            "size": "L",
+            "color": "Putih",
+            "serial_number": "SN-VP-S3-A",
+            "qty": 20,
+            "cmt_price_snapshot": 9000
+          }
+        ]
+      },
+      "output_code": 201,
+      "output": {
+        "id": "35845562-8234-4b12-b208-f39b6e876559",
+        "po_number": "PO-VP-S3B",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_date": "2026-07-21T17:21:39.630915+00:00",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Draft",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.630919+00:00",
+        "updated_at": "2026-07-21T17:21:39.630920+00:00",
+        "items": [
+          {
+            "id": "cd90f302-295b-42de-963b-3d78a9e0ded4",
+            "po_id": "35845562-8234-4b12-b208-f39b6e876559",
+            "po_number": "PO-VP-S3B",
+            "product_id": null,
+            "catalog_item_id": null,
+            "product_name": "Kaos Gamma Dobel",
+            "variant_id": null,
+            "rahaza_variant_id": null,
+            "maklon_variant_id": null,
+            "buyer_ref_code": "",
+            "model_id": null,
+            "size_id": null,
+            "size": "L",
+            "color": "Putih",
+            "color_code": "",
+            "sku": "GAM-L",
+            "qty": 20,
+            "serial_number": "SN-VP-S3-A",
+            "selling_price_snapshot": 0.0,
+            "cmt_price_snapshot": 9000.0,
+            "created_at": "2026-07-21T17:21:39.631375+00:00"
+          }
+        ]
+      },
+      "expected": "201 + business_type=maklon",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "O2 Konfirmasi PO (Draft\u2192Confirmed)",
+      "action": "POST /api/production-pos/35845562-8234-4b12-b208-f39b6e876559/status",
+      "input": {
+        "status": "Confirmed"
+      },
+      "output_code": 200,
+      "output": {
+        "id": "35845562-8234-4b12-b208-f39b6e876559",
+        "po_number": "PO-VP-S3B",
+        "customer_name": "PT Aruna Activewear",
+        "buyer_id": "mk-client-demo-1",
+        "vendor_id": "1ba63456-7a60-4a21-83bd-f9fbc253a0c1",
+        "vendor_name": "CMT Gamma Sentosa",
+        "po_date": "2026-07-21T17:21:39.630000",
+        "deadline": null,
+        "delivery_deadline": null,
+        "status": "Confirmed",
+        "notes": "",
+        "business_type": "maklon",
+        "created_by": "Super Admin",
+        "created_at": "2026-07-21T17:21:39.630000",
+        "updated_at": "2026-07-21T17:21:39.637000"
+      },
+      "expected": "200 status=Confirmed",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C8 Cek-Seri deteksi SN-VP-S3-A dobel",
+      "action": "GET /api/dewi/cmt-intake/cek-seri?scope=maklon",
+      "input": {},
+      "output_code": 200,
+      "output": {
+        "duplicate_count": 1,
+        "found_SN-VP-S3-A": true
+      },
+      "expected": "terdeteksi dobel",
+      "status": "PASS"
+    },
+    {
+      "scenario": "Skenario-3 VALIDASI & KEAMANAN",
+      "step": "C9 Serial-lookup SN-VP-S3-A exists=true",
+      "action": "GET /api/dewi/cmt-intake/serial-lookup",
+      "input": {
+        "serial": "SN-VP-S3-A"
+      },
+      "output_code": 200,
+      "output": {
+        "exists": true,
+        "usages": 2
+      },
+      "expected": "exists=true (\u22652 pakai)",
+      "status": "PASS"
+    }
+  ]
+}

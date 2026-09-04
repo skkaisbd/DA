@@ -1,0 +1,47 @@
+/* App-specific styles - glassmorphism utilities */
+
+/* Background ambient gradient - uses CSS variable for theme awareness */
+.bg-ambient {
+  background: var(--ambient-gradient);
+}
+
+/* Responsive tables */
+@media (max-width: 640px) {
+  table {
+    font-size: 0.75rem;
+  }
+  table th, table td {
+    padding: 0.5rem 0.25rem;
+  }
+}
+
+/* ── react-data-grid confidence row coloring ── */
+.rdg-row-high .rdg-cell {
+  background-color: rgba(16, 185, 129, 0.06) !important;
+}
+.rdg-row-medium .rdg-cell {
+  background-color: rgba(245, 158, 11, 0.06) !important;
+}
+.rdg-row-low .rdg-cell {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+.rdg-row-edited .rdg-cell {
+  border-left: 2px solid hsl(var(--primary)) !important;
+}
+.rdg-row-locked .rdg-cell {
+  background-color: rgba(99, 102, 241, 0.06) !important;
+  opacity: 0.7;
+}
+/* react-data-grid base theming */
+.rdg {
+  --rdg-color: hsl(var(--foreground));
+  --rdg-border-color: hsl(var(--border));
+  --rdg-summary-border-color: hsl(var(--border));
+  --rdg-background-color: hsl(var(--background));
+  --rdg-header-background-color: hsl(var(--muted));
+  --rdg-row-hover-background-color: hsl(var(--muted) / 0.5);
+  --rdg-row-selected-background-color: hsl(var(--primary) / 0.1);
+  --rdg-checkbox-color: hsl(var(--primary));
+  --rdg-font-size: 12px;
+  font-family: inherit;
+}

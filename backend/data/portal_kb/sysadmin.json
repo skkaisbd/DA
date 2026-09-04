@@ -1,0 +1,70 @@
+{
+  "portal": "sysadmin",
+  "label": "Portal Administrasi Sistem",
+  "ringkasan": "Portal Administrasi Sistem adalah ruang kerja IT: hak akses, jejak audit, aturan notifikasi, pengaturan sistem, dan backup data. Hanya super admin dan admin yang bisa membukanya karena isinya operasi berisiko tinggi.",
+  "prinsip": [
+    "Portal ini sengaja dipisah dari Portal Manajemen: beda audiens, beda risiko.",
+    "Semua perubahan penting tercatat di Log Aktivitas.",
+    "Operasi destruktif (hapus/restore data) wajib konfirmasi berlapis."
+  ],
+  "alur": [
+    {
+      "judul": "Mengatur hak akses pengguna",
+      "kata_kunci": ["hak akses", "role", "rbac", "user tidak bisa buka", "akses ditolak", "permission"],
+      "modul": ["mgmt-access-hub"],
+      "langkah": [
+        "Buka 'Kontrol Akses' → pilih pengguna atau peran.",
+        "Setiap peran punya daftar portal yang boleh dibuka. Portal di luar daftar itu terkunci, termasuk lewat tautan langsung.",
+        "Perubahan berlaku setelah pengguna masuk ulang."
+      ]
+    },
+    {
+      "judul": "Backup dan pemulihan data",
+      "kata_kunci": ["backup", "restore", "cadangan", "pulihkan data", "dump"],
+      "modul": ["mgmt-backup-restore"],
+      "langkah": [
+        "Buka 'Backup Data' → buat cadangan penuh basis data.",
+        "Cadangan disimpan bersama catatan waktu dan pembuatnya.",
+        "Pemulihan menimpa data yang ada — WAJIB dipastikan dulu dan sebaiknya dibuatkan cadangan baru sebelum dijalankan."
+      ]
+    },
+    {
+      "judul": "Aturan notifikasi",
+      "kata_kunci": ["notifikasi", "aturan notifikasi", "kategori notifikasi", "bel"],
+      "modul": ["sys-notif-config"],
+      "langkah": [
+        "Notifikasi dikelompokkan per portal sumber (Gudang, Produksi, Keuangan, dan seterusnya).",
+        "Di 'Aturan Notifikasi' tentukan kategori mana yang diterima peran mana.",
+        "Pengguna boleh membisukan kategori untuk dirinya sendiri, tapi tidak bisa membuka kategori yang ditutup admin."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "mgmt-access-hub", "nama": "Kontrol Akses", "deskripsi": "Pengguna, peran, dan portal yang boleh dibuka."},
+    {"modul": "mgmt-activity", "nama": "Log Aktivitas", "deskripsi": "Jejak siapa melakukan apa dan kapan."},
+    {"modul": "sys-notif-config", "nama": "Aturan Notifikasi", "deskripsi": "Matriks kategori notifikasi × peran."},
+    {"modul": "mgmt-system-hub", "nama": "Pengaturan Sistem", "deskripsi": "Parameter umum sistem dan integrasi."},
+    {"modul": "mgmt-backup-restore", "nama": "Backup Data", "deskripsi": "Membuat dan memulihkan cadangan basis data."},
+    {"modul": "maklon-config", "nama": "Konfigurasi Maklon", "deskripsi": "Parameter khusus alur maklon."},
+    {"modul": "maklon-notifications", "nama": "Notifikasi Maklon", "deskripsi": "Pengaturan pemberitahuan alur maklon."},
+    {"modul": "mgmt-help", "nama": "Panduan Sistem", "deskripsi": "Dokumentasi penggunaan sistem."}
+  ],
+  "faq": [
+    {
+      "q": "Pengguna melaporkan tidak bisa membuka sebuah portal.",
+      "kata_kunci": ["tidak bisa buka portal", "akses ditolak", "403"],
+      "a": "Cek peran pengguna di 'Kontrol Akses'. Daftar portal per peran ditegakkan di dua sisi (tampilan dan API), jadi tautan langsung pun tetap tertolak. Setelah peran diubah, pengguna harus keluar dan masuk lagi."
+    },
+    {
+      "q": "Di mana melihat siapa yang mengubah data tertentu?",
+      "kata_kunci": ["siapa mengubah", "audit", "log", "jejak"],
+      "a": "Buka 'Log Aktivitas' dan saring berdasarkan modul, pengguna, atau rentang tanggal. Untuk data stok, ada jejak tambahan di Audit Trail Portal Gudang."
+    }
+  ],
+  "saran": [
+    "Bagaimana mengatur hak akses pengguna?",
+    "Bagaimana cara membuat backup data?",
+    "Di mana melihat log aktivitas pengguna?",
+    "Bagaimana mengatur aturan notifikasi?"
+  ]
+}

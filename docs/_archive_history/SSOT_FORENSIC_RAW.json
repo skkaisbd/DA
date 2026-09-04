@@ -1,0 +1,4401 @@
+{
+  "findings": {
+    "PHANTOM": [
+      {
+        "collection": "acc_internal_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_accessories_dashboard.py",
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_items.py",
+          "dewi_accessories_loans.py",
+          "dewi_accessories_opname.py",
+          "dewi_accessories_purchase.py",
+          "dewi_accessories_requests.py",
+          "dewi_accessories_stock.py"
+        ],
+        "write_live": [
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_requests.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "acc_loans",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_accessories_dashboard.py",
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_items.py",
+          "dewi_accessories_loans.py",
+          "dewi_accessories_opname.py",
+          "dewi_accessories_purchase.py",
+          "dewi_accessories_requests.py",
+          "dewi_accessories_stock.py"
+        ],
+        "write_live": [
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_loans.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "acc_purchase_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_accessories_dashboard.py",
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_purchase.py"
+        ],
+        "write_live": [
+          "dewi_accessories_full_backup.py",
+          "dewi_accessories_purchase.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "ai_business_summaries",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_ai_business.py"
+        ],
+        "write_live": [
+          "dewi_ai_business.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "ai_rca_history",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "analytics_ai.py"
+        ],
+        "write_live": [
+          "analytics_ai.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "announcements",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "announcements.py"
+        ],
+        "write_live": [
+          "announcements.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "approval_chains",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "approval_chain_service.py",
+          "approval_multilevel.py"
+        ],
+        "write_live": [
+          "approval_chain_service.py",
+          "approval_multilevel.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "approval_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "approval_chain_service.py",
+          "approval_multilevel.py"
+        ],
+        "write_live": [
+          "approval_chain_service.py",
+          "approval_multilevel.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "bank_recon_sessions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_bank_reconciliation.py",
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [
+          "dewi_bank_reconciliation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "bank_recon_txns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_bank_reconciliation.py",
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [
+          "dewi_bank_reconciliation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "buyer_shipments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "buyers",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "master_data.py",
+          "production_po.py"
+        ],
+        "write_live": [
+          "master_data.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "capacity_config",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_capacity_planning.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "cmt_receipt_lines",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_packing.py"
+        ],
+        "write_live": [
+          "dewi_cmt_packing.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "cmt_receipts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_lifecycle.py",
+          "dewi_cmt_packing.py",
+          "production_control_tower.py"
+        ],
+        "write_live": [
+          "dewi_cmt_packing.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "da_kpi_badges",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_kpi_gamification.py",
+          "dewi_kpi_leaderboard.py"
+        ],
+        "write_live": [
+          "dewi_kpi_shared.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "da_kpi_goals",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_kpi_reports.py"
+        ],
+        "write_live": [
+          "dewi_kpi_reports.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_ai_actions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_ai_actions.py"
+        ],
+        "write_live": [
+          "dewi_ai_actions.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_assets",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py",
+          "workspace.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_attendance",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_deliveries",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt.py"
+        ],
+        "write_live": [
+          "dewi_cmt.py"
+        ],
+        "write_seed": [
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_payments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt.py",
+          "dewi_cmt_lifecycle.py",
+          "dewi_maklon_finance.py"
+        ],
+        "write_live": [
+          "dewi_cmt.py",
+          "dewi_maklon_finance.py"
+        ],
+        "write_seed": [
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_progress",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_lifecycle.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_delivery_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_hpp_snapshots_maklon",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_hpp.py"
+        ],
+        "write_live": [
+          "rahaza_hpp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_hpp_snapshots_po",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_hpp.py"
+        ],
+        "write_live": [
+          "rahaza_hpp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_phase7_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_kpi_submissions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_lms_progress",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "activity_feed.py",
+          "lms_student.py"
+        ],
+        "write_live": [
+          "lms_student.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_lms_quizzes",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_lms_quiz.py"
+        ],
+        "write_live": [
+          "dewi_lms_quiz.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_lms_submissions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "activity_feed.py",
+          "lms_student.py"
+        ],
+        "write_live": [
+          "lms_student.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_material_issues",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_maklon.py",
+          "dewi_production_reports.py",
+          "rahaza_hpp.py"
+        ],
+        "write_live": [
+          "dewi_maklon.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_material_issues",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_picklist.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_notifications",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "notification_service.py"
+        ],
+        "write_live": [
+          "employee_expense_claims.py",
+          "employee_travel_requests.py",
+          "employee_travel_settlements.py",
+          "notification_service.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_perf_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_perf_cycles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_perf_kpis",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_perf_reviews",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_live": [
+          "dewi_hris_performance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_provider_config",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_maklon.py",
+          "dewi_notifications.py"
+        ],
+        "write_live": [
+          "dewi_notifications.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_hpp",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_hpp.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_hpp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_patterns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_design.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_tech_packs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_rnd_hpp.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_hpp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_variants",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_design.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_universal_scans",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py"
+        ],
+        "write_live": [
+          "universal_scan.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employee_documents",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employee_expense_categories",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_category_master.py",
+          "employee_expense_claims.py",
+          "employee_expense_gl_mapping.py",
+          "rahaza_admin.py"
+        ],
+        "write_live": [
+          "employee_expense_category_master.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employee_expense_gl_mapping",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_admin.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employee_expense_gl_mappings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_gl_mapping.py",
+          "rahaza_petty_cash.py"
+        ],
+        "write_live": [
+          "employee_expense_gl_mapping.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employees",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "announcements.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "finishing_batches",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "finishing.py",
+          "qc.py"
+        ],
+        "write_live": [
+          "finishing.py",
+          "qc.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "finishing_events",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "finishing.py"
+        ],
+        "write_live": [
+          "finishing.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "garments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "master_data.py",
+          "operations_import.py",
+          "operations_pdf.py",
+          "operations_reminders.py",
+          "operations_reports.py",
+          "production_backup.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "master_data.py",
+          "operations_import.py",
+          "operations_reports.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "gl_entries",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_bank_reconciliation.py"
+        ],
+        "write_live": [
+          "dewi_bank_reconciliation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hr_ai_results",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hr_ai.py"
+        ],
+        "write_live": [
+          "dewi_hr_ai.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hr_issued_documents",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hr_shift_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "hr_shift_service.py",
+          "hr_shifts.py"
+        ],
+        "write_live": [
+          "hr_shift_service.py",
+          "hr_shifts.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hr_shifts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "hr_shift_service.py",
+          "hr_shifts.py"
+        ],
+        "write_live": [
+          "hr_shift_service.py",
+          "hr_shifts.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_cycles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_kpi_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_reviews",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hr_ai.py",
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_training_completions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hr_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "journal_entries",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_ab_experiments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_ai_content_history",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_ai_content_tools.py"
+        ],
+        "write_live": [
+          "marketing_ai_content_tools.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_alert_runs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_alerts.py"
+        ],
+        "write_live": [
+          "marketing_alerts.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_churn_scores",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_creator_catalog",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_kol_ops.py",
+          "marketing_kol_portal.py"
+        ],
+        "write_live": [
+          "marketing_kol_ops.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_creator_targets",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_targets.py"
+        ],
+        "write_live": [
+          "marketing_targets.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_dynamic_pricing_events",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_dynamic_pricing_settings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_dynamic_pricing_suggestions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_live": [
+          "marketing_advanced_ai_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_import_history",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_import.py"
+        ],
+        "write_live": [
+          "marketing_import.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_integration_settings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_integration_settings_routes.py"
+        ],
+        "write_live": [
+          "marketing_integration_settings_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_kol_campaigns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_task_templates",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_task_templates.py"
+        ],
+        "write_live": [
+          "marketing_task_templates.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "material_defect_reports",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py",
+          "production_backup.py",
+          "production_jobs.py"
+        ],
+        "write_live": [
+          "master_data.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "material_request_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "material_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py"
+        ],
+        "write_live": [
+          "master_data.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "payroll_automation_config",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "payroll_automation.py"
+        ],
+        "write_live": [
+          "payroll_automation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "payroll_automation_log",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "payroll_automation.py"
+        ],
+        "write_live": [
+          "payroll_automation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "pdf_export_configs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf_configs.py",
+          "operations_pdf_helpers.py"
+        ],
+        "write_live": [
+          "operations_pdf_configs.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "peer_feedbacks",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "po_accessories",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "production_po.py"
+        ],
+        "write_live": [
+          "production_po.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "portal_calendar_events",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "portal_notes",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "portal_reminders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "portal_todos",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "procurement_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "workspace.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "product_variants",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "master_data.py",
+          "production_po.py"
+        ],
+        "write_live": [
+          "master_data.py",
+          "operations_import.py",
+          "operations_reports.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_material_returns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_material_returns.py"
+        ],
+        "write_live": [
+          "production_material_returns.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_progress",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_return_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_returns.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_returns.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_returns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_returns.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_returns.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_variances",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_backup.py",
+          "production_variances.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_variances.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_work_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py",
+          "dewi_management_tools.py",
+          "wms_capacity_planning.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "products",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "master_data.py",
+          "operations_pdf.py",
+          "operations_pdf_helpers.py",
+          "production_po.py",
+          "shared.py"
+        ],
+        "write_live": [
+          "master_data.py",
+          "operations_import.py",
+          "operations_reports.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "qc_defect_types",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "qc.py"
+        ],
+        "write_live": [
+          "qc.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "qc_inspections",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "qc.py"
+        ],
+        "write_live": [
+          "qc.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_360_cycles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_360_feedback.py"
+        ],
+        "write_live": [
+          "rahaza_360_feedback.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ai_usage_logs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "ai_usage_monitor.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ap_payments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_approval_delegations",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_approval_delegation.py"
+        ],
+        "write_live": [
+          "rahaza_approval_delegation.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_aps_schedule_runs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_aps_scheduler.py"
+        ],
+        "write_live": [
+          "rahaza_aps_scheduler.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ar_receipts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_audit_logs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "admin.py",
+          "dewi_management_tools.py",
+          "rahaza_audit.py"
+        ],
+        "write_live": [
+          "rahaza_audit.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_bank_accounts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_claims.py",
+          "employee_travel_settlements.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_bank_recon_adjustments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_bank_recon.py"
+        ],
+        "write_live": [
+          "rahaza_bank_recon.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_career_chats",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_career_coach.py"
+        ],
+        "write_live": [
+          "dewi_career_coach.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_career_reports",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_career_coach.py"
+        ],
+        "write_live": [
+          "dewi_career_coach.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_coa",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_claims.py",
+          "employee_expense_gl_mapping.py",
+          "rahaza_budget.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_company_settings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_shipments.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_credit_notes",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "marketing_returns_routes.py"
+        ],
+        "write_live": [
+          "marketing_returns_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_depr_schedules",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_fixed_assets.py"
+        ],
+        "write_live": [
+          "rahaza_fixed_assets.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_employee_loan_repayments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_employee_loans.py"
+        ],
+        "write_live": [
+          "rahaza_employee_loans.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_expense_claims",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_claims.py",
+          "employee_expense_summary.py",
+          "hr_approval_inbox.py"
+        ],
+        "write_live": [
+          "employee_expense_claims.py",
+          "hr_approval_inbox.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_fg_issues",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_inventory_fg.py"
+        ],
+        "write_live": [
+          "rahaza_inventory_fg.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_fg_matrix",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_fg_labels.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_fg_movements",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_fg_matrix.py",
+          "rahaza_inventory_fg.py",
+          "wms_audit.py"
+        ],
+        "write_live": [
+          "dewi_cmt_packing.py",
+          "dewi_wh_returns.py",
+          "rahaza_inventory_fg.py",
+          "wms_opname.py",
+          "wms_receiving.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_fg_reservations",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_fg_matrix.py"
+        ],
+        "write_live": [
+          "rahaza_fg_matrix.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_integration_settings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_integrations.py"
+        ],
+        "write_live": [
+          "rahaza_integrations.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py",
+          "unified_search.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_job_applications",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_job_board.py"
+        ],
+        "write_live": [
+          "dewi_job_board.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_job_postings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_job_board.py"
+        ],
+        "write_live": [
+          "dewi_job_board.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_leaves",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_lkp_photos",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_lkp.py"
+        ],
+        "write_live": [
+          "rahaza_lkp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_oee_logs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_office_locations",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_attendance.py",
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_config.py",
+          "rahaza_auto_attendance_selfie.py"
+        ],
+        "write_live": [
+          "rahaza_attendance.py",
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_config.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_overtime",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_payroll_payslips",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_petty_cash_funds",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_petty_cash.py"
+        ],
+        "write_live": [
+          "rahaza_petty_cash.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_petty_cash_txns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_petty_cash.py"
+        ],
+        "write_live": [
+          "rahaza_petty_cash.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_production_calendar",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_aps.py",
+          "rahaza_leave.py",
+          "rahaza_payroll_profiles.py",
+          "rahaza_production_calendar.py"
+        ],
+        "write_live": [
+          "rahaza_production_calendar.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_products",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_variances.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_qc_records",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_racks",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py",
+          "dewi_warehouse_smart.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_schedules",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_shift_scheduler.py"
+        ],
+        "write_live": [
+          "dewi_shift_scheduler.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_setup_state",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_setup.py"
+        ],
+        "write_live": [
+          "rahaza_setup.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_shift_templates",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_shift_scheduler.py"
+        ],
+        "write_live": [
+          "dewi_shift_scheduler.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_skill_analyses",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_skill_gap.py"
+        ],
+        "write_live": [
+          "dewi_skill_gap.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_skill_requirements",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_skill_gap.py"
+        ],
+        "write_live": [
+          "dewi_skill_gap.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_smv_cache",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_aps_scheduler.py"
+        ],
+        "write_live": [
+          "rahaza_aps_scheduler.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_stock_ledger",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "stock_service.py"
+        ],
+        "write_live": [
+          "stock_service.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_styles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_styles.py",
+          "unified_search.py"
+        ],
+        "write_live": [
+          "rahaza_styles.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_users",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_wo_bundles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_control_tower.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "reminders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_reminders.py"
+        ],
+        "write_live": [
+          "operations_reminders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "role_permissions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "admin.py",
+          "auth_routes.py"
+        ],
+        "write_live": [
+          "admin.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_material_inspection_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_material_inspections",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_pdf.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_shipment_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_shipments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "warehouse_opname",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "warehouse.py"
+        ],
+        "write_live": [
+          "warehouse.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_opname_lines",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_opname.py"
+        ],
+        "write_live": [
+          "wms_opname.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_opname_sessions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_opname.py"
+        ],
+        "write_live": [
+          "wms_opname.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_pending_movements",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_packing.py",
+          "dewi_maklon.py",
+          "rahaza_inventory_issues.py",
+          "wms_picklist.py",
+          "wms_receiving.py"
+        ],
+        "write_live": [
+          "dewi_maklon.py",
+          "wms_receiving.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_picklists",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_picklist.py"
+        ],
+        "write_live": [
+          "wms_picklist.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_rack_alerts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_receiving.py"
+        ],
+        "write_live": [
+          "wms_receiving.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_unit_conversions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_units.py"
+        ],
+        "write_live": [
+          "wms_units.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_unit_master",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_units.py"
+        ],
+        "write_live": [
+          "wms_units.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wms_cmt_dispatches",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_lifecycle.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wms_fabric_rolls",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "work_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_backup.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "workspace_documents",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "activity_feed.py",
+          "search.py",
+          "study_groups.py",
+          "workspace.py"
+        ],
+        "write_live": [
+          "study_groups.py",
+          "workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "workspace_versions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "workspace.py"
+        ],
+        "write_live": [
+          "workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      }
+    ],
+    "STALE_SSOT": [
+      {
+        "collection": "rahaza_ar_payments",
+        "exists": true,
+        "count": 10,
+        "read_live": [
+          "rahaza_ar_360.py"
+        ],
+        "write_live": [],
+        "write_seed": [
+          "production_seed_full.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_attendance",
+        "exists": true,
+        "count": 1650,
+        "read_live": [
+          "dashboard_routes.py",
+          "dewi_executive_report.py",
+          "dewi_hr_ai.py",
+          "dewi_management_tools.py",
+          "payroll_automation.py"
+        ],
+        "write_live": [],
+        "write_seed": [
+          "production_seed_full.py"
+        ],
+        "read_seed": [
+          "production_seed_full.py"
+        ]
+      }
+    ],
+    "ORPHAN_WRITE": [
+      {
+        "collection": "accessories",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "operations_reports.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "comm_conversations",
+        "exists": true,
+        "count": 0,
+        "read_live": [],
+        "write_live": [
+          "dewi_procurement.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "cutting_outputs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "qc.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_lms_attempts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "dewi_lms_quiz.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_advance_payments",
+        "exists": true,
+        "count": 0,
+        "read_live": [],
+        "write_live": [
+          "dewi_maklon_finance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_inventory",
+        "exists": true,
+        "count": 0,
+        "read_live": [],
+        "write_live": [
+          "dewi_maklon_pos.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "payroll_entries",
+        "exists": true,
+        "count": 0,
+        "read_live": [],
+        "write_live": [
+          "marketing_livehost_analytics.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ai_audit_logs",
+        "exists": true,
+        "count": 1,
+        "read_live": [],
+        "write_live": [
+          "rahaza_ai.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_journals",
+        "exists": true,
+        "count": 8,
+        "read_live": [],
+        "write_live": [
+          "employee_expense_claims.py",
+          "employee_travel_requests.py",
+          "employee_travel_settlements.py"
+        ],
+        "write_seed": [
+          "production_seed_full.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_maintenance_predictions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "dewi_predictive_maintenance.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_rework_close_log",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "rahaza_rework.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_fg_movements",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "wms_opname2.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wh_rca_audit",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "wms_audit.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "workspace_shares",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [],
+        "write_live": [
+          "workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      }
+    ],
+    "EMPTY_BUT_READ": [
+      {
+        "collection": "accessory_shipment_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "accessory_shipments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "attachments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dashboard_routes.py",
+          "file_storage.py",
+          "rahaza_master.py"
+        ],
+        "write_live": [
+          "file_storage.py",
+          "rahaza_production.py",
+          "rahaza_styles.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "buyer_shipment_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "client_login_attempts",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_client_portal.py"
+        ],
+        "write_live": [
+          "dewi_client_portal.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "comm_channels",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_procurement.py",
+          "lms_student.py",
+          "search.py",
+          "study_groups.py"
+        ],
+        "write_live": [
+          "dewi_procurement.py",
+          "lms_student.py",
+          "study_groups.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "comm_messages",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "search.py",
+          "study_groups.py"
+        ],
+        "write_live": [
+          "dewi_procurement.py",
+          "lms_student.py",
+          "study_groups.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "da_asset_assignments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_assets.py"
+        ],
+        "write_live": [
+          "dewi_assets.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "da_assets",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_assets.py"
+        ],
+        "write_live": [
+          "dewi_assets.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "da_payroll_allowances",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_payroll_allowances.py",
+          "rahaza_payroll_shared.py"
+        ],
+        "write_live": [
+          "rahaza_payroll_allowances.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_accessory_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_accessory_requests.py"
+        ],
+        "write_live": [
+          "dewi_accessory_requests.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_client_users",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_client_admin.py",
+          "dewi_client_portal.py"
+        ],
+        "write_live": [
+          "dewi_client_admin.py",
+          "dewi_client_portal.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_component_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cmt_component_requests.py"
+        ],
+        "write_live": [
+          "dewi_cmt_component_requests.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_delivery_orders",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cmt_delivery_orders.py",
+          "dewi_cmt_lifecycle.py",
+          "dewi_cmt_progress.py",
+          "dewi_phase7_reports.py",
+          "universal_scan.py"
+        ],
+        "write_live": [
+          "dewi_cmt_delivery_orders.py",
+          "dewi_cmt_progress.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_jobs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cmt.py",
+          "dewi_cmt_lifecycle.py",
+          "dewi_cmt_progress.py",
+          "dewi_phase7_reports.py"
+        ],
+        "write_live": [
+          "dewi_cmt.py",
+          "dewi_cmt_delivery_orders.py",
+          "dewi_cmt_progress.py"
+        ],
+        "write_seed": [
+          "dewi_cmt_seed.py",
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": [
+          "dewi_cmt_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_cmt_partners",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cmt.py",
+          "dewi_cmt_delivery_orders.py",
+          "dewi_cmt_lifecycle.py"
+        ],
+        "write_live": [
+          "dewi_cmt.py"
+        ],
+        "write_seed": [
+          "dewi_cmt_seed.py",
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": [
+          "dewi_cmt_seed.py",
+          "dewi_demo_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_cmt_progress_reports",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cmt_progress.py",
+          "dewi_phase7_reports.py"
+        ],
+        "write_live": [
+          "dewi_cmt_progress.py"
+        ],
+        "write_seed": [
+          "dewi_cmt_seed.py"
+        ],
+        "read_seed": [
+          "dewi_cmt_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_cutting_batches",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cutting.py"
+        ],
+        "write_live": [
+          "dewi_cmt.py",
+          "dewi_cmt_delivery_orders.py",
+          "dewi_cutting.py"
+        ],
+        "write_seed": [
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": [
+          "dewi_demo_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_cutting_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_cutting.py"
+        ],
+        "write_live": [
+          "dewi_cutting.py"
+        ],
+        "write_seed": [
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": [
+          "dewi_demo_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_kreator_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_kreator_requests.py"
+        ],
+        "write_live": [
+          "dewi_kreator_requests.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_lms_materials",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "activity_feed.py",
+          "dewi_lms.py",
+          "lms_student.py",
+          "search.py"
+        ],
+        "write_live": [
+          "dewi_lms.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_bom",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_maklon_bom_templates.py",
+          "dewi_maklon_po_360.py",
+          "dewi_maklon_pos.py"
+        ],
+        "write_live": [
+          "dewi_maklon_bom_templates.py",
+          "dewi_maklon_pos.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_bom_templates",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_maklon_bom_templates.py"
+        ],
+        "write_live": [
+          "dewi_maklon_bom_templates.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_hpp",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_maklon_billing.py"
+        ],
+        "write_live": [
+          "dewi_maklon_billing.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_material_receive",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_maklon_po_360.py",
+          "dewi_maklon_pos.py"
+        ],
+        "write_live": [
+          "dewi_maklon_pos.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_maklon_sample_revisions",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_client_portal.py",
+          "dewi_maklon_po_360.py",
+          "dewi_maklon_samples.py"
+        ],
+        "write_live": [
+          "dewi_client_portal.py",
+          "dewi_maklon_samples.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_onboarding_checklists",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_onboarding.py"
+        ],
+        "write_live": [
+          "dewi_onboarding.py",
+          "dewi_recruitment.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_onboarding_templates",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_onboarding.py",
+          "dewi_recruitment.py"
+        ],
+        "write_live": [
+          "dewi_onboarding.py"
+        ],
+        "write_seed": [
+          "rahaza_hr_seed.py"
+        ],
+        "read_seed": [
+          "rahaza_hr_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_recruitment_candidates",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_hr_ai.py",
+          "dewi_recruitment.py"
+        ],
+        "write_live": [
+          "dewi_hr_ai.py",
+          "dewi_recruitment.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_recruitment_jobs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_career_coach.py",
+          "dewi_hr_ai.py",
+          "dewi_recruitment.py"
+        ],
+        "write_live": [
+          "dewi_recruitment.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_materials",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_materials.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_materials.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_revisions",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_overview.py",
+          "dewi_rnd_samples.py"
+        ],
+        "write_live": [
+          "dewi_rnd_overview.py",
+          "dewi_rnd_samples.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_sample_costing",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_rnd_materials.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_live": [
+          "dewi_rnd_materials.py",
+          "dewi_rnd_overview.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_rnd_sample_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_rnd_design.py",
+          "dewi_rnd_materials.py",
+          "dewi_rnd_overview.py",
+          "dewi_rnd_samples.py"
+        ],
+        "write_live": [
+          "dewi_rnd_overview.py",
+          "dewi_rnd_samples.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_scheduler_runs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_scheduler.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_toko_flashsales",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_toko.py"
+        ],
+        "write_live": [
+          "dewi_toko.py"
+        ],
+        "write_seed": [
+          "dewi_demo_seed.py"
+        ],
+        "read_seed": [
+          "dewi_demo_seed.py"
+        ]
+      },
+      {
+        "collection": "dewi_toko_pack_batches",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_online_orders.py"
+        ],
+        "write_live": [
+          "dewi_online_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "login_attempts",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "auth_routes.py"
+        ],
+        "write_live": [
+          "auth_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_catalog_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_catalog_backup.py",
+          "marketing_catalog_items.py",
+          "marketing_catalog_mgmt.py",
+          "marketing_catalog_shared.py",
+          "marketing_catalog_stock.py"
+        ],
+        "write_live": [
+          "marketing_catalog_backup.py",
+          "marketing_catalog_items.py",
+          "marketing_catalog_mgmt.py",
+          "marketing_catalog_stock.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_catalogs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "_toko_adapter.py",
+          "marketing_catalog_backup.py",
+          "marketing_catalog_items.py",
+          "marketing_catalog_mgmt.py",
+          "marketing_catalog_stock.py"
+        ],
+        "write_live": [
+          "_toko_adapter.py",
+          "marketing_catalog_backup.py",
+          "marketing_catalog_items.py",
+          "marketing_catalog_mgmt.py",
+          "marketing_catalog_shared.py",
+          "marketing_catalog_stock.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_creator_item_requests",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_kol_ops.py",
+          "marketing_kol_portal.py"
+        ],
+        "write_live": [
+          "marketing_kol_ops.py",
+          "marketing_kol_portal.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_import_sessions",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "universal_import.py"
+        ],
+        "write_live": [
+          "universal_import.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_import_templates",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_import.py",
+          "universal_import.py"
+        ],
+        "write_live": [
+          "marketing_import.py",
+          "universal_import.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_import_uploads",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_import.py"
+        ],
+        "write_live": [
+          "marketing_import.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_kol_login_attempts",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_kol_shared.py"
+        ],
+        "write_live": [
+          "marketing_kol_shared.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_livehost_scripts",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_livehost_portal.py",
+          "marketing_livehost_scripts.py"
+        ],
+        "write_live": [
+          "marketing_livehost_scripts.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_livehost_training",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_livehost_portal.py",
+          "marketing_livehost_training.py"
+        ],
+        "write_live": [
+          "marketing_livehost_training.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_livehost_training_progress",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_livehost_portal.py",
+          "marketing_livehost_training.py"
+        ],
+        "write_live": [
+          "marketing_livehost_portal.py",
+          "marketing_livehost_training.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_stock_syncs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_catalog_backup.py",
+          "marketing_catalog_mgmt.py",
+          "marketing_catalog_stock.py",
+          "marketing_toko_sync_routes.py"
+        ],
+        "write_live": [
+          "marketing_catalog_backup.py",
+          "marketing_catalog_stock.py",
+          "marketing_toko_sync_routes.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_tasks",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_reports.py",
+          "marketing_targets.py",
+          "marketing_task_templates.py",
+          "marketing_tasks.py"
+        ],
+        "write_live": [
+          "marketing_tasks.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_webhook_events",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "marketing_webhooks.py"
+        ],
+        "write_live": [
+          "marketing_webhooks.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "notifications",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_notifications.py",
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py",
+          "marketing_livehost_portal.py",
+          "notifications.py",
+          "notifications_unified.py",
+          "rahaza_notifications.py",
+          "rahaza_tv.py"
+        ],
+        "write_live": [
+          "dewi_notifications.py",
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py",
+          "marketing_livehost_portal.py",
+          "notifications.py",
+          "notifications_unified.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "po_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "operations_import.py",
+          "operations_reports.py",
+          "production_po.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "portal_quick_links",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_workspace.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_job_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_jobs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py",
+          "production_variances.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_pos",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dashboard_routes.py",
+          "dewi_production_reports.py",
+          "master_data.py",
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_returns.py",
+          "production_variances.py",
+          "production_work_orders.py",
+          "rahaza_hpp.py"
+        ],
+        "write_live": [
+          "operations_import.py",
+          "operations_reports.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "push_subscriptions",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_push_notifications.py"
+        ],
+        "write_live": [
+          "dewi_push_notifications.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ai_chat_history",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_ai.py"
+        ],
+        "write_live": [
+          "rahaza_ai.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_andon_events",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_andon.py",
+          "rahaza_oee.py",
+          "rahaza_tv.py"
+        ],
+        "write_live": [
+          "rahaza_andon.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_boms",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_bom.py",
+          "rahaza_lkp.py",
+          "rahaza_setup.py",
+          "rahaza_sprint22.py",
+          "rahaza_work_orders.py"
+        ],
+        "write_live": [
+          "rahaza_admin_helpers.py",
+          "rahaza_bom.py",
+          "rahaza_setup.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_channel_gl_mapping",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_channel_gl_mapping.py",
+          "rahaza_posting.py"
+        ],
+        "write_live": [
+          "rahaza_channel_gl_mapping.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_coa_accounts",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_admin.py",
+          "rahaza_admin_helpers.py",
+          "rahaza_coa.py",
+          "rahaza_fin_reports.py",
+          "rahaza_journals.py",
+          "rahaza_payroll_runs.py",
+          "rahaza_posting.py",
+          "rahaza_posting_profiles.py"
+        ],
+        "write_live": [
+          "rahaza_admin_helpers.py",
+          "rahaza_coa.py"
+        ],
+        "write_seed": [],
+        "read_seed": [
+          "production_seed_full.py"
+        ]
+      },
+      {
+        "collection": "rahaza_handover_templates",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_shift_handover.py"
+        ],
+        "write_live": [
+          "rahaza_shift_handover.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_hpp_snapshots",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_hpp.py",
+          "rahaza_posting.py"
+        ],
+        "write_live": [
+          "rahaza_hpp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_journal_entries",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_bank_reconciliation.py",
+          "rahaza_fin_reports.py",
+          "rahaza_journals.py",
+          "rahaza_periods.py",
+          "rahaza_posting.py"
+        ],
+        "write_live": [
+          "rahaza_journals.py",
+          "rahaza_posting.py"
+        ],
+        "write_seed": [
+          "production_seed_full.py"
+        ],
+        "read_seed": [
+          "production_seed_full.py"
+        ]
+      },
+      {
+        "collection": "rahaza_journal_lines",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_budget.py",
+          "rahaza_coa.py",
+          "rahaza_fin_reports.py",
+          "rahaza_posting.py"
+        ],
+        "write_live": [
+          "rahaza_journals.py",
+          "rahaza_posting.py"
+        ],
+        "write_seed": [
+          "production_seed_full.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_lkp",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_lkp.py"
+        ],
+        "write_live": [
+          "rahaza_lkp.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_machine_downtime",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "line_monitoring_service.py",
+          "rahaza_downtime.py",
+          "wms_capacity_planning.py"
+        ],
+        "write_live": [
+          "rahaza_downtime.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_material_reservations",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_material_reservation.py",
+          "rahaza_work_orders.py",
+          "stock_service.py"
+        ],
+        "write_live": [
+          "rahaza_material_reservation.py",
+          "rahaza_work_orders.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_model_process_sop",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_sop.py",
+          "rahaza_sprint22.py"
+        ],
+        "write_live": [
+          "rahaza_sop.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_periods",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_admin_helpers.py",
+          "rahaza_journals.py",
+          "rahaza_periods.py",
+          "rahaza_posting.py"
+        ],
+        "write_live": [
+          "rahaza_admin_helpers.py",
+          "rahaza_periods.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_posting_profiles",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_admin.py",
+          "rahaza_admin_helpers.py",
+          "rahaza_posting_profiles.py"
+        ],
+        "write_live": [
+          "rahaza_admin_helpers.py",
+          "rahaza_posting_profiles.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_salary_adjustments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "approval_badge.py",
+          "dewi_hris_performance.py",
+          "dewi_kpi_reports.py",
+          "dewi_kpi_results.py",
+          "hr_approval_inbox.py",
+          "rahaza_salary_adjustments.py"
+        ],
+        "write_live": [
+          "dewi_hris_performance.py",
+          "dewi_kpi_results.py",
+          "hr_approval_inbox.py",
+          "rahaza_salary_adjustments.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_shipments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dashboard_routes.py",
+          "rahaza_reports.py",
+          "rahaza_shipments.py",
+          "wms_picklist.py"
+        ],
+        "write_live": [
+          "rahaza_shipments.py"
+        ],
+        "write_seed": [
+          "rahaza_admin_seed.py"
+        ],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_webauthn_challenges",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_webauthn.py"
+        ],
+        "write_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_webauthn.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_webauthn_credentials",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_config.py",
+          "rahaza_auto_attendance_webauthn.py"
+        ],
+        "write_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_webauthn.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_zkteco_devices",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_zkteco.py"
+        ],
+        "write_live": [
+          "rahaza_auto_attendance_backup.py",
+          "rahaza_auto_attendance_zkteco.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "study_groups",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "study_groups.py"
+        ],
+        "write_live": [
+          "study_groups.py"
+        ],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_jobs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "vendor_portal.py"
+        ],
+        "write_live": [
+          "vendor_portal.py"
+        ],
+        "write_seed": [
+          "vendor_portal_seed.py"
+        ],
+        "read_seed": [
+          "vendor_portal_seed.py"
+        ]
+      },
+      {
+        "collection": "vendor_partners",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "vendor_portal.py"
+        ],
+        "write_live": [
+          "vendor_portal.py"
+        ],
+        "write_seed": [
+          "vendor_portal_seed.py"
+        ],
+        "read_seed": [
+          "vendor_portal_seed.py"
+        ]
+      },
+      {
+        "collection": "vendor_progress_reports",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "vendor_portal.py"
+        ],
+        "write_live": [
+          "vendor_portal.py"
+        ],
+        "write_seed": [
+          "vendor_portal_seed.py"
+        ],
+        "read_seed": [
+          "vendor_portal_seed.py"
+        ]
+      }
+    ],
+    "READ_ONLY_NOSEED": [
+      {
+        "collection": "accessory_shipment_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "accessory_shipments",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_pdf.py",
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "buyer_shipment_items",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_progress.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "buyer_shipments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "capacity_config",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_capacity_planning.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_assets",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py",
+          "workspace.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_attendance",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_cmt_progress",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_lifecycle.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_delivery_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_phase7_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_kpi_submissions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_backup.py",
+          "dewi_portal_saya_hr.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_material_issues",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_picklist.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "dewi_scheduler_runs",
+        "exists": true,
+        "count": 0,
+        "read_live": [
+          "dewi_scheduler.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employee_expense_gl_mapping",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_admin.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "employees",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "announcements.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hr_issued_documents",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_cycles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_kpi_assignments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_reviews",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hr_ai.py",
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "hris_training_completions",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_hr_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "journal_entries",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "marketing_kol_campaigns",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "material_request_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_reports.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "procurement_requests",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "workspace.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "production_work_orders",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py",
+          "dewi_management_tools.py",
+          "wms_capacity_planning.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ai_usage_logs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "ai_usage_monitor.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ap_payments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_ar_receipts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cashflow_ai.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_bank_accounts",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_claims.py",
+          "employee_travel_settlements.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_coa",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "employee_expense_claims.py",
+          "employee_expense_gl_mapping.py",
+          "rahaza_budget.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_company_settings",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "rahaza_shipments.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_fg_matrix",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "wms_fg_labels.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_invoices",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py",
+          "unified_search.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_leaves",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_oee_logs",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_overtime",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_payroll_payslips",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_portal_saya_ext.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_products",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_variances.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_qc_records",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_executive_report.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_racks",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py",
+          "dewi_warehouse_smart.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_users",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_management_tools.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "rahaza_wo_bundles",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "production_control_tower.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_material_inspection_items",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "operations_pdf.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_material_inspections",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_pdf.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_po.py",
+          "production_progress.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "vendor_shipments",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dashboard_routes.py",
+          "operations_excel.py",
+          "operations_pdf.py",
+          "operations_reports.py",
+          "operations_serials.py",
+          "production_backup.py",
+          "production_jobs.py",
+          "production_work_orders.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wms_cmt_dispatches",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "dewi_cmt_lifecycle.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      },
+      {
+        "collection": "wms_fabric_rolls",
+        "exists": false,
+        "count": "N/A",
+        "read_live": [
+          "universal_scan.py"
+        ],
+        "write_live": [],
+        "write_seed": [],
+        "read_seed": []
+      }
+    ]
+  },
+  "total_collections_in_code": 405,
+  "total_collections_in_db": 235
+}

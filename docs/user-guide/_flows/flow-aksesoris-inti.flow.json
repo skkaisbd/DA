@@ -1,0 +1,59 @@
+{
+  "flow_id": "flow-aksesoris-inti",
+  "title": "Alur Aksesoris Inti (Portal Aksesoris): Purchase Request -> Stok -> Request Internal -> Opname",
+  "portal": "aksesoris",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal divisi Aksesoris CV. Dewi Aditya, dijalankan di Portal Aksesoris (modul utama AccessoryModule ber-tab + AccessoryRequestInbox). Empat fase saling menyambung dengan satu SSOT stok (rahaza_material_stock @ lokasi ZNA-AKSESORIS) dan satu SSOT item (rahaza_materials type=accessory): (1) PURCHASE REQUEST -> admin aksesoris membuat PR draft berisi item aksesoris, transisi Draft->Submitted->Approved->Ordered->Received; pada status Received sistem OTOMATIS menambah stok + mencatat movement 'receive'. (2) STOK -> monitor kartu stok (stock_status ok/low/out vs min_stock), terima manual (receive) dan keluarkan (issue) dengan guard stok tidak boleh minus, plus log pergerakan. (3) REQUEST INTERNAL -> divisi lain meminta aksesoris via SSOT dewi_accessory_requests dengan request_type='internal_issuance'; siklus draft->submitted->allocated->delivered (atau rejected/cancelled), di-approve lewat Inbox Approval. (4) OPNAME -> memulai sesi opname yang men-snapshot seluruh aksesoris aktif beserta system_qty, input hitung fisik (menghitung selisih/variance), lalu complete untuk memposting adjustment ke stok + jejak audit movement 'adjust'. Guardrail: hanya 1 sesi opname aktif, count/complete hanya pada sesi open, issue melebihi stok ditolak, allocate/deliver harus urut status.",
+  "modules_touched": ["accessories-purchase", "accessories-master-stock", "accessories-internal-request", "accessories-opname", "accessories-inbox"],
+  "critical_endpoints": [
+    "/api/acc/purchase-requests",
+    "/api/acc/purchase-requests/{pr_id}",
+    "/api/acc/stock",
+    "/api/acc/stock/receive",
+    "/api/acc/stock/issue",
+    "/api/acc/stock/movements",
+    "/api/dewi/accessory-requests",
+    "/api/dewi/accessory-requests/{request_id}/submit",
+    "/api/dewi/accessory-requests/{request_id}/allocate",
+    "/api/dewi/accessory-requests/{request_id}/deliver",
+    "/api/acc/opname",
+    "/api/acc/opname/{session_id}/count",
+    "/api/acc/opname/{session_id}/complete"
+  ],
+  "supporting_endpoints": [
+    "/api/acc/items",
+    "/api/acc/items/{item_id}",
+    "/api/acc/opname/{session_id}",
+    "/api/acc/opname/{session_id}/cancel",
+    "/api/dewi/accessory-requests/{request_id}",
+    "/api/dewi/accessory-requests/{request_id}/reject",
+    "/api/dewi/accessory-requests/stats/summary",
+    "/api/acc/dashboard"
+  ],
+  "test_script": "tests/flow_aksesoris_inti_test.py",
+  "doc": "docs/user-guide/aksesoris/flow-aksesoris-inti.md",
+  "db_collections": [
+    "rahaza_materials",
+    "rahaza_material_stock",
+    "rahaza_material_movements",
+    "rahaza_locations",
+    "acc_purchase_requests",
+    "dewi_accessory_requests",
+    "wh_opname_sessions2"
+  ],
+  "happy_path_steps": [
+    "Buat master aksesoris (rahaza_materials type=accessory) -> kode ACC-NNNN",
+    "Buat PR draft (items) -> status=Draft, nomor ACC-PR-NNNN",
+    "Transisi PR Submitted -> Approved -> Ordered -> Received; pada Received stok auto +qty + movement 'receive'",
+    "Monitor stok (stock_status), terima manual (receive +) dan keluarkan (issue -) dengan guard stok >= 0",
+    "Buat request internal (request_type=internal_issuance) -> draft, kode INT-REQ-YYMMDD-NNN",
+    "Submit -> Allocate -> Deliver request internal (approval via Inbox); jalur reject tersedia",
+    "Start sesi opname (snapshot semua aksesoris + system_qty) -> status Active (SSOT open)",
+    "Input hitung fisik per item (variance = counted - system)",
+    "Complete opname -> posting adjustment ke stok + movement 'adjust' + status Completed (SSOT approved)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-aksesoris-inti_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_aksesoris_inti_test.py: create item -> PR Draft->Submitted->Approved->Ordered->Received (stok auto +50) -> receive +20=70 -> issue -10=60 -> guard over-issue 400 -> internal request draft->submitted->allocated->delivered + guard re-allocate 400 -> opname start (Active, snapshot) + guard sesi-aktif-kedua 400 -> count 57 (system 60 => selisih -3) -> complete (stok ter-adjust 60->57) + guard count-after-complete 400 -> audit movement 'adjust' tercatat). Semua lolos validate_flow.py 10/10 + endpoint grounded ke rahaza_materials/rahaza_material_stock/acc_purchase_requests/dewi_accessory_requests/wh_opname_sessions2 SSOT.",
+  "notes_qa": "OBSERVASI Low (dicatat di _qa, TIDAK di materi training): GET /api/acc/stock/movements memfilter {domain:'accessory'} sedangkan helper _log_movement (dewi_accessories_*.py) tidak menyetel field 'domain' pada dokumen rahaza_material_movements, sehingga list movement via API mengembalikan kosong walau audit tercatat di DB. Verifikasi audit pada POC dilakukan langsung ke koleksi rahaza_material_movements (reference_type='opname'). Endpoint tetap 200 (tidak crash)."
+}

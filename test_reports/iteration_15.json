@@ -1,0 +1,58 @@
+{
+  "summary": "Wave 1 Testing Complete: Portal Manajemen Data Source Fixes - All backend APIs and frontend features working correctly. Backend: 75/75 tests passed (100%). Frontend: All critical features verified including menu removal, domain switching, report data display, and source traces.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: Ringkasan Bisnis - domain=all returns correct numbers (orders.total=21, qty_ordered=4570, production.qty_produced=735, qty_accepted=219, cmt_receipts=7, ar_invoices=10, materials_tracked=498)",
+    "Backend: Ringkasan Bisnis - domain=internal returns orders.total=4",
+    "Backend: Ringkasan Bisnis - domain=maklon returns orders.total=17",
+    "Backend: Daily output returns 7 days with correct structure (date/total/internal/maklon)",
+    "Backend: Top models returns items with qty > 0",
+    "Backend: Top customers (maklon) returns items with total_value > 0",
+    "Backend: On-time delivery returns correct structure",
+    "Backend: All 7 report types return NON-EMPTY data (production=45, per-po=21, progress=9, financial=10, shipment=6, rework=5, material-issue=6)",
+    "Backend: Production report has correct columns (NO PO, QTY PESAN, QTY DITERIMA)",
+    "Backend: Domain filtering works correctly (internal shows only Internal rows, maklon shows only Maklon rows)",
+    "Backend: Dewi daily report - total_processed=718 (was 0 before fix)",
+    "Backend: Dewi daily report - by_vendor not empty (2 vendors)",
+    "Backend: Dewi daily report - has sources array (5 sources)",
+    "Backend: Dewi monthly report - summary.total_processed > 0",
+    "Backend: Dewi monthly report - production_by_vendor not empty (2 vendors)",
+    "Backend: Dewi monthly report - maklon_by_client not empty (5 clients)",
+    "Backend: Dewi actual-vs-target - cmt_jobs not empty (4 jobs)",
+    "Backend: Dewi actual-vs-target - maklon_pos not empty (8 POs)",
+    "Backend: Dewi production-trend returns 7 days with data",
+    "Backend: Dewi PO report accepts both dewi_maklon_pos id AND production_pos id",
+    "Backend: CSV exports work with correct content-type and source traces",
+    "Frontend: 'Data Pelanggan' menu correctly REMOVED from sidebar",
+    "Frontend: Ringkasan Bisnis page loads successfully",
+    "Frontend: Domain switcher found and functional (Gabungan/Internal DA/Maklon)",
+    "Frontend: All 4 KPI cards displayed (Output, Quality, Orders, AR)",
+    "Frontend: Source trace displayed on Ringkasan Bisnis",
+    "Frontend: Laporan Umum domain switcher found",
+    "Frontend: 'Rekap per PO' report has 21 rows (was ALWAYS empty before fix)",
+    "Frontend: Laporan Maklon module loaded successfully",
+    "Frontend: All 5 Laporan Maklon tabs found (Harian, Bulanan, Per PO, Actual vs Target, Trend)",
+    "Frontend: Daily report source trace displayed"
+  ],
+  "test_report_links": [
+    "/app/backend/test_wave1_reports.py"
+  ],
+  "action_item_for_main_agent": "",
+  "updated_files": [
+    "/app/backend/test_wave1_reports.py"
+  ],
+  "success_percentage": {
+    "backend": "100% (75/75 tests passed)",
+    "frontend": "100% (all critical features verified)"
+  },
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false
+}

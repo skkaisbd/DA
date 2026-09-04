@@ -1,0 +1,55 @@
+{
+  "summary": "Sesi #38 / INV-F44 (FIFO batch COGS -> accounting journal) verified independently. Wrote /app/backend/tests/test_iter96_cogs_fifo_journal.py (13 tests, 12 PASS / 1 FAIL revealing a real disclosure gap) exercising post_cogs_on_buyer_dispatch at function level with synthetic material_id + self-cleaning artifacts, plus HTTP regression on buyer-shipment endpoints. Re-ran scripts/verify_cogs_fifo_jurnal.py twice: VERDICT HIJAU (10/10) both before and after my testing. Frontend verified on the public preview URL: module prod-shipments-buyer loads, 'HPP Batch (FIFO)' column present in the expanded Riwayat Dispatch table, em-dash shown for rows without cost layers, and with a temporarily injected fg_cogs the cell + dispatch badge render 'Rp 960.000' with the 'pcs tanpa lapisan biaya' warning (injected data was fully reverted). Zero console errors. DB left byte-identical to the pre-test state (3 shipments / 6 items / 28 layers / 0 fg_cogs fields / 0 buyer_dispatch journals).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "routes/rahaza_posting._fifo_cogs_for_dispatch (used by post_cogs_on_buyer_dispatch)",
+        "issue": "A shipment line that leaves the warehouse FULLY uncosted (fg_cogs == 0, fg_cogs_layers == [], fg_cogs_uncosted_qty = 10) is skipped by `if row_total <= 0 and not used: continue` BEFORE `out['uncosted_qty'] += ...`. In a mixed dispatch (1 costed line + 1 fully uncosted line) the journal was posted for Rp 40.000 with basis=fifo_batch, uncosted_qty=0 and note=None — the 10 pcs that left at zero cost are NOT disclosed anywhere, which breaks the same honesty promise gate J6 protects (gate J6 only covers the PARTIALLY covered case). Repro: pytest tests/test_iter96_cogs_fifo_journal.py::TestFifoCogsJournal::test_f_fully_uncosted_line_must_still_be_disclosed. Suggested fix: accumulate `out['uncosted_qty'] += int(r.get('fg_cogs_uncosted_qty') or 0)` (and append a gap note) BEFORE the `continue`."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "BuyerShipmentModule.jsx dispatch history cell (~line 889)",
+        "issue": "`item.fg_cogs == null ? '—' : fmtRp(...)` means a line where fg_cogs is present but 0 (which is exactly what _issue_fg_for_dispatch writes today for every SKU whose cost layers have unit_cost 0 — i.e. almost all demo SKUs) renders 'Rp 0'. That is the invented Rp 0 the backend deliberately refuses to journal. Suggest treating Number(item.fg_cogs) <= 0 as '—' (or 'belum berbiaya').",
+        "selector": "[data-testid^=\"item-cogs-\"]",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Buyer Shipment Detail dialog (eye icon) — its own 'Riwayat Dispatch' table",
+        "issue": "The dialog's dispatch history table (Serial/SKU/Produk/Dikirim/Diterima/Selisih) does NOT have the new 'HPP Batch (FIFO)' column, only the inline expanded row does. Staff who open the detail dialog (the more natural path) still cannot see the batch cost. Inconsistency / enhancement.",
+        "selector": "[role=\"dialog\"] table",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter96_cogs_fifo_journal.py",
+    "/app/test_reports/pytest/iter96_results.xml"
+  ],
+  "action_items": [
+    "Fix the fully-uncosted-line disclosure gap in _fifo_cogs_for_dispatch (move uncosted_qty accumulation before the `continue`) and extend gate INV-F44/J6 to cover a mixed dispatch where one line has NO layers at all.",
+    "Frontend: render '—' (or 'belum berbiaya') when fg_cogs is 0, not 'Rp 0', so the screen stays as honest as the journal.",
+    "Optional: mirror the 'HPP Batch (FIFO)' column into the Detail dialog dispatch table."
+  ],
+  "critical_code_review_comments": [
+    "post_cogs_on_buyer_dispatch: verified balanced JE, single credit line to FG inventory equal to total, exactly 3 debit accounts, component split matching the layer breakdown scaled so Σ components == Σ fg_cogs exactly (Rp 40.000 for 4 pcs @10.000 -> 24.000/10.400/5.600 per BD), memo naming the basis, and idempotency (2nd call -> already_posted with exactly one non-voided JE). All correct.",
+    "Fallback chain verified honest: hpp_snapshot path posts Rp 50.000 balanced with 'perkiraan HPP SPK' memo; no-layer/no-snapshot returns ok=False reason=zero_cogs and creates ZERO journal documents.",
+    "BuyerShipmentModule.jsx is ~1600+ lines — beyond the 700-line guideline; consider splitting the dispatch-history renderer, the outstanding board and the create-form into separate components.",
+    "GET /api/buyer-shipments and /api/buyer-shipments/{id} return no Mongo _id and 404 for unknown id — clean."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter96_cogs_fifo_journal.py (new test file only; NO application code touched)"
+  ],
+  "success_rate": {"backend": "92% (12/13; the 1 failure is the documented uncosted-disclosure bug)", "frontend": "100% of the requested flows (2 non-blocking display/consistency findings)"},
+  "seed_data_creation": "All backend artifacts used a synthetic material_id (T1MAT-<uuid>) and MARK-tagged shipments/layers/snapshots/journals, deleted in a finally block (verified 0 leftovers). For the UI 'Rp' path I temporarily set fg_cogs/fg_cogs_layers/fg_cogs_uncosted_qty on demo item 3a4c72b3 (SJ-BYR-INT-DEMO-2) and then $unset them — DB restored: 3 shipments / 6 items / 0 items with fg_cogs / 28 layers / 0 buyer_dispatch journals, identical to the pre-test snapshot. INV-F44 gate re-run afterwards: HIJAU.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123 (logged in once per browser run; rate limit respected)",
+  "context_for_next_testing_agent": "Regression suite for this feature: `cd /app/backend && python3 -m pytest tests/test_iter96_cogs_fifo_journal.py -n 0` (needs -n 0; the scenario fixture is module-scoped and self-cleaning). test_f_* is EXPECTED to fail until the fully-uncosted disclosure bug is fixed. UI: login with data-testid login-email-input/login-password-input/login-submit-button, then window.location.hash='prod-shipments-buyer' + reload; expand a row with [data-testid=\"shipment-expand-SJ-BYR-INT-DEMO-2\"] (clicking the row body opens the Detail dialog instead and its overlay blocks the tab buttons — use tab-shipment-list / tab-receipt-variance / tab-dispatch-outstanding testids). Demo data has fg_cogs absent on all 6 buyer_shipment_items, so the FIFO column legitimately shows '—'; inject fg_cogs on an item to exercise the Rp path and $unset it afterwards.",
+  "rca_of_the_issue": "In _fifo_cogs_for_dispatch the per-row guard `if row_total <= 0 and not used: continue` runs before `out['uncosted_qty'] += int(r.get('fg_cogs_uncosted_qty') or 0)`. Rows that shipped entirely without cost layers therefore contribute neither cost nor an uncosted count, so post_cogs_on_buyer_dispatch reports uncosted_qty=0 / note=None while the posted COGS silently understates reality. Gate INV-F44/J6 does not catch it because it only tests a partially-covered line (layers used + leftover), where the accumulation is reached."
+}

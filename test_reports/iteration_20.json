@@ -1,0 +1,44 @@
+{
+  "summary": "Frontend-only tests for iteration 20 (RnD lifecycle 7 stages, weekly RnD decision report, sample PIC end-to-end, and management alert thresholds). Most flows work as specified; found one UI integration bug where the notification bell popover shows 0 unread while backend + /api/notifications correctly stores/returns weekly-report notifications for admin.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Header notification bell (Pusat Notifikasi popover)", "issue": "After clicking 'Kirim sekarang' (POST /api/dewi/rnd/reports/weekly-decisions/send) the toast confirms 'Rapor 2026-W32 dikirim ke 4 penerima' and GET /api/notifications returns 4 rnd_weekly_decisions items for admin@garment.com, but the bell popover header shows '0 belum dibaca dari 0 total' and 'Belum ada notifikasi'. 'Lihat Semua' page also does not surface any 'Rapor keputusan RnD ...' entry. Likely the bell dropdown filters by a different `type` field (backend stores notification type='rahaza' + subtype='rnd_weekly_decisions' while /api/notifications maps `type -> subtype` when responding), so the header UI's filter/type expectations don't match.", "selector": "svg.lucide-bell / notification popover", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_20.json"],
+  "action_items": [
+    "Fix notification bell popover so RnD weekly-report notifications (type='rahaza', subtype='rnd_weekly_decisions') actually appear for management users in the header dropdown and 'Lihat Semua' page. The backend + REST API are correct — this is a purely FE mapping/filter issue.",
+    "Nice-to-have: expose a data-testid on the sidebar 'Sample Request' menu and on the row 'Submit/Ajukan' button so E2E scripts can consistently transition sample draft → submitted without relying on text.",
+    "Optional: pre-select the first real style in the Sample Request modal (currently the first '[role=option]' entry is the placeholder '-- Pilih Style --' which caused a validation toast during automated selection)."
+  ],
+  "critical_code_review_comments": [
+    "rnd_decision_report.send_rnd_decision_report writes notifications with type='rahaza' + subtype='rnd_weekly_decisions'. The public /api/notifications endpoint remaps subtype into the `type` field of the response payload; make sure the frontend NotificationBell component uses the same mapping — otherwise weekly reports are stored correctly but never appear in the UI.",
+    "In RnDSamplesTab modal, Style trigger is a Radix combobox whose first `[role=option]` is the placeholder '-- Pilih Style --'; consider disabling the placeholder or removing it from the option list so keyboard/automation-first selection is safer."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "92% (12/13 checks passed; only bell-notification surfacing failed)"},
+  "test_credentials": "admin@garment.com / Admin@123 (per /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created 1 TEST sample request (SR-20260805-EE1486 · PIC 'Bu Sri (Sample Room) TEST' on style MK-JKT-RND) — cleaned up afterwards. Also cleared the rnd-weekly-2026-W32 notifications inserted by the 'Kirim sekarang' test.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Login → click 'Portal Manajemen' → sidebar 'Ringkasan Bisnis' to reach ManagementOverviewModule (hash #management-overview alone did not always route there). #rnd-dashboard opens the RnD cockpit and contains rnd-funnel(7), rnd-lifecycle-*, rnd-weekly-* testids. #rnd-dashboard weekly send button data-testid='rnd-weekly-send' toast → 'Rapor 2026-W32 dikirim ke N penerima'. Alert form testids all present, backend validation for >60 works (toast 'po_warn_days harus 0..60 hari'). Sample Request modal: Style is a Radix combobox (NOT a native select), pick option with text 'MK-JKT-RND — ...'. Weekly-decision notifications are stored in Mongo (`db.notifications`, type='rahaza', subtype='rnd_weekly_decisions') and returned by GET /api/notifications but do NOT render in the header bell.",
+  "verified_working": [
+    "rnd-approval-cockpit + rnd-funnel + all 7 rnd-funnel-<stage> testids",
+    "rnd-lifecycle-totals shows '0 tech pack · 0 sample · 0 PIC · 0 pola' initially, updates to '1 sample · 1 PIC' after sample create",
+    "rnd-lifecycle-card + rnd-lifecycle-table with 9 columns; 4 rnd-lifecycle-row-* rows",
+    "'Tech Pack' & 'Pola' columns show '0' / 'belum ada' as expected (no data in DB)",
+    "'LANGKAH BERIKUTNYA' sensible per stage",
+    "rnd-weekly-card + rnd-weekly-counts (Disetujui/Ditolak/Masih Menunggu/Menunggu Terlalu Lama) + rnd-weekly-send button; toast success with recipient count (4)",
+    "sample-pic-input in Sample Request modal, saved, shown as 'PIC / Pembuat Sample' column and appears in mgmt cockpit lifecycle-table 'SAMPLE (PIC)' column",
+    "card-alerts + alert-threshold-form + alert-po-days-input + alert-ar-days-input + alert-threshold-save",
+    "Save 14/5 → toast 'Ambang peringatan disimpan PO 14 hari · Piutang 5 hari sebelum tenggat', subtitle updates",
+    "Reload persists 14/5",
+    "Invalid 99 → error toast 'po_warn_days harus 0..60 hari', DB value unchanged (still 14 after reload)",
+    "Reset back to 3/3 works",
+    "rnd-history-table renders 1 approved entry"
+  ],
+  "rca of the issue": "Bell UI shows 0 notifications while /api/notifications returns them — mismatch between how notif_insert stores documents (type='rahaza', subtype='rnd_weekly_decisions') and how the NotificationBell dropdown filters/reads them. The REST API remaps subtype→type in its response, so if the bell uses a different endpoint (or filters by top-level type != 'rahaza') it will miss these entries."
+}

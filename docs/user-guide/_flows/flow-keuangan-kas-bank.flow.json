@@ -1,0 +1,59 @@
+{
+  "flow_id": "flow-keuangan-kas-bank",
+  "title": "Alur Kas & Rekonsiliasi Bank (Kas Kecil / Transfer Bank -> Rekonsiliasi Rekening Bank)",
+  "portal": "finance",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Keuangan untuk siklus kas & bank: (1) kelola dana Kas Kecil (imprest) dengan transaksi kas keluar (expense/advance) dan kas masuk (replenish) yang otomatis diposting ke GL; (2) transfer dana antar rekening bank (Dr bank tujuan / Cr bank sumber) dengan auto-posting GL & void reversal; lalu (3) rekonsiliasi rekening bank: buat sesi per periode+akun, impor mutasi rekening koran, auto-match/match manual ke jurnal GL berstatus posted, dan approve sesi bila unmatched = 0.",
+  "modules_touched": ["fin-petty-cash", "fin-bank-transfer", "fin-bank-recon"],
+  "critical_endpoints": [
+    "/api/finance/petty-cash/funds",
+    "/api/finance/petty-cash/funds/{fund_id}/replenish",
+    "/api/finance/petty-cash/transactions",
+    "/api/finance/bank-transfers",
+    "/api/finance/bank-recon/sessions",
+    "/api/finance/bank-recon/sessions/{session_id}/import-bulk",
+    "/api/finance/bank-recon/sessions/{session_id}/auto-match",
+    "/api/finance/bank-recon/sessions/{session_id}/match",
+    "/api/finance/bank-recon/sessions/{session_id}/approve"
+  ],
+  "supporting_endpoints": [
+    "/api/finance/petty-cash/funds/{fund_id}",
+    "/api/finance/petty-cash/funds/{fund_id}/close",
+    "/api/finance/petty-cash/transactions/{txn_id}/retry-posting",
+    "/api/finance/bank-transfers/{tf_id}",
+    "/api/finance/bank-transfers/{tf_id}/void",
+    "/api/finance/bank-transfers/{tf_id}/retry-posting",
+    "/api/finance/bank-recon/sessions/{session_id}",
+    "/api/finance/bank-recon/sessions/{session_id}/transactions",
+    "/api/finance/bank-recon/sessions/{session_id}/transactions/{txn_id}",
+    "/api/finance/bank-recon/sessions/{session_id}/import-csv",
+    "/api/finance/bank-recon/sessions/{session_id}/unmatch",
+    "/api/finance/bank-recon/gl-entries",
+    "/api/finance/bank-recon/summary"
+  ],
+  "test_script": "tests/flow_keuangan_kas_bank_test.py",
+  "doc": "docs/user-guide/keuangan/flow-keuangan-kas-bank.md",
+  "db_collections": [
+    "rahaza_petty_cash_funds",
+    "rahaza_petty_cash_txns",
+    "rahaza_bank_transfers",
+    "bank_recon_sessions",
+    "bank_recon_txns",
+    "rahaza_journal_entries",
+    "rahaza_journal_lines"
+  ],
+  "happy_path_steps": [
+    "Buat dana Kas Kecil (opening balance) -> auto JE opening (Dr 1-1101 Kas Kecil / Cr 1-1201 Bank)",
+    "Catat pengeluaran kas (expense) -> saldo turun + auto JE (Dr Beban / Cr Kas Kecil); guard saldo tidak cukup",
+    "Replenish (kas masuk) -> saldo naik + auto JE (Dr Kas Kecil / Cr Bank)",
+    "Transfer dana antar rekening bank -> auto JE (Dr Bank Tujuan / Cr Bank Sumber); guard akun sama ditolak",
+    "Buat sesi rekonsiliasi (periode + akun bank); guard duplikat periode+akun 409; guard format periode 400",
+    "Impor mutasi bank (import-bulk) -> sesi in_progress; guard approve saat unmatched>0 ditolak",
+    "Auto-match & match manual mutasi bank <-> jurnal GL posted -> unmatched = 0",
+    "Approve sesi rekonsiliasi (status approved, terkunci)"
+  ],
+  "rbac_note": "Endpoint Kas Kecil (create/replenish/close) & Bank Transfer (create/void/retry) dibatasi FINANCE_ROLES. RC-FLOW-kasbank-1: role Finance kanonik = 'accounting'/'staff_keuangan' ditambahkan ke FINANCE_ROLES agar akun finance@dewiaditya.id tidak tertolak 403. Endpoint Bank-Recon hanya butuh autentikasi (require_auth).",
+  "qa": "docs/user-guide/_qa/flow-keuangan-kas-bank_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_keuangan_kas_bank_test.py): kas kecil opening/expense/replenish + guard saldo; bank transfer + void + guard akun-sama; bank-recon create/import-bulk/auto-match/match/unmatch/approve + guard duplikat 409, periode 400, approve-unmatched 400, approved-locked 400; RBAC accounting role 200. DB pristine setelah cleanup."
+}

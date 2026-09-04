@@ -1,0 +1,35 @@
+{
+  "flow_id": "flow-produksi-qc-rework",
+  "title": "Alur QC / Rework (Eksekusi Lantai: Output -> QC pass/fail -> Papan Rework -> Packing)",
+  "portal": "produksi",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal kendali mutu (Quality Control) & pengerjaan ulang (rework) pada Hub Eksekusi Proses (prod-exec-hub). Setiap potongan/piece mengalir per LINE: hasil proses hulu dicatat sebagai OUTPUT (quick-output), lalu di stasiun QC dicatat pass/fail (qc-event). Piece qc_pass lanjut ke PACKING; piece qc_fail masuk PAPAN REWORK. Di rework (rework-event) piece dipilah: qty_out (rework_pass) lanjut ke PACKING, qty_fail (rework_fail) menjadi scrap, dengan invariant qty_out + qty_fail <= qty_in. Board per proses & flow-summary menampilkan throughput + WIP + bottleneck. QC via quick-output dilarang (harus qc-event), dan invariant rework dijaga guardrail.",
+  "modules_touched": ["prod-exec-hub", "prod-exec-qc", "prod-exec-rework", "prod-exec-packing"],
+  "critical_endpoints": [
+    "/api/rahaza/execution/quick-output",
+    "/api/rahaza/execution/qc-event",
+    "/api/rahaza/execution/rework-event",
+    "/api/rahaza/execution/process/{code}/board",
+    "/api/rahaza/execution/flow-summary"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/lines",
+    "/api/rahaza/execution/recent-events",
+    "/api/rahaza/execution/my-work",
+    "/api/rahaza/work-orders"
+  ],
+  "test_script": "tests/flow_produksi_qc_rework_test.py",
+  "doc": "docs/user-guide/produksi/flow-produksi-qc-rework.md",
+  "db_collections": ["rahaza_wip_events", "rahaza_lines", "rahaza_processes"],
+  "happy_path_steps": [
+    "Catat OUTPUT proses hulu (quick-output) untuk sebuah line -> event_type=output",
+    "QC event: qty_pass -> Packing, qty_fail -> Papan Rework (event qc_pass/qc_fail)",
+    "Rework event: qty_in dari qc_fail, qty_out -> rework_pass (Packing), qty_fail -> rework_fail (scrap)",
+    "Packing: quick-output pada proses PACKING mencatat throughput packing",
+    "Board per proses + flow-summary menampilkan throughput, WIP, qc_pass/qc_fail, bottleneck"
+  ],
+  "qa": "docs/user-guide/_qa/flow-produksi-qc-rework_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (output->qc pass/fail->rework out/fail->packing; flow-summary qc_pass/qc_fail akurat; guard qc-via-quick-output 400; guard rework invariant qty_out+qty_fail>qty_in 400; guard qc-event tanpa qty 400); E2E UI PASS (QC->Rework->Packing via prod-exec-hub, no logout)",
+  "notes_qa": "Observasi: flow-summary out('REWORK') memakai event_type='output' sehingga throughput REWORK (rework_pass/rework_fail) tidak terhitung -> dicatat di _qa (Low, tidak memblok flow inti)."
+}

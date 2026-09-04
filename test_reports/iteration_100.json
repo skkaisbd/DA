@@ -1,0 +1,22 @@
+{
+  "summary": "Iteration 100 — verified all 3 Portal Keuangan changes end-to-end. Backend: new pytest suite /app/backend/tests/test_iter100_settlement_mapping_period.py (8/8 pass) covering import/preview auto vs saved mapping (fingerprint 16 hex, 13 headers, 9 numeric cols, column_totals, unmapped list, saved_mapping), POST/GET/DELETE import/mapping (create=true → upsert created=false, empty mapping 400, unknown account 4xx, 401/403 without token, delete 404 on repeat), per-store isolation (other account still 'auto'), preview without account_id 'auto', draft.expected_net_payout=2467000, and list date_from/date_to filters (Jul: 2 rows net 9.400.000; Aug: STL-TEST-001 + STM-2026-08-16-01; Jan: empty). Frontend: 6 finance section pills read exactly as specified; sidebar contents per section correct; all 11 required modules open with content (no blank/error); dashboard shows 6 group headings + fin-link-* quick links that navigate; period filter (month/range/clear + by-store card sync + KPI hint) correct; import mapping editor (auto badge, 9 rows, target select, unmapped warning, live recompute of shipping_subsidy 27000 and diff -27.000, revert to seimbang) correct; saving remembered the mapping (verified via API) and the next import of the same CSV shows 'pemetaan tersimpan ✓' with toast 'Format laporan dikenali — pemetaan tersimpan dipakai…'; TikTok xlsx still shows the auto badge. Zero console errors in every run. Nav guard INV-NAV-01 green. All test data cleaned up (settlement STL-MAP-* deleted via UI, saved mapping deleted via API; only the 4 pre-existing settlements remain, 0 saved mappings).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iter100_settlement_mapping_period.py",
+    "/app/test_reports/pytest/iter100.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Non-blocking: pytest.ini uses xdist loadscope, so splitting settlement-mapping tests into multiple classes made them run in parallel workers where a module-scoped cleanup fixture deleted mappings mid-run. Kept all iteration-100 tests in a single class to keep them serial — future mapping tests should do the same or use an account-scoped fixture.",
+    "Non-blocking: after mapping 'Ongkos Kirim Dibayar Pembeli' → Subsidi ongkir, the saved settlement is intentionally 'belum seimbang' (expected 2.467.000 vs net 2.440.000). Behaviour matches the documented BD-2 rule (unknown money must be named), but the mapping editor could hint that mapping a positive column changes expected net so staff know the diff is by design."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter100_settlement_mapping_period.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Temporary: settlement STL-MAP-1788379021 (DA Official Shopee) + 1 saved import mapping — BOTH DELETED after testing. No leftovers.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123 (superadmin, finance portal)",
+  "context_for_next_testing_agent": "Backend suite for mapping-memory + period filter lives in /app/backend/tests/test_iter100_settlement_mapping_period.py (single class on purpose — xdist loadscope). The hidden file input [data-testid=fin-settlement-import-file] is class='hidden'; do NOT wait_for_selector on it (use set_input_files directly after waiting for fin-settlement-import). Toasts are sonner ([data-sonner-toast]) and disappear in ~4s — read them within 3s of the action. State at end of iteration 100: 4 settlements (STL-TEST-001, STM-2026-08-16-01, STL-UI-1788373763, STL-QA-1788373644), 0 saved import mappings.",
+  "rca_of_the_issue": "No product defects found. The only two failures seen were self-inflicted test-isolation problems (xdist loadscope parallelism deleting mappings across workers, and waiting on a visually hidden file input); both fixed in the test code and re-run green."
+}

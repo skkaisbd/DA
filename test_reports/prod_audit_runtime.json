@@ -1,0 +1,182 @@
+{
+ "prod-master-product-hub": {
+  "component": "ProductionMasterProductHub",
+  "file": "components/erp/hubs/ProductionMasterProductHub.jsx",
+  "calls": {}
+ },
+ "prod-master-process-hub": {
+  "component": "ProductionMasterProcessHub",
+  "file": "components/erp/hubs/ProductionMasterProcessHub.jsx",
+  "calls": {}
+ },
+ "vendor-admin": {
+  "component": "VendorAccountsAdminModule",
+  "file": "components/erp/VendorAccountsAdminModule.jsx",
+  "calls": {}
+ },
+ "cmt-override-portal": {
+  "component": "CMTOverridePortalModule",
+  "file": "components/erp/CMTOverridePortalModule.jsx",
+  "calls": {
+   "/api/cmt-override/daily-recap/remind": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"b3395cce75e9\",\"detail\":\"Method Not Allowed\"}"
+   }
+  }
+ },
+ "prod-pos-internal": {
+  "component": "withProps",
+  "file": null,
+  "calls": {}
+ },
+ "prod-shipments-vendor": {
+  "component": "EngineVendorShipmentModule",
+  "file": "components/erp/engine/VendorShipmentModule.jsx",
+  "calls": {
+   "/api/import-data": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"2cfefe50201b\",\"detail\":\"Method Not Allowed\"}"
+   },
+   "/api/upload": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"7c8ccbdfb053\",\"detail\":\"Method Not Allowed\"}"
+   },
+   "/api/vendor-shipments/material-preview": {
+    "status": 404,
+    "body": "{\"status\":404,\"request_id\":\"7c774eea7443\",\"detail\":\"Not found\"}"
+   }
+  }
+ },
+ "wh-material-issue": {
+  "component": "RahazaMaterialIssueModule",
+  "file": "components/erp/RahazaMaterialIssueModule.jsx",
+  "calls": {
+   "/api/rahaza/material-issues/draft-from-job": {
+    "status": 404,
+    "body": "{\"status\":404,\"request_id\":\"aba94e63b732\",\"detail\":\"MI tidak ditemukan.\"}"
+   }
+  }
+ },
+ "da-cmt-receive": {
+  "component": "EngineDAReceiveFromCMT",
+  "file": "components/erp/engine/DAReceiveFromCMTModule.jsx",
+  "calls": {
+   "/api/dewi/cmt-permak/from-receipt-line": {
+    "status": 404,
+    "body": "{\"status\":404,\"request_id\":\"eb6bfcc99269\",\"detail\":\"Permak tidak ditemukan\"}"
+   }
+  }
+ },
+ "cmt-permak": {
+  "component": "CMTPermakModule",
+  "file": "components/erp/CMTPermakModule.jsx",
+  "calls": {}
+ },
+ "prod-shipments-buyer": {
+  "component": "EngineBuyerShipmentModule",
+  "file": "components/erp/engine/BuyerShipmentModule.jsx",
+  "calls": {
+   "/api/import-data": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"06e67f69f3e9\",\"detail\":\"Method Not Allowed\"}"
+   },
+   "/api/upload": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"38a20672d203\",\"detail\":\"Method Not Allowed\"}"
+   }
+  }
+ },
+ "po-closure": {
+  "component": "EnginePOClosure",
+  "file": "components/erp/engine/POClosureModule.jsx",
+  "calls": {}
+ },
+ "production-dashboard": {
+  "component": "ProductionDashboardModule",
+  "file": "components/erp/ProductionDashboardModule.jsx",
+  "calls": {
+   "/api/rahaza/setup/dismiss": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"3b3fcc48b5e3\",\"detail\":\"Method Not Allowed\"}"
+   },
+   "/api/rahaza/setup/seed-sample": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"447e4df5161a\",\"detail\":\"Method Not Allowed\"}"
+   },
+   "/api/rahaza/setup/skip": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"fce303e4c203\",\"detail\":\"Method Not Allowed\"}"
+   }
+  }
+ },
+ "prod-control-tower": {
+  "component": "ProductionControlTowerModule",
+  "file": "components/erp/ProductionControlTowerModule.jsx",
+  "calls": {}
+ },
+ "prod-monitoring": {
+  "component": "EngineMonitoringModule",
+  "file": "components/erp/engine/ProductionMonitoringModule.jsx",
+  "calls": {}
+ },
+ "prod-work-orders": {
+  "component": "EngineJobsModule",
+  "file": "components/erp/engine/WorkOrderModule.jsx",
+  "calls": {}
+ },
+ "prod-variance": {
+  "component": "EngineVarianceModule",
+  "file": "components/erp/engine/OverproductionModule.jsx",
+  "calls": {}
+ },
+ "prod-cmt-billing": {
+  "component": "ProductionCMTBillingModule",
+  "file": "components/erp/ProductionCMTBillingModule.jsx",
+  "calls": {}
+ },
+ "prod-sewing-cost": {
+  "component": "SewingCostModule",
+  "file": "components/erp/costing/SewingCostModule.jsx",
+  "calls": {}
+ },
+ "fin-hpp": {
+  "component": "RahazaHPPModule",
+  "file": "components/erp/RahazaHPPModule.jsx",
+  "calls": {}
+ },
+ "fin-hpp-produk": {
+  "component": "ProductCostingModule",
+  "file": "components/erp/costing/ProductCostingModule.jsx",
+  "calls": {
+   "/api/costing": {
+    "status": 404,
+    "body": "{\"status\":404,\"request_id\":\"006e7dfad845\",\"detail\":\"Not Found\"}"
+   }
+  }
+ },
+ "prod-material-requirements": {
+  "component": "RahazaMaterialRequirementsModule",
+  "file": "components/erp/RahazaMaterialRequirementsModule.jsx",
+  "calls": {
+   "/api/rahaza/material-requirements": {
+    "status": 405,
+    "body": "{\"status\":405,\"request_id\":\"2e90e635322f\",\"detail\":\"Method Not Allowed\"}"
+   }
+  }
+ },
+ "prod-analytics-hub": {
+  "component": "ProductionAnalyticsHub",
+  "file": "components/erp/hubs/ProductionAnalyticsHub.jsx",
+  "calls": {}
+ },
+ "prod-ai-insights": {
+  "component": "AIInsightsModule",
+  "file": "components/erp/AIInsightsModule.jsx",
+  "calls": {}
+ },
+ "prod-predictive-maintenance": {
+  "component": "PredictiveMaintenanceModule",
+  "file": "components/erp/PredictiveMaintenanceModule.jsx",
+  "calls": {}
+ }
+}

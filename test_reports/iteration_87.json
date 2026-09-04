@@ -1,0 +1,25 @@
+{
+  "summary": "RETEST iter86 fix + verifikasi BUG3 (moving average HPP) + regresi. BUG1-B (Detail Roll) FIX HIJAU: dialog terisi lengkap (Material, Color/Lot, Supplier, PO, Sisa=18,00/18,00 meter, Movement History). BUG1-C (Issue Roll) HIJAU: input-issue-unit readOnly + value='meter'; issue 1 meter berhasil, sisa 18→17. BUG3 (rata-rata bergerak) HIJAU 5/5 pytest: material tanpa harga → PO1 100@10.000 → unit_cost=10.000 + cost_method='moving_average' + last_receipt_unit_cost=10.000 → PO2 100@20.000 → unit_cost=15.000 (RATA-RATA BERGERAK) → PUT /api/rahaza/materials unit_cost=1 balas 200 dengan 'harga_satuan_catatan' dan harga TIDAK berubah. Regresi Roll Kain (kolom 'Sisa / Total' + 'Satuan', tabel/kartu, CSV, tab 'Penerimaan tanpa roll') dan Order Cutting (model/variant/new-model-btn) tetap OK. Semua artefak uji dibersihkan lewat mongosh (material, PO, GR, stok, ledger, cost_history, movements).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iter87_moving_average_hpp.py",
+    "/app/test_reports/pytest/iter87.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "WMSFabricRollsModule.jsx handleView sudah mengembalikan bentuk {roll, movements} — sesuai kontrak state dan komentar di baris 81; bug iter86 selesai.",
+    "core/accessory_valuation.moving_average: bila qty_before<=0 ATAU cost_before<=0, HPP baru = cost_in (bukan rata-rata). Ini aman untuk kasus 'material baru pertama kali diterima' (test_02 lulus 10.000). Aturan sudah didokumentasi di docstring modul.",
+    "Perhatikan: PUT /rahaza/materials tidak lagi mengembalikan pesan bila unit_cost yang dikirim SAMA dengan yang tersimpan (tidak ada 'harga_satuan_catatan'). Ini konsisten dengan intent (tidak mengubah apa pun) tetapi bila FE menampilkan pesan hanya saat catatan ada, operator yang mencoba mengetik angka sama TIDAK akan tahu bahwa Master Item memang menolak input harga. Tidak menghalangi rilis, tetapi bisa dipertimbangkan agar catatan SELALU muncul saat field harga dikirim."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter87_moving_average_hpp.py (baru)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin@garment.com / Admin@123 — /app/memory/test_credentials.md",
+  "seed_data_creation": "Membuat 1 material aksesoris TEST_ITER87_ACC_MOVAVG + 2 PO + 2 GR untuk membuktikan alur rata-rata bergerak; SEMUA dibersihkan pada langkah test_99_cleanup via mongosh (rahaza_materials, rahaza_material_stock, rahaza_material_movements, rahaza_stock_ledger, rahaza_material_cost_history, warehouse_stock, rahaza_purchase_orders, warehouse_receiving, rahaza_material_quarantine). Data 'hidup' pemilik tidak disentuh. Untuk BUG1-C, dilakukan SATU kali issue kecil (1 meter) pada roll RL-202608-0004: sisa berubah dari 18,00 → 17,00 meter (permanen; mutasi tercatat di movement history dengan referensi TEST-ITER87/SMOKE_ITER87).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iter87 selesai HIJAU. Bila iterasi berikutnya menyentuh core/accessory_valuation atau warehouse.PUT /receiving, jalankan ulang backend/tests/test_iter87_moving_average_hpp.py (5 test, ~7 detik, self-cleanup). Roll RL-202608-0004 sekarang 17,00 / 18,00 meter (bekas smoke test BUG1-C). Roll lain (0001/0002/0003) tetap 100% penuh.",
+  "rca of the issue": "Bug iter86 (Detail Roll kosong) sudah diperbaiki main agent di WMSFabricRollsModule.jsx handleView (baris 189) dan static bundle sudah termuat. Verifikasi visual + membaca [data-testid=roll-detail-qty] menghasilkan '18,00 / 18,00 meter' beserta Material/Color/PO/Supplier/Movement History terisi. Tidak ada bug baru terdeteksi pada retest ini."
+}

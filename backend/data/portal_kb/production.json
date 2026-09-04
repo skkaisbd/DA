@@ -1,0 +1,101 @@
+{
+  "portal": "production",
+  "label": "Portal Produksi",
+  "ringkasan": "Portal Produksi mengurus produksi barang MILIK SENDIRI (label CV. Dewi Aditya). Alurnya sama persis dengan Portal Maklon — bedanya hanya pembelinya: di Maklon barang dikirim ke klien luar, di Produksi barang 'diserahterimakan' ke inventori sendiri untuk dijual lewat Marketing.",
+  "prinsip": [
+    "Jahit dikerjakan vendor CMT di luar. Pabrik tidak lagi punya lini jahit internal.",
+    "Cutting punya portal sendiri — kain dipotong dulu jadi panel sebelum dikirim ke CMT.",
+    "Satu mesin PO dipakai bersama Maklon; pembedanya field business_type = internal."
+  ],
+  "alur": [
+    {
+      "judul": "Alur produksi internal dari awal sampai tutup",
+      "kata_kunci": ["alur produksi", "cara produksi", "po internal", "proses produksi", "urutan produksi"],
+      "modul": ["prod-pos-internal", "prod-shipments-vendor", "da-cmt-receive", "prod-shipments-buyer", "po-closure"],
+      "langkah": [
+        "Buat 'PO Internal': pilih model, ukuran, warna, dan jumlah.",
+        "PO di-Confirm → kebutuhan material & aksesoris terhitung otomatis dari BOM.",
+        "Kain dipotong di Portal Cutting → hasilnya panel siap jahit.",
+        "'Kirim Material CMT': panel + aksesoris dikirim ke vendor jahit. Stok gudang berkurang.",
+        "Vendor melapor progres lewat Portal Vendor; hasil jadi diterima di 'Terima FG dari CMT'.",
+        "Barang cacat masuk 'Permak / Perbaikan'.",
+        "'Serah Terima FG' memindahkan barang jadi ke inventori DA → jurnal HPP terbentuk.",
+        "'Tutup PO' setelah semua selesai dan variance beres."
+      ]
+    },
+    {
+      "judul": "Status PO dan urutannya",
+      "kata_kunci": ["status po", "ubah status", "tidak bisa closed", "allowed next", "transisi status"],
+      "modul": ["prod-pos-internal", "po-closure"],
+      "langkah": [
+        "Urutan wajib: Draft → Confirmed → Distributed → In Production → Production Complete → (Variance/Return Review, opsional) → Ready to Close → Closed.",
+        "Melompati urutan ditolak sistem (400). Tombol yang muncul di layar SELALU mengikuti status berjalan."
+      ]
+    },
+    {
+      "judul": "Selisih hasil produksi (variance)",
+      "kata_kunci": ["variance", "selisih", "kurang", "lebih", "hasil tidak sesuai"],
+      "modul": ["prod-variance", "prod-work-orders"],
+      "langkah": [
+        "Selisih antara qty PO dan qty jadi tercatat sebagai variance (OVER atau UNDER).",
+        "Buka 'Laporan Variance' → Acknowledge → Resolve.",
+        "Variance yang di-resolve otomatis dijurnal ke akun selisih produksi."
+      ]
+    },
+    {
+      "judul": "Biaya & HPP produksi",
+      "kata_kunci": ["hpp", "biaya produksi", "harga pokok", "ongkos jahit", "overhead"],
+      "modul": ["fin-hpp", "prod-cmt-billing"],
+      "langkah": [
+        "HPP per job = material terpakai + ongkos jahit CMT + overhead (rate × qty jadi).",
+        "Snapshot HPP dikunci saat job Completed, lalu dipakai untuk jurnal WIP → Barang Jadi.",
+        "Saat barang dikirim/diserahkan, HPP itu menjadi COGS."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "prod-master-product-hub", "nama": "Master Produk", "deskripsi": "Model, ukuran, warna, dan BOM (daftar kebutuhan bahan per produk)."},
+    {"modul": "prod-master-process-hub", "nama": "Master Proses", "deskripsi": "Daftar proses kerja dan tarif borongan per pcs."},
+    {"modul": "vendor-admin", "nama": "Vendor CMT", "deskripsi": "Data vendor jahit beserta kapasitas dan tarifnya."},
+    {"modul": "prod-pos-internal", "nama": "PO Internal", "deskripsi": "Perintah produksi barang milik sendiri."},
+    {"modul": "prod-shipments-vendor", "nama": "Kirim Material CMT", "deskripsi": "Pengiriman panel & aksesoris ke vendor jahit."},
+    {"modul": "da-cmt-receive", "nama": "Terima FG dari CMT", "deskripsi": "Penerimaan barang jadi dari vendor beserta inspeksi mutu."},
+    {"modul": "cmt-permak", "nama": "Permak / Perbaikan", "deskripsi": "Penanganan barang cacat yang bisa diperbaiki."},
+    {"modul": "prod-shipments-buyer", "nama": "Serah Terima FG", "deskripsi": "Memasukkan barang jadi ke inventori DA."},
+    {"modul": "po-closure", "nama": "Tutup PO", "deskripsi": "Penutupan PO setelah seluruh proses selesai."},
+    {"modul": "production-dashboard", "nama": "Dashboard Produksi", "deskripsi": "Ringkasan PO berjalan, barang di vendor, dan hasil masuk."},
+    {"modul": "prod-control-tower", "nama": "Pusat Kendali", "deskripsi": "Pantauan menyeluruh seluruh PO dan hambatannya."},
+    {"modul": "prod-monitoring", "nama": "Tracking Produksi", "deskripsi": "Posisi tiap PO/job saat ini."},
+    {"modul": "prod-work-orders", "nama": "Production Jobs", "deskripsi": "Rincian pekerjaan per item PO."},
+    {"modul": "prod-variance", "nama": "Laporan Variance", "deskripsi": "Selisih qty produksi dan penyelesaiannya."},
+    {"modul": "prod-cmt-billing", "nama": "Invoice", "deskripsi": "Tagihan ongkos jahit dari vendor CMT."},
+    {"modul": "fin-hpp", "nama": "HPP Produksi", "deskripsi": "Perhitungan harga pokok per job."},
+    {"modul": "prod-material-requirements", "nama": "Kebutuhan Material", "deskripsi": "Rekap material yang dibutuhkan seluruh PO aktif."},
+    {"modul": "prod-analytics-hub", "nama": "Analitik Produksi", "deskripsi": "Tren output, ketepatan waktu, dan mutu."},
+    {"modul": "prod-ai-insights", "nama": "Estimasi AI", "deskripsi": "Perkiraan waktu & biaya berbasis AI."},
+    {"modul": "prod-predictive-maintenance", "nama": "Perawatan Mesin", "deskripsi": "Jadwal dan prediksi perawatan mesin."}
+  ],
+  "faq": [
+    {
+      "q": "Kenapa tombol untuk mengubah status PO tidak muncul?",
+      "kata_kunci": ["tombol status", "tidak muncul", "tidak bisa ubah status"],
+      "a": "Tombol dibangkitkan dari daftar 'allowed_next' milik status berjalan. Bila tidak ada tombol, artinya PO sedang di status akhir (Closed) atau menunggu langkah lain lebih dulu, mis. variance harus diselesaikan sebelum Ready to Close."
+    },
+    {
+      "q": "Apa bedanya Portal Produksi dan Portal Maklon?",
+      "kata_kunci": ["beda produksi maklon", "internal vs maklon"],
+      "a": "Mesinnya sama. Portal Produksi = barang milik sendiri, langkah terakhir 'Serah Terima FG' ke inventori DA. Portal Maklon = pesanan klien luar, langkah terakhir 'Dispatch ke Buyer' plus penagihan ke klien."
+    },
+    {
+      "q": "Di mana input jahit per operator?",
+      "kata_kunci": ["input jahit", "operator", "borongan", "wip"],
+      "a": "Jahit dikerjakan vendor CMT, jadi tidak ada input per operator jahit internal. Progres masuk dari Portal Vendor. Upah borongan internal yang masih dipakai (mis. finishing/packing) direkam lewat progres job dengan operator dan proses terkait, lalu terbaca oleh Penggajian."
+    }
+  ],
+  "saran": [
+    "Bagaimana alur produksi internal dari awal sampai tutup PO?",
+    "Kenapa tombol ubah status PO tidak muncul?",
+    "Bagaimana variance produksi diselesaikan?",
+    "Bagaimana HPP produksi dihitung?"
+  ]
+}

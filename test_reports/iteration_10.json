@@ -1,0 +1,51 @@
+{
+  "summary": "Completed end-to-end testing of returns visibility feature (Fase 1 sesi #9). All 8 user stories verified, backend APIs tested, and regression testing passed. The feature correctly displays gross revenue (bruto) and revenue after returns (setelah retur) side-by-side without changing historical numbers.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Core test (test_core_returns_visibility.py): 51/51 PASS - Calculator, static guards, and full chain tests",
+    "Backend API: cycle/summary returns correct gross (Rp 59,783,811), returned (Rp 2,222,282), and net (Rp 57,561,529) for TIKTOK-OUTFIT Jul 2026",
+    "Backend API: cycle/overview includes all returns fields (returned_amount, revenue_net_returns, returned_orders, returns_pct, returns_coverage_complete)",
+    "Backend API: creator/scorecard includes returns fields (order_revenue_returned, orders_returned, order_revenue_net_returns)",
+    "Backend API: creator/detail calculation correct (net = gross - returned)",
+    "Backend API: weekly report includes returns fields (nilai_retur, omzet_setelah_retur, retur)",
+    "Backend API: weekly exports (Excel & PDF) return HTTP 200 with valid files",
+    "UI: Cycle View Jul 2026 - Returns KPI card (data-testid='cycle-kpi-returns') displays 'Setelah retur Rp 57.561.529' with 6 orders and Rp 2.222.282 (3.7%)",
+    "UI: Cycle Table - 'Nilai retur' column shows Rp 2.222.282 · 6 pesanan for TIKTOK-OUTFIT",
+    "UI: Cycle Table - 'Setelah retur' column shows Rp 57.561.529 (−3.7%) for TIKTOK-OUTFIT",
+    "UI: Cycle Detail Dialog - Returns block (data-testid='cycle-detail-returns') displays 4 numbers: gross, returned orders/pcs, returned amount, net",
+    "UI: Cycle Detail Dialog - Data honesty notes mention RETUR and BRUTO",
+    "UI: Cycle View - CSV export button present and functional",
+    "UI: Creator Scorecard Jul 2026 - Returns KPI (data-testid='scorecard-kpi-returns') shows 'setelah retur Rp 3.672.039 · retur 6 pesanan (Rp 2.222.282)'",
+    "UI: Creator Scorecard - Table includes 'Retur' and 'Pesanan setelah retur' columns",
+    "UI: Weekly Report (week Jul 13-19, 2026) - 'Setelah retur' tile (data-testid='weekly-tile-setelah-retur') shows Rp 44.633.588 with 4 orders · Rp 1.667.777",
+    "UI: Weekly Report - Table includes 'Retur' and 'Setelah retur' columns (21 total columns)",
+    "UI: Weekly Report - Data notes mention 'retur' and 'BRUTO'",
+    "UI: Weekly Report - Excel and PDF export buttons present",
+    "Regression: Cycle View tabs (Platform Akun, KOL/Creator, Budget & Alokasi) - No errors",
+    "Regression: Creator Scorecard tab - No errors",
+    "Regression: Weekly Report hub tabs (Overview, Sales Performance, Daily Report, Weekly Report) - No errors"
+  ],
+  "test_report_links": [
+    "/app/backend_test.py",
+    "/app/test_core_returns_visibility.py"
+  ],
+  "success_percentage": {
+    "backend": "100% (6/6 API tests passed)",
+    "frontend": "100% (13/13 user story tests passed)",
+    "regression": "100% (8/8 tabs tested without errors)"
+  },
+  "updated_files": [
+    "/app/backend_test.py"
+  ],
+  "action_item_for_main_agent": "",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false
+}

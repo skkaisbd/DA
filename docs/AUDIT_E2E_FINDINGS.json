@@ -1,0 +1,14 @@
+[
+ {
+  "code": "CONS-2",
+  "severity": "LOW",
+  "title": "Tidak ada surat jalan gabungan sama sakli di data \u2192 fitur gabung PO belum pernah menghasilkan dokumen (perlu uji fungsional UI)",
+  "evidence": {
+   "consolidated_shipments": 0,
+   "child_shipments": 0,
+   "dispatch_rows": 0
+  },
+  "expected": "minimal 1 SJ gabungan bisa dibuat & dibaca ulang",
+  "where": ""
+ }
+]

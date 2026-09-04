@@ -1,0 +1,46 @@
+{
+  "flow_id": "flow-produksi-inti",
+  "title": "Alur Produksi Inti (Wizard -> Work Order -> Eksekusi -> Selesai)",
+  "portal": "produksi",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal happy-path: PPIC membuat produksi via Production Wizard (Order + WO + Release + Bundle sekaligus), operator lantai mengisi progres per tahap via Input Harian Sederhana, dan WO/Order menyelesaikan diri (auto-complete) setelah PACKING memenuhi target.",
+  "modules_touched": [
+    "prod-wizard",
+    "prod-work-orders",
+    "prod-simple-input"
+  ],
+  "critical_endpoints": [
+    "/api/rahaza/wizard/preview-production",
+    "/api/rahaza/wizard/start-production",
+    "/api/rahaza/work-orders",
+    "/api/rahaza/execution/simple-input"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/execution/simple-input/history",
+    "/api/rahaza/work-orders/{id}/status",
+    "/api/rahaza/customers",
+    "/api/rahaza/models",
+    "/api/rahaza/sizes"
+  ],
+  "test_script": "tests/flow_alur_produksi_inti_test.py",
+  "doc": "docs/user-guide/produksi/flow-produksi-inti.md",
+  "manifests": [
+    "docs/user-guide/_manifests/prod-wizard.manifest.json",
+    "docs/user-guide/_manifests/prod-work-orders.manifest.json",
+    "docs/user-guide/_manifests/prod-simple-input.manifest.json"
+  ],
+  "db_collections": [
+    "rahaza_orders",
+    "rahaza_work_orders",
+    "rahaza_bundles",
+    "rahaza_wip_events"
+  ],
+  "happy_path_steps": [
+    "Wizard Langkah 1 (Order): pilih pelanggan / centang Produksi Internal, tambah item (model+size+qty).",
+    "Wizard Langkah 2 (Preview): panggil preview-production (dry-run), tampilkan jumlah WO & bundle.",
+    "Wizard Langkah 3 (Confirm): panggil start-production -> Order confirmed + WO released + bundle tergenerate.",
+    "Work Order: verifikasi WO muncul berstatus released di /work-orders.",
+    "Eksekusi: Input Harian Sederhana per tahap SEWING -> FINISHING -> QC -> PACKING via execution/simple-input.",
+    "Selesai: PACKING memicu maybe_auto_complete_wo -> WO completed -> Order completed otomatis."
+  ]
+}

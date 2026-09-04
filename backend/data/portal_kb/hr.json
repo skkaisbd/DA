@@ -1,0 +1,103 @@
+{
+  "portal": "hr",
+  "label": "Portal SDM / HRIS",
+  "ringkasan": "Portal SDM mengurus siklus hidup karyawan: data pribadi, absensi, cuti & lembur, penggajian, kasbon, kinerja, sampai rekrutmen dan pembelajaran. Terbagi tiga: Manajemen Karyawan, Manajemen Organisasi, dan Analitik & Laporan.",
+  "prinsip": [
+    "Absensi adalah sumber data utama penggajian — data absen yang salah membuat gaji salah.",
+    "Potongan kasbon dan klaim dinas ikut masuk perhitungan slip gaji.",
+    "Karyawan mengurus urusannya sendiri lewat Portal Saya, bukan lewat portal ini."
+  ],
+  "alur": [
+    {
+      "judul": "Menambah karyawan baru",
+      "kata_kunci": ["karyawan baru", "tambah karyawan", "onboarding", "buat akun karyawan"],
+      "modul": ["hr-employees", "hr-onboarding", "hr-org-chart"],
+      "langkah": [
+        "Buat data di 'Data Karyawan': identitas, jabatan, unit kerja, tanggal masuk.",
+        "Atur profil penggajian (gaji pokok / borongan) beserta tunjangannya.",
+        "Jalankan checklist 'Onboarding' agar akun, aset, dan pelatihan awal lengkap.",
+        "Karyawan bisa langsung memakai Portal Saya untuk absen dan melihat slip gaji."
+      ]
+    },
+    {
+      "judul": "Absensi dan koreksinya",
+      "kata_kunci": ["absen", "absensi", "kehadiran", "clock in", "telat", "lupa absen"],
+      "modul": ["hr-attendance-hub", "hr-attendance-sessions"],
+      "langkah": [
+        "Karyawan absen lewat halaman Absen (selfie + lokasi) atau mesin/perangkat terdaftar.",
+        "Sistem memeriksa jarak ke lokasi kerja (geofence) sebelum absen diterima.",
+        "Lupa absen atau salah jam dikoreksi lewat pengajuan yang harus disetujui HR.",
+        "Data absen final menjadi dasar hitungan gaji dan lembur."
+      ]
+    },
+    {
+      "judul": "Menjalankan penggajian",
+      "kata_kunci": ["gaji", "payroll", "slip gaji", "penggajian", "bayar gaji"],
+      "modul": ["hr-payroll-hub", "hr-kasbon"],
+      "langkah": [
+        "Buat run penggajian untuk periode tertentu.",
+        "Sistem menarik absensi, lembur, upah borongan, tunjangan, dan potongan kasbon.",
+        "Periksa slip per karyawan → finalisasi run → jurnal beban gaji terbentuk otomatis.",
+        "Pembayaran dicatat di Portal Keuangan; slip bisa dilihat karyawan di Portal Saya."
+      ]
+    },
+    {
+      "judul": "Cuti dan lembur",
+      "kata_kunci": ["cuti", "izin", "lembur", "overtime", "approval cuti"],
+      "modul": ["hr-leave-hub", "approval-multilevel"],
+      "langkah": [
+        "Karyawan mengajukan dari Portal Saya.",
+        "Atasan menyetujui; jenis pengajuan tertentu memakai approval bertingkat.",
+        "Cuti yang disetujui mengurangi kuota; lembur yang disetujui masuk hitungan gaji."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "hr-employees", "nama": "Data Karyawan", "deskripsi": "Master karyawan, jabatan, kontrak, dan dokumennya."},
+    {"modul": "hr-attendance-hub", "nama": "Absensi", "deskripsi": "Rekap kehadiran, koreksi, dan pengaturan geofence."},
+    {"modul": "hr-attendance-sessions", "nama": "Istirahat & Izin", "deskripsi": "Sesi istirahat dan izin keluar sementara."},
+    {"modul": "hr-leave-hub", "nama": "Cuti & Lembur", "deskripsi": "Kuota cuti, pengajuan, dan lembur."},
+    {"modul": "hr-payroll-hub", "nama": "Penggajian", "deskripsi": "Run gaji, slip, dan jurnalnya."},
+    {"modul": "hr-kasbon", "nama": "Kasbon", "deskripsi": "Pinjaman karyawan dan cicilan potong gaji."},
+    {"modul": "hr-expense-hub", "nama": "Klaim Dinas", "deskripsi": "Pengajuan dan penyelesaian biaya perjalanan dinas."},
+    {"modul": "hr-assets", "nama": "Aset Karyawan", "deskripsi": "Barang perusahaan yang dipegang karyawan."},
+    {"modul": "hr-org-chart", "nama": "Struktur Organisasi", "deskripsi": "Unit kerja, posisi, dan garis pelaporan."},
+    {"modul": "hr-shift-hub", "nama": "Shift", "deskripsi": "Pola shift dan penjadwalannya."},
+    {"modul": "hr-recruitment", "nama": "Rekrutmen & ATS", "deskripsi": "Lowongan, pelamar, dan tahapan seleksi."},
+    {"modul": "hr-resume-screening", "nama": "Screening CV", "deskripsi": "Penyaringan CV pelamar."},
+    {"modul": "hr-onboarding", "nama": "Onboarding", "deskripsi": "Checklist karyawan baru."},
+    {"modul": "hr-job-board", "nama": "Job Board", "deskripsi": "Papan lowongan yang bisa dilihat pelamar."},
+    {"modul": "hr-announcements", "nama": "Papan Pengumuman", "deskripsi": "Pengumuman internal perusahaan."},
+    {"modul": "hr-admin", "nama": "Pengaturan SDM", "deskripsi": "Parameter kebijakan HR."},
+    {"modul": "hr-dashboard", "nama": "Dashboard SDM", "deskripsi": "Jumlah karyawan, kehadiran, dan turnover."},
+    {"modul": "hr-reports", "nama": "Laporan SDM", "deskripsi": "Laporan kehadiran, gaji, dan demografi."},
+    {"modul": "hr-performance-hub", "nama": "Manajemen Kinerja", "deskripsi": "KPI, penilaian, dan review tahunan."},
+    {"modul": "hr-lms", "nama": "Pembelajaran", "deskripsi": "Materi pelatihan dan progres karyawan."},
+    {"modul": "hr-ai-hub", "nama": "AI SDM", "deskripsi": "Analisis risiko keluar karyawan dan rekomendasi berbasis AI."},
+    {"modul": "hr-inbox", "nama": "Inbox SDM", "deskripsi": "Pengajuan yang menunggu tindakan HR."},
+    {"modul": "approval-multilevel", "nama": "Approval Bertingkat", "deskripsi": "Rantai persetujuan berjenjang."}
+  ],
+  "faq": [
+    {
+      "q": "Karyawan tidak bisa absen, katanya di luar lokasi.",
+      "kata_kunci": ["tidak bisa absen", "di luar lokasi", "geofence", "gagal absen"],
+      "a": "Absen diperiksa terhadap daftar lokasi kerja beserta radiusnya. Cek 'Absensi' → pengaturan lokasi: pastikan titik koordinat dan radius kantor/gudang benar. Bila karyawan memang bekerja di lokasi baru, tambahkan lokasi itu dulu."
+    },
+    {
+      "q": "Gaji seorang karyawan salah hitung.",
+      "kata_kunci": ["gaji salah", "slip salah", "hitungan gaji"],
+      "a": "Telusuri tiga sumbernya: (1) absensi periode itu, (2) profil penggajian (gaji pokok/tarif borongan/tunjangan), (3) potongan kasbon berjalan. Perbaiki sumbernya lalu jalankan ulang run penggajian sebelum difinalisasi."
+    },
+    {
+      "q": "Di mana karyawan melihat slip gajinya?",
+      "kata_kunci": ["slip gaji karyawan", "lihat slip", "portal saya"],
+      "a": "Di Portal Saya → Slip Gaji. Slip hanya tampil setelah run penggajian difinalisasi."
+    }
+  ],
+  "saran": [
+    "Bagaimana cara menambah karyawan baru?",
+    "Kenapa karyawan tidak bisa absen?",
+    "Bagaimana menjalankan penggajian?",
+    "Bagaimana alur pengajuan cuti?"
+  ]
+}

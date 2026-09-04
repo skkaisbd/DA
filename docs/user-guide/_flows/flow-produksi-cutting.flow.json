@@ -1,0 +1,32 @@
+{
+  "flow_id": "flow-produksi-cutting",
+  "title": "Alur Cutting (Request -> Approve -> Batch -> Eksekusi/Status -> Hasil)",
+  "portal": "produksi",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Produksi untuk proses potong kain (cutting): buat request cutting (produk + qty + warna), approve request oleh supervisor, buat batch cutting (total pcs + qty per warna + roll kain) yang menautkan request menjadi in_cutting, eksekusi dengan mengubah status batch maju (in_cutting -> cut_done -> assigned_to_cmt) sebagai hasil potong, dengan guard transisi forward-only dan penanganan roll reject.",
+  "modules_touched": ["prod-cutting"],
+  "critical_endpoints": [
+    "/api/dewi/cutting/requests",
+    "/api/dewi/cutting/requests/{req_id}/approve",
+    "/api/dewi/cutting/batches"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/cutting/requests",
+    "/api/dewi/cutting/requests/{req_id}/reject",
+    "/api/dewi/cutting/batches",
+    "/api/dewi/cutting/batches/{batch_id}/status",
+    "/api/dewi/cutting/batches/{batch_id}/reject-roll",
+    "/api/dewi/cutting/summary"
+  ],
+  "test_script": "tests/flow_produksi_cutting_test.py",
+  "doc": "docs/user-guide/produksi/flow-produksi-cutting.md",
+  "db_collections": ["dewi_cutting_requests", "dewi_cutting_batches"],
+  "happy_path_steps": [
+    "Buat request cutting (produk + qty + warna) -> status pending_approval",
+    "Approve request -> approved",
+    "Buat batch cutting (link request -> in_cutting) lalu eksekusi status maju (cut_done)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-produksi-cutting_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (request->approve->batch->cut_done; guard backward ditolak; summary 200); E2E UI pending batch"
+}

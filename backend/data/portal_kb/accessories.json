@@ -1,0 +1,86 @@
+{
+  "portal": "accessories",
+  "label": "Portal Aksesoris",
+  "ringkasan": "Portal Aksesoris mengurus barang penunjang jahit: benang, kancing, resleting, label, hangtag, dan sejenisnya. Nilainya kecil per satuan tetapi jumlahnya banyak, sehingga fokusnya pada ketepatan stok dan valuasi HPP.",
+  "prinsip": [
+    "HPP aksesoris memakai rata-rata bergerak (WAC) yang diperbarui setiap penerimaan bernilai.",
+    "Setiap pengeluaran aksesoris berjurnal: Dr WIP / Cr Persediaan.",
+    "Pengeluaran bisa memotong stok LINTAS lokasi, mulai dari lokasi kanonik lalu baris terbesar."
+  ],
+  "alur": [
+    {
+      "judul": "Permintaan aksesoris oleh bagian internal",
+      "kata_kunci": ["request internal", "minta aksesoris", "permintaan aksesoris", "ambil aksesoris"],
+      "modul": ["accessories-internal-request", "accessories-inbox", "warehouse-accessory-requests"],
+      "langkah": [
+        "Bagian pemohon membuat permintaan di 'Request Internal'.",
+        "Permintaan masuk 'Inbox Approval' untuk disetujui/dialokasikan.",
+        "Gudang menyerahkan barang (deliver) → stok berkurang + jurnal terbentuk.",
+        "Bila stok tidak cukup, seluruh baris ditolak lebih dulu (tidak ada penyerahan setengah jalan diam-diam)."
+      ]
+    },
+    {
+      "judul": "Menerima aksesoris dan menilai HPP-nya",
+      "kata_kunci": ["terima aksesoris", "hpp aksesoris", "harga aksesoris", "valuasi", "wac"],
+      "modul": ["accessories-master-stock", "accessories-purchase"],
+      "langkah": [
+        "Buat Purchase Request bila perlu membeli.",
+        "Saat menerima, isi HARGA satuannya. HPP baru dihitung sebagai rata-rata bergerak terhadap stok lama.",
+        "Item ber-HPP nol muncul di daftar 'belum dinilai' dan diingatkan otomatis setiap pagi.",
+        "HPP bisa dikoreksi manual; riwayat perubahannya tersimpan."
+      ]
+    },
+    {
+      "judul": "Stok opname aksesoris",
+      "kata_kunci": ["opname aksesoris", "hitung aksesoris", "selisih aksesoris"],
+      "modul": ["accessories-opname"],
+      "langkah": [
+        "Buka sesi opname → hitung fisik per item.",
+        "Bila menghitung per kemasan (mis. 3 pak), pilih satuannya — sistem mengonversi ke satuan dasar.",
+        "Submit → Approve. Baris yang gagal diterapkan ditampilkan merah beserta alasannya, tidak dilewati diam-diam."
+      ]
+    },
+    {
+      "judul": "Barang rusak / scrap",
+      "kata_kunci": ["scrap", "rusak", "buang", "susut"],
+      "modul": ["accessories-master-stock"],
+      "langkah": [
+        "Gunakan aksi Scrap pada item terkait beserta alasannya.",
+        "Stok berkurang dan dijurnal Dr Beban Scrap / Cr Persediaan.",
+        "Hanya peran yang berwenang atas operasi stok yang boleh melakukannya."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "accessories-dashboard", "nama": "Dashboard", "deskripsi": "Nilai persediaan aksesoris, item belum dinilai, dan permintaan siap diserahkan."},
+    {"modul": "accessories-master-stock", "nama": "Master Aksesoris", "deskripsi": "Daftar aksesoris, stok, HPP, valuasi, dan riwayat mutasi bernilai."},
+    {"modul": "accessories-opname", "nama": "Stok Opname", "deskripsi": "Perhitungan fisik dan penyesuaian stok aksesoris."},
+    {"modul": "accessories-internal-request", "nama": "Request Internal", "deskripsi": "Permintaan aksesoris dari bagian lain."},
+    {"modul": "accessories-inbox", "nama": "Inbox Approval", "deskripsi": "Antrean persetujuan permintaan."},
+    {"modul": "accessories-purchase", "nama": "Purchase Request", "deskripsi": "Usulan pembelian aksesoris."},
+    {"modul": "accessories-reports", "nama": "Laporan", "deskripsi": "Laporan pemakaian, valuasi, dan mutasi."}
+  ],
+  "faq": [
+    {
+      "q": "Kenapa ada aksesoris ber-HPP nol?",
+      "kata_kunci": ["hpp nol", "belum dinilai", "harga kosong"],
+      "a": "Karena saat penerimaan harganya tidak diisi, atau stoknya berasal dari saldo awal. Isi harga lewat 'Set HPP' di Master Aksesoris, atau isi harga pada penerimaan berikutnya. Sistem mengirim satu ringkasan harian berisi semua item yang belum dinilai."
+    },
+    {
+      "q": "Penyerahan aksesoris gagal padahal stoknya ada.",
+      "kata_kunci": ["gagal deliver", "stok tidak cukup", "gagal serah"],
+      "a": "Sistem memvalidasi SELURUH baris permintaan dulu sebelum memotong stok. Bila satu baris kurang, semuanya ditolak dengan pesan 'stok tidak cukup'. Cek baris mana yang kurang, kurangi qty-nya atau tambah stoknya dulu."
+    },
+    {
+      "q": "Menu Peminjaman aksesoris hilang.",
+      "kata_kunci": ["peminjaman", "loans", "pinjam aksesoris"],
+      "a": "Peminjaman aksesoris memang dihapus. Aksesoris habis pakai memakai jalur Request Internal → Approval → Serahkan. Peminjaman BARANG (alat/aset) ada di Portal Manajemen Aset."
+    }
+  ],
+  "saran": [
+    "Bagaimana alur permintaan aksesoris internal?",
+    "Kenapa ada aksesoris ber-HPP nol?",
+    "Bagaimana cara stok opname aksesoris?",
+    "Bagaimana mencatat aksesoris rusak?"
+  ]
+}

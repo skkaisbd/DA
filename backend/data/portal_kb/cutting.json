@@ -1,0 +1,63 @@
+{
+  "portal": "cutting",
+  "label": "Portal Cutting",
+  "ringkasan": "Portal Cutting mengubah roll kain menjadi kain pola (potongan/panel) yang siap dikirim ke vendor jahit. Ini adalah satu-satunya tempat kain berubah wujud menjadi barang setengah jadi di sistem.",
+  "prinsip": [
+    "Semua mutasi stok memakai satu pintu resmi — kain berkurang, potongan bertambah, keduanya tercatat di ledger.",
+    "Stok terikat lokasi: order cutting wajib memakai gudang yang benar-benar memegang kainnya.",
+    "HPP potongan = (kain terpakai × harga kain) ÷ jumlah potongan jadi."
+  ],
+  "alur": [
+    {
+      "judul": "Membuat dan menjalankan order cutting",
+      "kata_kunci": ["order cutting", "cara cutting", "potong kain", "buat order", "alur cutting"],
+      "modul": ["cutting-orders", "cutting-panels"],
+      "langkah": [
+        "Buka 'Order Cutting' → buat order baru: pilih style, warna, ukuran, dan jumlah potongan yang ditargetkan.",
+        "Pilih kain sumber. Sistem menampilkan lokasi mana saja yang punya stok kain itu dan menyarankan lokasi terbaik.",
+        "Tekan Mulai (start) → kain dipesan/dikeluarkan dari gudang terpilih. Status berubah jadi in_progress.",
+        "Catat progres potongan yang selesai.",
+        "Tekan Selesai (complete) → potongan masuk stok sebagai item baru berkode CUT-<STYLE>-<WARNA>-<SIZE>, HPP-nya dihitung otomatis.",
+        "Order bisa dibatalkan HANYA selama belum ada progres."
+      ]
+    },
+    {
+      "judul": "Master potongan (panel)",
+      "kata_kunci": ["master potongan", "panel", "cut panel", "kode potongan"],
+      "modul": ["cutting-panels"],
+      "langkah": [
+        "Setiap kombinasi style + warna + ukuran menghasilkan satu item potongan yang dibuat otomatis (idempoten, tidak menggandakan).",
+        "Item potongan bertipe kain dengan satuan pcs dan kategori POTONGAN.",
+        "Panel inilah yang nanti dikirim ke vendor CMT lewat Portal Produksi/Maklon."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "cutting-dashboard", "nama": "Dashboard Cutting", "deskripsi": "Ringkasan order berjalan, kain terpakai, dan hasil potongan."},
+    {"modul": "cutting-orders", "nama": "Order Cutting", "deskripsi": "Membuat, menjalankan, dan menyelesaikan order pemotongan kain."},
+    {"modul": "cutting-panels", "nama": "Master Potongan", "deskripsi": "Daftar item potongan hasil cutting beserta stok dan HPP-nya."}
+  ],
+  "faq": [
+    {
+      "q": "Order cutting gagal dimulai karena stok kain tidak cukup.",
+      "kata_kunci": ["gagal mulai", "stok kain kurang", "tidak cukup", "start gagal"],
+      "a": "Stok dihitung per lokasi. Kain mungkin ada, tapi bukan di gudang yang dipilih. Layar order menampilkan daftar lokasi berstok beserta saran lokasi terbaik — pilih lokasi itu, atau pindahkan kain lebih dulu lewat Portal Gudang."
+    },
+    {
+      "q": "Bagaimana HPP potongan dihitung?",
+      "kata_kunci": ["hpp potongan", "harga potongan", "biaya cutting"],
+      "a": "Saat order diselesaikan: total nilai kain yang terpakai dibagi jumlah potongan jadi. Nilai itu disimpan sebagai unit_cost item potongan dan terbawa sampai ke HPP barang jadi."
+    },
+    {
+      "q": "Apakah cutting mengurangi stok kain langsung?",
+      "kata_kunci": ["kurangi stok", "kapan stok berkurang"],
+      "a": "Ya, saat order dimulai (start). Potongan baru bertambah saat order diselesaikan (complete). Keduanya tercatat di buku besar stok sehingga bisa ditelusuri."
+    }
+  ],
+  "saran": [
+    "Bagaimana cara membuat order cutting?",
+    "Kenapa order cutting gagal dimulai?",
+    "Bagaimana HPP potongan dihitung?",
+    "Apa itu master potongan?"
+  ]
+}

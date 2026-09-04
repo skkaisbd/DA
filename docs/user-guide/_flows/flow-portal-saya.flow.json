@@ -1,0 +1,53 @@
+{
+  "flow_id": "flow-portal-saya",
+  "title": "Alur Portal Saya (Self-Service HR): Profil -> Dashboard -> Kehadiran Pribadi -> Cuti -> Slip Gaji",
+  "portal": "self",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal layanan mandiri karyawan (Portal Saya / Self-Service HR, portal id 'self'). Setelah akun ditautkan ke data karyawan (rahaza_employees), karyawan dapat: melihat & memperbarui PROFIL pribadi, membuka DASHBOARD ringkas (saldo cuti, gaji terakhir, kehadiran bulan ini, training, todo), meninjau KEHADIRAN PRIBADI (rekap hadir/izin/sakit/alfa + jam kerja), mengajukan & membatalkan CUTI (leave request berbasis tipe cuti + saldo), serta mengunduh/melihat SLIP GAJI (payslip) beserta detailnya. Guardrail: ajukan cuti tanpa leave_type_id ditolak (400), tipe cuti tidak dikenal ditolak (404), membatalkan cuti yang tidak ada ditolak (404), membatalkan cuti non-pending ditolak (400), membuka detail slip gaji milik orang lain ditolak (404), dan akun yang belum ditautkan ke karyawan ditolak (409) pada endpoint self-service berbasis employee.",
+  "modules_touched": ["portal-dashboard", "portal-cuti", "portal-payslip"],
+  "critical_endpoints": [
+    "/api/portal/profile",
+    "/api/portal/dashboard",
+    "/api/portal/leave",
+    "/api/portal/leave-types",
+    "/api/portal/payslips",
+    "/api/rahaza/self/attendance",
+    "/api/rahaza/self/payslip/{slip_id}"
+  ],
+  "supporting_endpoints": [
+    "/api/portal/leave/{leave_id}",
+    "/api/portal/overtime",
+    "/api/rahaza/self/profile",
+    "/api/rahaza/self/payslips",
+    "/api/portal-saya/me/employee",
+    "/api/portal-saya/me/leaves",
+    "/api/portal-saya/me/leave-balance",
+    "/api/portal-saya/me/payslips"
+  ],
+  "test_script": "tests/flow_portal_saya_test.py",
+  "doc": "docs/user-guide/portal-saya/flow-portal-saya.md",
+  "db_collections": [
+    "rahaza_employees",
+    "rahaza_leave_types",
+    "rahaza_leave_requests",
+    "rahaza_leave_balances",
+    "rahaza_payslips",
+    "rahaza_attendance_events"
+  ],
+  "happy_path_steps": [
+    "Profil: GET /api/portal/profile (is_linked) + GET /api/rahaza/self/profile + /me/employee",
+    "Dashboard: GET /api/portal/dashboard (saldo cuti, gaji terakhir, absensi bulan ini)",
+    "Cuti (tipe): GET /api/portal/leave-types",
+    "Cuti (ajukan): POST /api/portal/leave -> pending, days terhitung",
+    "Cuti (riwayat + saldo): GET /api/portal/leave, /me/leaves, /me/leave-balance",
+    "Cuti (batal): DELETE /api/portal/leave/{leave_id} (pending)",
+    "Slip gaji: GET /api/portal/payslips, /self/payslips, /me/payslips",
+    "Slip gaji (detail): GET /api/rahaza/self/payslip/{slip_id}",
+    "Kehadiran pribadi: GET /api/rahaza/self/attendance (summary + records)",
+    "Profil (update): PUT /api/portal/profile (no_hp persisted)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-portal-saya_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_portal_saya_test.py: seed karyawan tertaut -> profil (is_linked) -> dashboard (sisa cuti=10, gaji=4.1jt, hadir=2/izin=1) -> leave-types -> ajukan cuti (pending, days=3) -> riwayat portal/leave + me/leaves -> saldo me/leave-balance -> batal cuti -> payslips (3 endpoint) -> detail payslip -> kehadiran (summary+records) -> update profil; 5 guardrail: ajukan cuti tanpa leave_type_id 400, tipe cuti tak dikenal 404, batal cuti tak ada 404, detail payslip bukan milik 404, akun belum tertaut (admin) 409); audit_testids LULUS (0 FAIL) untuk portal-payslip/portal-cuti/portal-dashboard; E2E UI PASS (login karyawan tertaut -> Slip Gaji 'Rp 4.100.000 Take Home' + Dashboard '10 hari Sisa Cuti / 4.1jt Take Home / 3 Hadir Bulan Ini I:1 S:1', verified screenshot tool); DB pristine (self-cleanup employee/leave/payslip/attendance/user).",
+  "notes_qa": "Tidak ada bug blocker. Observasi LOW: (1) auditor A4 WARN (17 elemen interaktif) = false-positive parsing arrow-function (konsisten flow sebelumnya); (2) role 'operator' di-intercept ke Operator View sehingga tidak masuk Portal Selector -> Portal Saya diakses via role karyawan lain (self portal terbuka untuk semua role via ALL_ROLE_PORTALS); (3) endpoint self-service memakai 409 (portal HR & me/payslips) atau 404 (me/leaves, me/leave-balance) untuk akun belum tertaut -- perbedaan kode ini bawaan sistem, bukan bug."
+}

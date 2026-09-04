@@ -1,0 +1,27 @@
+{
+  "hr-kasbon": {
+    "cards": 0,
+    "tanpa_background": 0,
+    "contoh": []
+  },
+  "portal-kasbon": {
+    "cards": 0,
+    "tanpa_background": 0,
+    "contoh": []
+  },
+  "wh-receiving": {
+    "cards": 0,
+    "tanpa_background": 0,
+    "contoh": []
+  },
+  "proc-requests": {
+    "cards": 9,
+    "tanpa_background": 0,
+    "contoh": []
+  },
+  "accessories-dashboard": {
+    "cards": 7,
+    "tanpa_background": 0,
+    "contoh": []
+  }
+}

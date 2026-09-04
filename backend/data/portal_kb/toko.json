@@ -1,0 +1,93 @@
+{
+  "portal": "toko",
+  "label": "Portal Marketing",
+  "ringkasan": "Portal Marketing mengurus penjualan multi-channel (Shopee, TikTok, Tokopedia, live selling) beserta katalog, konten, promo, KOL/kreator, dan layanan purna jual.",
+  "prinsip": [
+    "Setiap channel penjualan dipetakan ke akun GL supaya pendapatan langsung terjurnal benar.",
+    "Order dari semua channel disatukan di 'Order Terpadu' agar stok dan pengiriman satu pintu.",
+    "Target bulanan dibandingkan dengan realisasi dari data penjualan yang masuk."
+  ],
+  "alur": [
+    {
+      "judul": "Memasukkan data penjualan harian",
+      "kata_kunci": ["input sales", "penjualan harian", "omzet", "impor data", "upload penjualan"],
+      "modul": ["marketing-sales", "marketing-import", "marketing-orders"],
+      "langkah": [
+        "Isi manual di 'Input Sales', atau unggah file ekspor marketplace lewat 'Impor Data'.",
+        "Data masuk ke 'Order Terpadu' untuk diproses pengirimannya.",
+        "Pendapatan dijurnal mengikuti pemetaan Channel → Akun GL di Portal Keuangan."
+      ]
+    },
+    {
+      "judul": "Pesanan sampai barang terkirim",
+      "kata_kunci": ["order", "kirim pesanan", "fulfillment", "pesanan masuk"],
+      "modul": ["marketing-orders"],
+      "langkah": [
+        "Order masuk dari channel → tercatat di 'Order Terpadu'.",
+        "Stok dialokasikan di Portal Gudang lewat Fulfillment.",
+        "Surat Jalan dicetak dan barang dikirim; stok berkurang otomatis."
+      ]
+    },
+    {
+      "judul": "KOL, kreator, dan live selling",
+      "kata_kunci": ["kol", "kreator", "affiliate", "live", "host", "endorse"],
+      "modul": ["marketing-kol-hub", "marketing-live-hub"],
+      "langkah": [
+        "Daftarkan KOL/kreator beserta komisinya di 'KOL & Kreator'.",
+        "Jadwalkan sesi live di 'Live Selling'; host punya portal sendiri untuk shift dan laporan.",
+        "Performa penjualan per KOL tampil di leaderboard."
+      ]
+    },
+    {
+      "judul": "Komplain, retur, dan ulasan",
+      "kata_kunci": ["komplain", "retur", "refund", "ulasan", "rating", "after sales"],
+      "modul": ["marketing-after-sales", "marketing-reviews"],
+      "langkah": [
+        "Komplain dicatat di 'Komplain & Retur' beserta keputusannya.",
+        "Retur fisik diterima di Portal Gudang → stok kembali bertambah.",
+        "Rating & ulasan dipantau untuk menjaga kesehatan akun toko."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "marketing-accounts", "nama": "Kelola Akun", "deskripsi": "Akun marketplace dan status kesehatannya."},
+    {"modul": "marketing-sales", "nama": "Input Sales", "deskripsi": "Pencatatan penjualan harian per akun."},
+    {"modul": "marketing-import", "nama": "Impor Data", "deskripsi": "Unggah file ekspor marketplace."},
+    {"modul": "marketing-orders", "nama": "Order Terpadu", "deskripsi": "Seluruh pesanan dari semua channel dalam satu layar."},
+    {"modul": "marketing-catalog", "nama": "Manajemen Katalog", "deskripsi": "Produk yang dijual beserta harga per channel."},
+    {"modul": "marketing-content-calendar", "nama": "Kalender Konten", "deskripsi": "Rencana konten dan jadwal unggah."},
+    {"modul": "marketing-discounts", "nama": "Kampanye Diskon", "deskripsi": "Program potongan harga dan periodenya."},
+    {"modul": "marketing-product-launches", "nama": "Peluncuran Produk", "deskripsi": "Rencana dan hasil peluncuran produk baru."},
+    {"modul": "marketing-kol-hub", "nama": "KOL & Kreator", "deskripsi": "Data kreator, komisi, dan leaderboard."},
+    {"modul": "marketing-reports", "nama": "Laporan Marketing", "deskripsi": "Penjualan per channel, produk, dan periode."},
+    {"modul": "marketing-health", "nama": "Kesehatan Akun", "deskripsi": "Skor performa toko di tiap marketplace."},
+    {"modul": "marketing-targets", "nama": "Target & Budget", "deskripsi": "Target bulanan dan realisasinya."},
+    {"modul": "marketing-live-hub", "nama": "Live Selling", "deskripsi": "Jadwal, host, dan hasil sesi live."},
+    {"modul": "marketing-ai-hub", "nama": "AI Marketing", "deskripsi": "Bantuan AI untuk konten dan analisis."},
+    {"modul": "marketing-scheduler", "nama": "Penjadwal Otomasi", "deskripsi": "Tugas terjadwal untuk operasional marketing."},
+    {"modul": "marketing-after-sales", "nama": "Komplain & Retur", "deskripsi": "Penanganan keluhan pelanggan."},
+    {"modul": "marketing-reviews", "nama": "Rating & Ulasan", "deskripsi": "Pemantauan ulasan pembeli."},
+    {"modul": "marketing-samples", "nama": "Kirim Sample", "deskripsi": "Pengiriman sampel ke kreator/pembeli."},
+    {"modul": "marketing-task-hub", "nama": "Manajemen Tugas", "deskripsi": "Tugas tim marketing."},
+    {"modul": "marketing-integration-settings", "nama": "Integrasi API", "deskripsi": "Sambungan ke marketplace."},
+    {"modul": "marketing-webhooks", "nama": "Monitor Webhook", "deskripsi": "Pantauan pesan masuk dari sistem luar."}
+  ],
+  "faq": [
+    {
+      "q": "Penjualan sudah diinput tapi tidak muncul di laporan keuangan.",
+      "kata_kunci": ["tidak muncul di keuangan", "penjualan tidak terjurnal", "channel gl"],
+      "a": "Cek pemetaan Channel → Akun GL di Portal Keuangan. Channel yang belum dipetakan tidak menghasilkan jurnal pendapatan. Setelah dipetakan, penjualan berikutnya akan terjurnal otomatis."
+    },
+    {
+      "q": "Target bulanan tidak terisi realisasinya.",
+      "kata_kunci": ["target", "realisasi kosong", "actual"],
+      "a": "Realisasi dihitung dari data penjualan yang masuk pada periode tersebut. Pastikan Input Sales/Impor Data sudah dilakukan dan tanggalnya berada di dalam periode target."
+    }
+  ],
+  "saran": [
+    "Bagaimana cara memasukkan data penjualan harian?",
+    "Kenapa penjualan tidak muncul di laporan keuangan?",
+    "Bagaimana mengelola KOL dan komisinya?",
+    "Di mana menangani komplain dan retur?"
+  ]
+}

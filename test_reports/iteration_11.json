@@ -1,0 +1,95 @@
+{
+  "summary": "Completed comprehensive testing of shipment discrepancy features (CMT→DA & DA→Buyer). Backend acceptance test passes 43/43, edge case tests pass 12/12. Test data created for UI verification.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "minor_issues": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend acceptance test (scenario_selisih_ssot.py): 43 PASS / 0 FAIL",
+    "Backend edge case test (backend_test_selisih_edge_cases.py): 12 PASS / 0 FAIL",
+    "CMT shortage creation: vendor claims 60, DA receives 50, shortage 10 pcs recorded",
+    "Buyer shortage creation: DA ships 50, buyer receives 45, shortage 5 pcs recorded",
+    "Shortage document correction: vendor declaration corrected to actual received qty",
+    "Shortage resolution: dikirim_ulang, tanggungan_vendor, tanggungan_da, salah_input_dikoreksi",
+    "FG stock management: stock decreases on buyer shipment, increases on shortage",
+    "Koreksi hasil QC: requires reason, updates stock and ledger, creates audit trail",
+    "Koreksi deklarasi: requires reason, propagates to vendor declaration, notifies vendor",
+    "RBAC: vendor cannot resolve CMT shorts (403), only admin/finance can",
+    "Idempotency: double complete-qc handled correctly, no data duplication",
+    "Boundary conditions: zero qty handled, exact match (no shortage) handled",
+    "Invalid inputs: negative qty rejected (400), missing reason rejected (400)",
+    "Over-ship validation: shipping beyond FG stock rejected with clear error message",
+    "DELETE buyer shipment: FG stock restored correctly",
+    "Buyer short resolution: invalid resolution rejected (400), already resolved rejected (400)",
+    "PDF consolidated SJ: contains all PO numbers and subtotals per PO",
+    "Close-short from 'Completed' status: allowed (200)",
+    "API endpoints: GET /api/prod/short-shipments, GET /api/buyer-shorts working",
+    "Notifications: vendor receives notification on declaration correction"
+  ],
+  
+  "test_report_links": [
+    "/app/tests/scenario_selisih_ssot.py",
+    "/app/tests/backend_test_selisih_edge_cases.py",
+    "/app/tests/setup_ui_test_data.py"
+  ],
+  
+  "action_item_for_main_agent": "",
+  
+  "updated_files": [
+    "/app/tests/backend_test_selisih_edge_cases.py",
+    "/app/tests/setup_ui_test_data.py"
+  ],
+  
+  "success_percentage": {
+    "backend": "100% (55/55 tests passed)",
+    "frontend": "Not tested - UI modules verified to have correct structure and data-testid attributes",
+    "integration": "100% (all API-DB integration tests passed)"
+  },
+  
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": true,
+  
+  "detailed_notes": {
+    "backend_coverage": [
+      "All 7 gaps (A-G) tested comprehensively",
+      "Gap A/C: CMT shortage creation, correction, resolution - PASS",
+      "Gap B: Edit after QC complete blocked (409) - PASS",
+      "Gap D: PDF consolidated SJ with PO numbers - PASS",
+      "Gap E: FG stock decrease on buyer shipment - PASS",
+      "Gap F: Reshipment capacity reopened after shortage - PASS",
+      "Gap G: Buyer shortage creation, resolution, close-short from Completed - PASS",
+      "Edge cases: negative qty, missing reason, RBAC, idempotency, boundaries - PASS"
+    ],
+    "test_data_created": [
+      "CMT shortage: SEL-CMT-00030 (claim 60, received 50, short 10)",
+      "Buyer shortage: SEL-BYR-00016 (shipped 50, received 45, short 5)",
+      "Test vendor: ujicmt@dewiaditya.id / Dewi@123",
+      "Test POs: UJI-SELISIH-CMT-001, UJI-SELISIH-BYR-BYR-001"
+    ],
+    "frontend_verification": [
+      "DAReceiveFromCMTModule.jsx: Has KPI cards, shortage panel, correction modals with data-testid",
+      "BuyerShipmentModule.jsx: Has buyer shortage panel, resolution modal with data-testid",
+      "VendorBuyerShipments.jsx: Vendor portal structure verified",
+      "VendorProductionJobs.jsx: Job details with shortage columns verified",
+      "All UI modules use proper data-testid attributes for testing"
+    ],
+    "business_rules_verified": [
+      "Vendor declaration corrected to actual received qty (not claim)",
+      "Shortage becomes 'BELUM SAMPAI' (not yet arrived) - vendor responsibility",
+      "Vendor remaining shipment capacity increases by shortage amount",
+      "Admin DA can correct unilaterally with notification to vendor",
+      "No time limit - shortages stay 'open' until resolved",
+      "Shortage resolution options: dikirim_ulang, tanggungan_vendor, tanggungan_da, salah_input_dikoreksi",
+      "FG stock management: decreases on shipment, increases on shortage",
+      "All corrections require reason and create audit trail"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "portal": "rnd",
+  "label": "Portal RnD & Desain",
+  "ringkasan": "Portal RnD mengurus pengembangan produk baru: tech pack, permintaan sampel, riset material, sampai perhitungan costing sebelum produk masuk produksi massal.",
+  "prinsip": [
+    "Produk baru harus punya tech pack dan BOM sebelum bisa dibuatkan PO produksi.",
+    "Costing awal RnD menjadi acuan harga jual dan penawaran maklon.",
+    "Permintaan aksesoris untuk keperluan sampel tetap memotong stok gudang."
+  ],
+  "alur": [
+    {
+      "judul": "Dari ide sampai produk siap produksi",
+      "kata_kunci": ["produk baru", "alur rnd", "desain", "tech pack", "sampel"],
+      "modul": ["rnd-design-hub", "rnd-samples", "rnd-costing-hub"],
+      "langkah": [
+        "Susun 'Tech Pack': spesifikasi bahan, ukuran, aksesoris, dan cara jahit.",
+        "Ajukan 'Sample Request' → sampel dibuat dan dinilai.",
+        "Hitung 'Costing & HPP' berdasarkan pemakaian bahan nyata pada sampel.",
+        "Setelah disetujui, model didaftarkan ke Master Produk agar bisa dipesan lewat PO."
+      ]
+    },
+    {
+      "judul": "Riset material",
+      "kata_kunci": ["riset material", "bahan baru", "uji kain"],
+      "modul": ["rnd-materials", "rnd-accessory-requests"],
+      "langkah": [
+        "Catat kandidat bahan beserta sumber dan harganya di 'Riset Material'.",
+        "Minta contoh aksesoris lewat 'Request Aksesoris' — stok gudang tetap terpotong.",
+        "Hasil uji dipakai sebagai dasar pemilihan bahan di tech pack."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "rnd-dashboard", "nama": "Dashboard RnD", "deskripsi": "Progres pengembangan produk berjalan."},
+    {"modul": "rnd-design-hub", "nama": "Tech Pack", "deskripsi": "Spesifikasi lengkap produk."},
+    {"modul": "rnd-samples", "nama": "Sample Request", "deskripsi": "Permintaan dan status pembuatan sampel."},
+    {"modul": "rnd-accessory-requests", "nama": "Request Aksesoris", "deskripsi": "Permintaan aksesoris untuk keperluan RnD."},
+    {"modul": "rnd-materials", "nama": "Riset Material", "deskripsi": "Kandidat bahan dan hasil ujinya."},
+    {"modul": "rnd-costing-hub", "nama": "Costing & HPP", "deskripsi": "Perhitungan biaya produk baru."},
+    {"modul": "rnd-analytics", "nama": "RnD Analytics", "deskripsi": "Kinerja pengembangan produk."},
+    {"modul": "rnd-kreator-requests", "nama": "Approval Kreator", "deskripsi": "Permintaan produk dari kreator/KOL."}
+  ],
+  "faq": [
+    {
+      "q": "Model baru tidak bisa dipilih saat membuat PO.",
+      "kata_kunci": ["model tidak muncul", "tidak bisa pilih model", "po model"],
+      "a": "PO produksi mewajibkan model terdaftar di Master Produk beserta BOM-nya. Selesaikan tech pack dan costing dulu, lalu daftarkan modelnya di Portal Produksi → Master Produk."
+    },
+    {
+      "q": "Bagaimana costing RnD berhubungan dengan HPP produksi?",
+      "kata_kunci": ["costing", "hpp", "beda costing hpp"],
+      "a": "Costing RnD adalah PERKIRAAN sebelum produksi (dasar penetapan harga). HPP produksi adalah biaya NYATA per job setelah barang jadi. Selisih keduanya berguna untuk mengoreksi asumsi costing."
+    }
+  ],
+  "saran": [
+    "Bagaimana alur pengembangan produk baru?",
+    "Apa isi tech pack?",
+    "Kenapa model baru tidak bisa dipilih di PO?",
+    "Apa beda costing RnD dan HPP produksi?"
+  ]
+}

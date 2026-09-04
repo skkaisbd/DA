@@ -1,0 +1,48 @@
+{
+  "flow_id": "flow-manajemen-aset",
+  "title": "Alur Manajemen Aset: Registrasi -> Depresiasi -> Penugasan",
+  "portal": "assets",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal siklus hidup aset tetap CV. Dewi Aditya (portal 'assets'/Manajemen Aset) yang menautkan modul Aset dengan Keuangan (jurnal) dalam satu narasi 5 tahap: (1) KATEGORI & REGISTRASI — memilih kategori aset (auto-seed 7 default: Peralatan IT, Mesin Produksi, Kendaraan, Bangunan, Perabot & Mebel, Alat & Perkakas, Lain-lain) lalu mendaftarkan aset via POST /api/assets; sistem meng-generate nomor aset (AST-<kode>-<tahun>-NNNN), menghitung depresiasi bulanan garis lurus, dan membuat jurnal pembelian draft otomatis (rahaza_journal_entries: Aset Tetap 1500 / Kas-Bank 1100); (2) DEPRESIASI per-aset — posting depresiasi bulanan (POST /api/assets/{id}/depreciate/{period}, idempotent per periode YYYY-MM) yang mengurangi Nilai Buku (NBV), menambah akumulasi depresiasi, dan membuat jurnal beban depresiasi (Beban Depresiasi 6200 / Akumulasi Depresiasi 1590); (3) DEPRESIASI MASSAL — batch untuk semua aset aktif (POST /api/assets/batch-depreciate/{period}, idempotent per aset, melewati yang sudah diposting atau sudah habis); (4) PENUGASAN — assign aset ke karyawan (POST /api/assets/{id}/assign) membuat record dewi_asset_assignments status active dan mengisi assigned_to di aset; (5) PENGEMBALIAN — unassign (POST /api/assets/{id}/unassign) menandai assignment returned dan mengosongkan assigned_to. Guardrail: registrasi tanpa nama / harga <= 0 ditolak (400); depresiasi periode duplikat ditolak (400); depresiasi aset yang sudah habis (NBV = residu) ditolak (400); assign tanpa user_id ditolak (400); numbering aset race-safe (gen_prefixed_number).",
+  "modules_touched": ["asset-dashboard", "asset-list", "asset-procurement"],
+  "critical_endpoints": [
+    "/api/assets",
+    "/api/assets/{id}/depreciate/{period}",
+    "/api/assets/batch-depreciate/{period}",
+    "/api/assets/{id}/assign",
+    "/api/assets/{id}/unassign"
+  ],
+  "supporting_endpoints": [
+    "/api/assets/categories",
+    "/api/assets/categories/{id}",
+    "/api/assets/{id}",
+    "/api/assets/{id}/depreciation-history",
+    "/api/assets/{id}/assignments",
+    "/api/assets/{id}/maintenance",
+    "/api/assets/dashboard"
+  ],
+  "test_script": "tests/flow_manajemen_aset_test.py",
+  "doc": "docs/user-guide/aset/flow-manajemen-aset.md",
+  "db_collections": [
+    "dewi_assets",
+    "dewi_asset_categories",
+    "dewi_asset_depreciation",
+    "dewi_asset_assignments",
+    "dewi_asset_maintenance",
+    "rahaza_journal_entries"
+  ],
+  "happy_path_steps": [
+    "GET /api/assets/categories (auto-seed 7 kategori default) lalu pilih kategori (Peralatan IT)",
+    "POST /api/assets -> aset terdaftar (status active, AST-IT-YYYY-0001, monthly_depreciation, jurnal beli draft)",
+    "GET /api/assets/{id} -> nbv = purchase_cost, fully_depreciated=false",
+    "POST /api/assets/{id}/depreciate/{period} -> amount = monthly_depreciation, akumulasi naik, jurnal beban depresiasi",
+    "POST /api/assets/batch-depreciate/{period} -> depresiasi massal semua aset aktif (idempotent per aset)",
+    "POST /api/assets/{id}/assign -> assignment active + assigned_to terisi",
+    "POST /api/assets/{id}/unassign -> assignment returned + assigned_to null",
+    "Guardrail: nama kosong / harga<=0 400; periode duplikat 400; sudah habis 400; assign tanpa user_id 400"
+  ],
+  "qa": "docs/user-guide/_qa/flow-manajemen-aset_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_manajemen_aset_test.py: registrasi + jurnal beli; depresiasi per-aset amount=237500 + jurnal; batch 2097-02 posted=3 lalu idempotent posted=0/skipped=3; assign->unassign; 5 guard 400). Self-cleanup DB pristine (0 residu di dewi_assets/dewi_asset_depreciation/dewi_asset_assignments/dewi_asset_categories + asset JEs). audit_testids.py 3 modul -> LULUS 0 FAIL (88 testid unik). E2E UI testing_agent_v3 it_86 (backend 100%, frontend 90% -> ditemukan 1 bug MEDIUM drawer stale) lalu FIX (AssetDetailDrawer live reloadDetail) -> re-test it_87 frontend 100% (NBV 12jt->11.7jt live, assign/unassign live). Verifikasi manual screenshot render portal.",
+  "notes_qa": "FIX 1 BUG MEDIUM: AssetDetailDrawer tidak refresh data aset setelah posting depresiasi/penugasan (NBV & akumulasi stale sampai drawer ditutup-buka). Root cause: drawer render dari prop `asset` (list item) tanpa re-fetch detail. Fix: state lokal `detail` + `reloadDetail()` (GET /api/assets/{id}) dipanggil setelah setiap mutasi (depreciate/assign/unassign/maintenance); postDepr tidak lagi menutup drawer. Ditambah data-testid: assign-user-id, assign-user-name, assign-submit-btn, unassign-asset-btn. Modul Komplain-style A4 (WARN) testid tetap diterima by-design. Grounding /api/assets: manifest extract_module.py tidak dapat me-resolve router lintas-file (router diimpor dari _helpers.py) sehingga /api/assets absen dari all_backend_paths -> ditambahkan supplementary manifest docs/user-guide/_manifests/asset-management.manifest.json (37 endpoint nyata, diverifikasi via source + curl live)."
+}

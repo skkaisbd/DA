@@ -1,0 +1,36 @@
+{
+  "flow_id": "flow-sdm-kehadiran",
+  "title": "Alur Kehadiran / Absensi (Clock-in/out + Geofence -> Rekap -> Feed Payroll)",
+  "portal": "sdm",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal kehadiran karyawan (SDM/HRIS). Karyawan/operator melakukan CLOCK-IN saat tiba (dengan validasi geolokasi/geofence terhadap koordinat kantor) melalui OperatorView, lalu CLOCK-OUT saat pulang; sistem menghitung hours_worked. Supervisor memantau & mengoreksi via grid harian dan input massal (bulk). Rekap kehadiran per karyawan (summary) mengagregasi hari hadir/izin/sakit/alfa/cuti + total jam & lembur, yang menjadi sumber data untuk PENGGAJIAN (feed payroll). Guardrail mencegah double clock-in, clock-out tanpa clock-in, dan double clock-out. Geofence bersifat advisory (in_range/out_of_range) namun tetap mencatat kehadiran.",
+  "modules_touched": ["hr-attendance-hub", "hr-attendance"],
+  "critical_endpoints": [
+    "/api/rahaza/attendance/clock-in",
+    "/api/rahaza/attendance/clock-out",
+    "/api/rahaza/attendance/summary",
+    "/api/rahaza/attendance/grid"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/attendance",
+    "/api/rahaza/attendance/my-today",
+    "/api/rahaza/attendance/bulk",
+    "/api/rahaza/attendance/office-location",
+    "/api/rahaza/hr/dashboard",
+    "/api/rahaza/employees"
+  ],
+  "test_script": "tests/flow_sdm_kehadiran_test.py",
+  "doc": "docs/user-guide/sdm/flow-sdm-kehadiran.md",
+  "db_collections": ["rahaza_attendance_events", "rahaza_employees", "rahaza_office_locations"],
+  "happy_path_steps": [
+    "Clock-in karyawan (geofence in_range) -> status hadir, clock_in tercatat",
+    "Clock-out karyawan -> hours_worked dihitung",
+    "Rekap summary per karyawan (days_hadir + total_hours) -> feed payroll",
+    "Grid harian + bulk untuk koreksi supervisor; my-today untuk status karyawan",
+    "Clock-in di luar geofence tetap tercatat (out_of_range, advisory)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-sdm-kehadiran_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (clock-in in_range -> clock-out hours_worked -> summary rekap -> grid/list/my-today/dashboard -> clock-in out_of_range; 3 guardrail: double clock-in 400, clock-out tanpa clock-in 400, double clock-out 400); FIX 2 BUG HIGH: (1) clock-out 500 TypeError naive vs aware datetime di _calc_hours -> normalisasi UTC-aware; (2) bulk save contract mismatch (frontend 'entries' vs backend 'rows') -> backend terima keduanya + date top-level; DB pristine; E2E UI PASS (Portal SDM grid absensi: Tandai Hadir & Simpan -> berhasil disimpan, no logout; HR dashboard data nyata)",
+  "notes_qa": "BUG HIGH ditemukan & diperbaiki: clock-out mengembalikan 500 karena _calc_hours mengurangkan datetime naive (clock_in dari Mongo) dengan aware (_now()); fix: normalisasi kedua ke timezone-aware UTC. Verified via POC. Self-service clock-in/out di komponen OperatorView (operator-clock-in-btn/operator-clock-out-btn)."
+}

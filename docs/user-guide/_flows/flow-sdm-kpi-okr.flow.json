@@ -1,0 +1,59 @@
+{
+  "flow_id": "flow-sdm-kpi-okr",
+  "title": "Alur KPI/OKR (Periode KPI -> Penilaian -> Review/Publish + OKR Objectives/Key-Results)",
+  "portal": "hr",
+  "strategy": "flow-centric v4",
+  "description": "Alur manajemen kinerja CV. Dewi Aditya lintas Portal SDM & Manajemen. Sisi KPI (SDM): HR membuat PERIODE KPI (draft->open->closed->finalized) berisi peserta + bank soal 360, lalu PENILAIAN dilakukan (nilai Perform diinput HR/atasan; form Attitude 360 self/peer/supervisor/staff diisi via submissions; Absensi dihitung dari kehadiran), kemudian REVIEW: hitung hasil (KPI Final = Perform 60% + Attitude 20% + Absensi 20%, grading A-E), lihat hasil, dan PUBLISH (cek completion >=80%, auto-usul kenaikan gaji Grade A/B, award badge). Sisi OKR (Manajemen): buat Objective + Key Results dengan progress otomatis (on_track/at_risk/off_track) dan dashboard company OKR health.",
+  "modules_touched": ["kpi-portal", "mgmt-okr"],
+  "critical_endpoints": [
+    "/api/dewi/kpi/periods",
+    "/api/dewi/kpi/periods/{period_id}",
+    "/api/dewi/kpi/perform/{period_id}/{employee_id}",
+    "/api/dewi/kpi/results/{period_id}/calculate",
+    "/api/dewi/kpi/results/{period_id}",
+    "/api/dewi/kpi/results/{period_id}/publish",
+    "/api/management/okr/objectives",
+    "/api/management/okr/objectives/{obj_id}/key-results"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/kpi/questions",
+    "/api/dewi/kpi/questions/seed-defaults",
+    "/api/dewi/kpi/questions/{question_id}",
+    "/api/dewi/kpi/perform/{period_id}",
+    "/api/dewi/kpi/perform/{period_id}/bulk",
+    "/api/dewi/kpi/submissions",
+    "/api/dewi/kpi/submissions/{period_id}/{employee_id}",
+    "/api/dewi/kpi/my/forms/{period_id}",
+    "/api/management/okr/objectives/{obj_id}",
+    "/api/management/okr/key-results/{kr_id}",
+    "/api/management/okr/dashboard",
+    "/api/management/okr/periods"
+  ],
+  "test_script": "tests/flow_sdm_kpi_okr_test.py",
+  "doc": "docs/user-guide/sdm/flow-sdm-kpi-okr.md",
+  "db_collections": [
+    "da_kpi_periods",
+    "da_kpi_questions",
+    "da_kpi_submissions",
+    "da_kpi_perform",
+    "da_kpi_results",
+    "da_kpi_badges",
+    "rahaza_okr_objectives",
+    "rahaza_okr_key_results",
+    "rahaza_salary_adjustments",
+    "rahaza_employees"
+  ],
+  "happy_path_steps": [
+    "Periode: HR buat periode KPI (draft) + peserta; transisi status draft->open (auto peer-assignment)",
+    "Bank soal: seed/kelola pertanyaan 360 (self/peer/supervisor/staff)",
+    "Penilaian: input nilai Perform per karyawan (single & bulk); form Attitude via submissions (skor 1-5); Absensi dari kehadiran",
+    "Review: hitung KPI Final (Perform 60% + Attitude 20% + Absensi 20%) + grading A-E",
+    "Publish: cek completion >=80% (warning bila kurang), publish -> periode finalized + auto usul kenaikan gaji Grade A/B + badge",
+    "OKR: buat Objective + Key Results, update progress KR, dashboard OKR health"
+  ],
+  "rbac_note": "Konfigurasi & hasil KPI dibatasi role HR/Manager/Supervisor (_require_hr: superadmin/admin/owner/hr/manager/supervisor). Form submissions/my-forms untuk karyawan yang terhubung ke data pegawai. OKR create/delete dibatasi superadmin/admin/manager/owner. Role non-HR (mis. admin_gudang) ditolak 403.",
+  "qa": "docs/user-guide/_qa/flow-sdm-kpi-okr_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_sdm_kpi_okr_test.py): periode create+guard nama 400+transisi invalid 400+delete non-draft 400, RBAC non-HR 403, questions seed + invalid eval_type 400, perform single+bulk, submissions guard skor di luar 1-5 -> 400, calculate (KPI Final 60/20/20 grade A) + guard no-participant 400, results list, publish completion<80 warning + force finalize, OKR objective+KR+progress+dashboard + RBAC 403. DB pristine setelah cleanup.",
+  "notes": "KPI Final = Perform*0.60 + Attitude*0.20 + Absensi*0.20. Attitude 360 = self 20% + peer 20% + supervisor->staff 35% + staff->supervisor 25%. Grade: A(91-100 naik 10%), B(80-90 perpanjang 7%), C(75-79 mediasi), D(50-69 cut off), E(0-49 cut off)."
+}

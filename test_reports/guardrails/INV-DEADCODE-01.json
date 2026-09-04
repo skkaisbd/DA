@@ -1,0 +1,34 @@
+{
+  "gate": "INV-DEADCODE-01",
+  "title": "Handler tergabung / kode mati setelah return (dekorator hilang)",
+  "checked": 5778,
+  "counts": {
+    "INFO": 3
+  },
+  "blocking": 0,
+  "block_sev": [
+    "HIGH"
+  ],
+  "duration_s": 2.02,
+  "ts": "2026-08-26 03:27:25",
+  "findings": [
+    {
+      "sev": "INFO",
+      "code": "DEPRECATED_BODY",
+      "msg": "Raise di baris 101 \u2192 baris 104-138 tak terjangkau (pola deprekasi disengaja)",
+      "loc": "backend/routes/dewi_maklon_qc.py:97 create_qc()"
+    },
+    {
+      "sev": "INFO",
+      "code": "DEPRECATED_BODY",
+      "msg": "Raise di baris 143 \u2192 baris 146-165 tak terjangkau (pola deprekasi disengaja)",
+      "loc": "backend/routes/dewi_maklon_qc.py:141 update_qc()"
+    },
+    {
+      "sev": "INFO",
+      "code": "DEPRECATED_BODY",
+      "msg": "Raise di baris 330 \u2192 baris 334-374 tak terjangkau (pola deprekasi disengaja)",
+      "loc": "backend/routes/exceptions.py:324 create_defect_report()"
+    }
+  ]
+}

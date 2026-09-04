@@ -1,0 +1,48 @@
+{
+  "flow_id": "flow-sdm-rekrutmen",
+  "title": "Alur Rekrutmen & Onboarding (SDM/HRIS): Lamaran -> Seleksi -> Onboarding",
+  "portal": "sdm",
+  "strategy": "flow-centric v4",
+  "description": "Alur SDM/HRIS CV. Dewi Aditya untuk merekrut karyawan baru, dijalankan di dua modul: ATS/Rekrutmen (hr-recruitment / HRATSModule) dan Onboarding (hr-onboarding / HROnboardingModule). Tiga fase menyambung dari satu kandidat: (1) LAMARAN -> HR membuka lowongan (job posting) lalu mencatat pelamar (candidate) yang masuk pada stage 'Lamaran Masuk'; setiap kandidat punya timeline audit. (2) SELEKSI -> kandidat digerakkan melalui pipeline ATS 7-tahap (Lamaran Masuk -> Screening CV -> Interview HR -> Interview User -> Offering -> Hired / Rejected); tiap perpindahan stage menambah timeline dan mengirim email notifikasi (mock log), plus penjadwalan interview + input hasil (pass/fail/hold, skor) dan pipeline kanban. (3) ONBOARDING -> saat kandidat di-set 'Hired', sistem OTOMATIS membuat record karyawan (rahaza_employees) + checklist onboarding (dewi_onboarding_checklists) dari template default (dewi_onboarding_templates, fallback ke daftar tugas bawaan bila tak ada), lalu HR menandai tugas onboarding selesai sehingga progress meningkat sampai checklist completed. Guardrail: lamar ke lowongan tidak ada ditolak (404), akses kandidat/lowongan tidak ada (404), autentikasi wajib.",
+  "modules_touched": ["hr-recruitment", "hr-onboarding"],
+  "critical_endpoints": [
+    "/api/dewi/recruitment/jobs",
+    "/api/dewi/recruitment/candidates",
+    "/api/dewi/recruitment/candidates/{candidate_id}",
+    "/api/dewi/recruitment/candidates/{candidate_id}/interviews",
+    "/api/dewi/recruitment/pipeline",
+    "/api/dewi/onboarding/checklists",
+    "/api/dewi/onboarding/checklists/{checklist_id}",
+    "/api/dewi/onboarding/checklists/{checklist_id}/tasks/{task_id}"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/recruitment/jobs/{job_id}",
+    "/api/dewi/recruitment/candidates/{candidate_id}/interviews/{interview_id}",
+    "/api/dewi/recruitment/analytics",
+    "/api/dewi/recruitment/talent-pool",
+    "/api/dewi/onboarding/templates",
+    "/api/dewi/onboarding/analytics"
+  ],
+  "test_script": "tests/flow_sdm_rekrutmen_test.py",
+  "doc": "docs/user-guide/sdm/flow-sdm-rekrutmen.md",
+  "db_collections": [
+    "dewi_recruitment_jobs",
+    "dewi_recruitment_candidates",
+    "rahaza_employees",
+    "dewi_onboarding_templates",
+    "dewi_onboarding_checklists"
+  ],
+  "happy_path_steps": [
+    "HR buat lowongan (job posting) -> status open",
+    "Pelamar dicatat sebagai candidate -> stage 'Lamaran Masuk' + timeline",
+    "Seleksi: PUT stage Screening CV (email mock) -> jadwal interview + input hasil -> Interview HR -> Interview User -> Offering",
+    "Pantau pipeline kanban 7-tahap",
+    "Set stage 'Hired' -> AUTO create rahaza_employees + dewi_onboarding_checklists dari template default",
+    "Ambil checklist onboarding (by employee_id) + tandai task selesai -> progress naik",
+    "Verifikasi job.hired_count naik + employee.from_candidate_id cocok"
+  ],
+  "qa": "docs/user-guide/_qa/flow-sdm-rekrutmen_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_sdm_rekrutmen_test.py: buat job -> guard lamar job-tak-ada 404 -> candidate 'Lamaran Masuk' -> guard get-candidate 404 -> job.candidate_count=1 -> stage Screening CV (email mock) -> interview + hasil pass score85 -> Interview HR/User/Offering -> pipeline Offering=1 -> Hired => auto employee (EMP-..) + onboarding checklist -> job.hired_count=1 -> checklist by employee_id -> task done => progress 25%). Endpoint grounded ke dewi_recruitment.py & dewi_onboarding.py; DB pristine (hard-cleanup job/candidate/employee/checklist).",
+  "notes_qa": "OBSERVASI (dicatat di _qa, TIDAK di materi training): (a) checklist onboarding yang dibuat OTOMATIS oleh modul rekrutmen (saat Hired) tidak menyertakan field total_tasks/completed_tasks/progress_pct saat insert (berbeda dgn POST /onboarding/checklists yang lengkap) dan memakai due_day/started_at, sementara modul onboarding memakai due_date/start_date -> list checklist sort by start_date bisa menaruh checklist auto di ujung; progress tetap terhitung benar via update_task. (b) email notifikasi hanya MOCK (email_logs, status='mock_sent'), belum kirim email nyata. (c) auto-create employee memakai contract dari candidate.offer bila ada."
+}

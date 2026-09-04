@@ -1,0 +1,65 @@
+{
+  "flow_id": "flow-toko-after-sales",
+  "title": "Alur After-Sales / Retur & Refund (Retur Pelanggan -> Refund -> Koreksi Stok)",
+  "portal": "toko",
+  "portal_secondary": "gudang",
+  "strategy": "flow-centric v4",
+  "description": "Alur pasca-penjualan lintas portal Toko/Marketing dan Gudang: pelanggan meminta pengembalian barang -> Toko memvalidasi & menyetujui -> jembatan link ke Gudang (create-wh-return) -> Gudang menerima barang fisik, memeriksa, & meng-resolve (Restock ke Gudang -> koreksi/naik stok FG) -> callback status kembali ke Toko -> Toko menyelesaikan retur dan menerbitkan Nota Kredit (auto-post GL reversing Dr Revenue / Cr AR).",
+  "modules_touched": ["marketing-after-sales", "wh-returns"],
+  "critical_endpoints": [
+    "/api/marketing/returns",
+    "/api/marketing/returns/{}/approve",
+    "/api/marketing/returns/{}/create-wh-return",
+    "/api/wh/returns/{}/receive",
+    "/api/wh/returns/{}/inspect",
+    "/api/wh/returns/{}/resolve",
+    "/api/marketing/returns/{}/complete",
+    "/api/marketing/returns/{}/create-credit-note"
+  ],
+  "supporting_endpoints": [
+    "/api/marketing/returns",
+    "/api/marketing/returns/{}",
+    "/api/marketing/returns/summary",
+    "/api/marketing/returns/reasons",
+    "/api/marketing/returns/{}/reject",
+    "/api/marketing/returns/credit-notes",
+    "/api/marketing/returns/credit-notes/{}",
+    "/api/marketing/returns/credit-notes/{}/post-to-gl",
+    "/api/wh/returns",
+    "/api/wh/returns/{}",
+    "/api/wh/returns/{}/cancel",
+    "/api/wh/returns/summary",
+    "/api/marketing/complaints",
+    "/api/marketing/complaints/summary"
+  ],
+  "test_script": "tests/flow_toko_after_sales_test.py",
+  "doc": "docs/user-guide/toko/flow-toko-after-sales.md",
+  "db_collections": [
+    "marketing_returns",
+    "wh_returns",
+    "rahaza_credit_notes",
+    "rahaza_fg_inventory",
+    "rahaza_fg_movements",
+    "rahaza_journal_entries"
+  ],
+  "happy_path_steps": [
+    "Buat retur pelanggan (marketing_returns, status=pending)",
+    "Approve retur (Toko/Marketing -> status=approved)",
+    "Create wh_return jembatan (link 2-arah marketing_returns <-> wh_returns; idempoten)",
+    "Gudang: receive barang fisik (status=Received)",
+    "Gudang: inspect kondisi barang (status=Inspected)",
+    "Gudang: resolve = Restock ke Gudang (status=Resolved; $inc fg_inventory + log fg_movements; callback set marketing_returns.wh_return_status=Resolved)",
+    "Toko: complete marketing_return (warning=null karena wh_return_id ada)",
+    "Toko: create-credit-note (rahaza_credit_notes + auto-post GL reversing Dr Revenue / Cr AR)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-toko-after-sales_bugs.md",
+  "status": "Done",
+  "verification": "backend POC ALL PASS (11 langkah dari login sampai credit-note posted); Sesi #86 RC-FLOW-UX-11 keputusan user 11a=B/11c=B/11d=A; deep_testing_backend_v2 iter#60 9/9 PASS; auto_frontend_testing_agent iter#68 6/6 PASS setelah bug-fix React StrictMode initializer",
+  "notes": [
+    "Ini alur konsolidasi hasil audit RC-FLOW-UX-11 (lihat FLOW_UX_AUDIT.md).",
+    "Sinkronisasi 2-arah marketing_returns <-> wh_returns dilakukan dgn link manual (create-wh-return endpoint) + callback resolve; menghindari perubahan skema besar.",
+    "Complete marketing_return TANPA wh_return_id memicu field `warning` (soft-guard, RC-FLOW-UX-11c opsi B) — bukan hard-block.",
+    "4 pintu legacy retur (marketing-complaints, marketing-returns, toko-cs, toko-returns) di-redirect via makeRedirect ke marketing-after-sales tab yang tepat (RC-FLOW-UX-11d opsi A).",
+    "Terminologi diseragamkan: 'Refund & Nota Kredit' untuk sisi Toko (finansial), 'Retur Fisik & Restock (Gudang)' untuk sisi Gudang."
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "summary": "Sesi #34 diuji end-to-end (backend pytest 26 kasus + UI Playwright nyata di URL publik). Backend: 23/26 lulus. UI: Biaya Jahit SPK, Pencairan Toko (read-only), Impor Pintar (deteksi platform/jenis + banner salah pilih + viewer berkas + pemetaan DIBALIK per kolom template), Panel Insentif Kreator, RnD Produk Final, dan pemilih Periode 7 hari SEMUA berfungsi dengan interaksi nyata (isi input, simpan, muat ulang, nilai tetap). Ditemukan 3 bug nyata: (1) GET /api/marketing/budget/summary 500 untuk periode 7 hari (YYYY-MM-DD) sehingga tab Budget & Alokasi menampilkan Rp 0 tanpa pesan error; (2) POST /api/marketing/creator-portal/requests 500 (KeyError product_name) — kreator TIDAK BISA request barang sama sekali (0/81 item katalog punya field product_name); (3) POST .../incentive/close-period tidak menormalkan hitungan ke 0 bila ada entri bertanggal HARI INI.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/marketing/budget/summary?account_id=..&period=YYYY-MM-DD",
+        "issue": "500 Internal Server Error. core/marketing_cycle.valid_period() masih strptime('%Y-%m') sementara routes/marketing_budget._valid_period sudah menerima YYYY-MM-DD → ValueError: unconverted data remains: -16 (jalur budget_summary→auto_spend→_auto_diskon→valid_period, marketing_budget.py:532 / marketing_cycle.py:130,339,516). Akibat: seluruh tab 'Budget & Alokasi' (mode 7 hari, mode DEFAULT baru) menampilkan Rp 0 untuk semua kategori dan UI tidak memperlihatkan error apa pun ke pengguna.",
+        "priority": "CRITICAL"
+      },
+      {
+        "endpoint": "POST /api/marketing/creator-portal/requests",
+        "issue": "500 KeyError: 'product_name'. marketing_kol_portal.creator_request_item mengakses catalog_item['product_name'] & ['sku'] langsung, padahal 0 dari 81 dokumen marketing_catalog_items punya field product_name (yang ada: fg_name/fg_code/sku). Fitur 'kreator request barang' (permintaan pemilik sesi #34) TIDAK BISA DIPAKAI untuk item mana pun. Perbaikan: pakai fallback yang sama seperti di endpoint katalog (product_name || name || fg_name, sku || variant_sku || fg_code).",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "POST /api/marketing/kol/creators/{id}/incentive/close-period",
+        "issue": "Tidak mengembalikan hitungan ke 0 sesuai spesifikasi. close_period menyetel cfg['period_start']=hari ini, sehingga entri bertanggal HARI INI tetap masuk jendela periode BARU (start <= today < end) — pcs_sold & total_incentive tetap sama (diuji: 120 pcs tetap 120). Saran: mulai periode baru dari besok, atau tandai entri yang sudah ditutup (mis. closed_at/period_seq) dan kecualikan dari _summary."
+      },
+      {
+        "endpoint": "DELETE /api/marketing/kol/creators/{id}",
+        "issue": "Soft-delete: kreator hanya jadi status 'inactive' tetapi tetap tampil di daftar UI (kartu 'inactive'). Bukan error, tapi menyulitkan bersih-bersih data uji & bisa membingungkan staf."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Target & Budget → tab 'Budget & Alokasi' (mode 7 hari)",
+        "issue": "Semua angka (budget/realisasi/otomatis/sisa) Rp 0 karena /api/marketing/budget/summary balas 500; tidak ada state error/banner yang memberi tahu pengguna bahwa data gagal dimuat (silent failure).",
+        "affected_selectors": ["[data-testid=budget-week-select]", "[data-testid=tab-budget]"]
+      },
+      {
+        "flow": "Portal Kreator → request barang",
+        "issue": "Backend 500 (lihat backend_issues) — tidak bisa diverifikasi lewat UI portal kreator.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Panel Insentif Kreator (creator-incentive-panel) & Impor/Pencairan",
+        "issues": [
+          "Input tanggal (incentive-start-input, tracker-date-input) memakai date picker bawaan browser (<input type=date>), bukan komponen kalender shadcn — tidak konsisten dengan sisa aplikasi",
+          "Dropdown memakai <select> native (incentive-mode-select, settlement-account-filter, filter status/kategori katalog) sementara layar lain memakai shadcn Select — tampilan tidak konsisten antar layar"
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_session34_features.py",
+    "/app/test_reports/pytest/session34_results.xml"
+  ],
+  "action_items": [
+    "CRITICAL: buat core/marketing_cycle.valid_period (dan period_bounds/auto_spend/_auto_diskon) menerima periode 7 hari YYYY-MM-DD, atau teruskan bulan yang benar dari routes/marketing_budget.budget_summary; tambahkan tampilan error di BudgetAllocationTab bila API gagal",
+    "CRITICAL: perbaiki marketing_kol_portal.creator_request_item agar tidak KeyError untuk item marketing_catalog_items (fallback product_name/sku) — fitur request barang kreator saat ini 100% gagal",
+    "Perbaiki semantik close-period insentif agar hitungan periode baru benar-benar 0 (entri hari ini harus masuk periode yang DITUTUP)",
+    "Pertimbangkan pemberitahuan/hard-delete atau filter untuk kreator inactive di daftar Kelola KOL"
+  ],
+  "critical_code_review_comments": [
+    "Validasi periode terduplikasi di dua tempat (routes/marketing_budget._valid_period vs core/marketing_cycle.valid_period) — sumber bug 500 mode 7 hari. Satukan ke satu helper SSOT.",
+    "marketing_kol_portal.creator_request_item memakai indeks dict langsung (catalog_item['product_name']) untuk dokumen yang skemanya bervariasi; gunakan .get() + fallback seperti pada endpoint katalog agar tidak 500.",
+    "backend/routes/marketing_data_import.py 3.448 baris — di atas ambang 700 baris, sebaiknya dipecah (detect/upload/mapping/commit/rollback).",
+    "close_period insentif memakai period_start=hari ini sebagai penanda periode; lebih aman menyimpan penanda periode pada tiap entri daripada mengandalkan jendela tanggal."
+  ],
+  "updated_files": ["/app/backend/tests/test_session34_features.py"],
+  "success_rate": {"backend": "88% (23/26 pytest)", "frontend": "92% (semua layar sesi #34 lolos kecuali tab Budget yang nol karena API 500)"},
+  "seed_data_creation": "Kreator uji TEST-S34-* + entri tracker TEST_S34* + akun portal test_s34_*@creator.demo dibuat lalu DIHAPUS dari DB. Perubahan yang MASIH tersisa (disengaja saat uji fitur): (1) po_items PO-INT-DEMO-1 SKU DA-TS01-ALLSIZE cmt_price_snapshot = 9.000/pcs (HPP/pcs jadi Rp 15.000); (2) konfigurasi insentif KRE-DEMO-01 diset mode 'both' 2000/pcs, target 100, bonus 500.000, period_start 2026-08-23 (entri tracker uji sudah dihapus); (3) period_start insentif beberapa kreator demo bergeser karena uji close-period; (4) satu impor pesanan_tiktok.xlsx (93 baris) tercatat di riwayat impor toko TikTok Daluna — impor ulang idempoten (0 baris baru).",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123 (ERP); kre-demo-01@creator.demo / Dewi@123 (portal kreator) — keduanya valid dan berhasil login",
+  "context_for_next_testing_agent": "Pakai /app/backend/tests/test_session34_features.py (pytest, 26 kasus) sebagai regresi sesi #34. Yang SUDAH terbukti jalan (jangan diuji ulang dalam): API+UI Biaya Jahit (rate tersimpan, HPP/pcs naik, usulan tarif, toast), GET/PUT budget period-settings (weekly default 7 hari + switch monthly), /data-import/detect untuk 5 berkas nyata (shopee/tiktok orders, returns, ads, shopee_ads_cpc), banner type_mismatch + raw_preview 10 baris, wizard impor UI (import-type-mismatch(+switch), import-file-viewer 10 baris, import-map-by-field 22 select fieldmap-*, import-map-by-column-toggle, ganti pemetaan tanpa error), login portal kreator + katalog TANPA hpp/margin, POST portal-account lalu login, buat kreator tipe 'new' tanpa email (berhasil) & tipe kontrak dengan email tanpa password (ditolak), insentif config+tracker (UI & API: 60 pcs → Rp 120.000), livehost payment/calculate pay_mode=monthly_salary, /api/rnd/product-viewer + detail + modal UI, /api/marketing/settlements read-only (4 KPI, CSV disabled, tanpa tombol simpan/hapus), regresi katalog marketing MASIH menampilkan HPP + margin, regresi impor pesanan TikTok (upload→plan→commit 200). Fokus ulang hanya pada 3 bug di action_items. Modul UI: ?module=prod-sewing-cost | marketing-settlements | marketing-targets (tab-budget) | marketing-import | marketing-kol-hub | rnd-product-viewer | marketing-catalog.",
+  "rca_of_the_issue": "Bug budget 500: pemilik meminta periode budget default 7 hari, sehingga frontend mengirim period=YYYY-MM-DD ke /api/marketing/budget/summary. routes/marketing_budget.py sudah punya _valid_period yang menerima format harian, tetapi jalur perhitungan realisasi otomatis (core/marketing_cycle.auto_spend → _auto_diskon → valid_period) masih memakai datetime.strptime(period, '%Y-%m') → ValueError 'unconverted data remains: -16' → 500. Reproduksi: login admin, GET /api/marketing/budget/summary?account_id=<toko>&period=2026-08-23 (500) vs period=2026-08 (200); di UI buka ?module=marketing-targets → tab-budget → semua nilai Rp 0. Bug request kreator: 0/81 dokumen marketing_catalog_items punya field 'product_name' (skema aslinya fg_name/fg_code), sedangkan creator_request_item memakai catalog_item['product_name'] → KeyError → 500 untuk SEMUA item."
+}

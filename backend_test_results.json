@@ -1,0 +1,157 @@
+{
+  "test_run_date": "2026-07-04T21:24:55.639368",
+  "total_tests": 21,
+  "passed": 20,
+  "failed": 1,
+  "success_rate": "95.2%",
+  "results": [
+    {
+      "name": "Create Expense Claim",
+      "status": "PASS",
+      "expected": 201,
+      "actual": 201,
+      "description": "Create expense claim for disburse test"
+    },
+    {
+      "name": "Submit Expense Claim",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Submit claim for approval"
+    },
+    {
+      "name": "Approve Expense Claim",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Approve claim with note in body"
+    },
+    {
+      "name": "FIX1: Disburse as Finance (accounting role) - SHOULD BE 200",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "FIXED BUG: finance/accounting role can now disburse (was 403)"
+    },
+    {
+      "name": "Get Models",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Get model_id for WO creation"
+    },
+    {
+      "name": "Get Sizes",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Get size_id for WO creation"
+    },
+    {
+      "name": "FIX2: Create WO as Supervisor (supervisor_produksi) - SHOULD BE 200",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "FIXED BUG: supervisor_produksi can now create WO (was 403)"
+    },
+    {
+      "name": "WO Status Transition (spv)",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Supervisor can transition WO status"
+    },
+    {
+      "name": "Get Employees",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Get employee_id for leave request"
+    },
+    {
+      "name": "Get Leave Types",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Get leave_type_id for leave request"
+    },
+    {
+      "name": "Create Leave Request (CORRECT FIELDS)",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Leave with employee_id, leave_type_id, from_date, to_date, reason"
+    },
+    {
+      "name": "Approve Leave",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Approve leave request"
+    },
+    {
+      "name": "Create Attendance (CORRECT FIELDS)",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Attendance with employee_id + date/status"
+    },
+    {
+      "name": "Create AP Invoice (CORRECT FIELD: vendor_name)",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "AP invoice with vendor_name (NOT vendor_id)"
+    },
+    {
+      "name": "AP Invoice Payment",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Record AP payment"
+    },
+    {
+      "name": "Get Maklon Clients",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Get client_id for maklon PO"
+    },
+    {
+      "name": "Create Delivery Note (CORRECT FIELD: sj_type)",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Delivery note with sj_type field"
+    },
+    {
+      "name": "Issue Delivery Note",
+      "status": "PASS",
+      "expected": 200,
+      "actual": 200,
+      "description": "Issue delivery note"
+    },
+    {
+      "name": "Start Opname2 Session",
+      "status": "FAIL",
+      "expected": 200,
+      "actual": 400,
+      "error": "{\"detail\":\"Ada sesi opname yang masih open. Selesaikan atau batalkan dahulu.\",\"status\":400,\"request_id\":\"5106edcd81b6\"}",
+      "description": "Start opname2 session"
+    },
+    {
+      "name": "RBAC: Finance CANNOT create WO (expect 403)",
+      "status": "PASS",
+      "expected": 403,
+      "actual": 403,
+      "description": "Finance role should get 403 for WO creation"
+    },
+    {
+      "name": "RBAC: Supervisor CANNOT disburse (expect 403)",
+      "status": "PASS",
+      "expected": 403,
+      "actual": 403,
+      "description": "Supervisor role should get 403 for expense disburse"
+    }
+  ]
+}

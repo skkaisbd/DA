@@ -1,0 +1,44 @@
+{
+  "summary": "Iterasi 110 (Rekonsiliasi Bank H-05/H-06 + COGS fulfillment FIFO H-07) diuji penuh. BACKEND: tests/test_iter110_bank_recon.py 11/11 PASS (sesi per rekening, gl_lines hanya akun bank sesi, impor CSV arah Debit=keluar/Kredit=masuk, auto-match ±Rp1.000 & ±3 hari satu-ke-satu, penyesuaian memakai gl_account_code SESI bukan 1-1201 hard-code + cash movement + saldo kartu kas -156.500, unmatch/match manual + guard arah, internal-check, approve guard, jurnal SSOT tidak ditulis, post_cogs_shipment basis fifo_batch 160.000 dgn 1-1404/5-1000/5-2000 + idempoten + zero_cogs, balance-sheet balanced). Tambahan tests/test_iter110_extra.py 7/7 PASS: GET /summary 200; /gl-entries?period=2026-09 tanpa session_id -> 400; import-bulk menyimpan direction in/out benar + terlihat di GET sesi & /transactions; candidates & settlement-candidates 200; link-settlement guard arah 400 ('uang MASUK') & settlement tak ditemukan 404; regresi balance-sheet balanced=true dan /api/rahaza/ar-aging 200. FRONTEND (build statis, public URL): login admin -> Portal Keuangan -> pill Kas & Bank -> Rekonsiliasi Bank (fin-bank-recon) termuat; kartu ringkasan sesi + daftar recon-session-list; buat sesi 2026-08 rekening baru 'UI Recon 7ADF' (opsi select menampilkan kode GL) -> langsung masuk recon-session-detail; recon-summary + recon-sum-gl/statement/explained, 3 tab bank/gl/internal; impor manual (mutasi masuk Rp125.000, badge Masuk) & tempel teks ('2026-08-05, Biaya admin, 6500, keluar' -> badge Keluar) berhasil; auto-match menampilkan toast (di sesi ini 'Tidak ada data untuk dicocokkan' karena belum ada baris jurnal); Penyesuaian 'Biaya admin bank' -> toast 'Penyesuaian dijurnal ... JE-20260805-0001 ke akun 1-1200-UI-7ADF' (akun sesi, benar), mutasi jadi Cocok (recon-txn-matchref) dan tab Jurnal GL bertambah 1 baris berstatus Cocok; Lepas -> kandidat (recon-candidates, Δ Rp0 · 0 hari · sesuai aturan) -> cocok kembali; ubah saldo akhir 118500 -> kartu 'Saldo rekening koran' berubah; tab Kas Internal vs GL menampilkan kartu kas -6.500 = GL -6.500 dengan badge OK; Setujui nonaktif selama ada mutasi belum cocok, aktif setelah mutasi belum cocok dihapus -> badge Disetujui & semua aksi tersembunyi; recon-back kembali ke daftar. Tidak ada console error dan tidak ada respons HTTP >=400 selama seluruh alur UI. REGRESI UI: modul Invoice/Tagihan CMT (Portal Produksi -> Keuangan & Analitik) termuat normal (8 tagihan, jurnal GL tampil).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/finance/bank-recon/sessions/{sid}/transactions/{txn_id}/settlement-candidates", "issue": "Tidak ada guard arah: mutasi uang KELUAR tetap dapat 200 + daftar kandidat pencairan (link-settlement sudah benar menolak 400). UI menyembunyikan tombolnya, tapi endpoint sebaiknya menolak/mengosongkan untuk direction='out'."},
+      {"endpoint": "POST /api/finance/bank-recon/sessions/{sid}/approve", "issue": "Approve hanya menjaga 'semua mutasi cocok', tidak memeriksa selisih terjelaskan. Sesi disetujui walau ringkasan masih menampilkan 'selisih belum terjelaskan Rp 125.000' (mutasi belum cocok dihapus, closing_balance tidak dikoreksi). Sesuai spesifikasi, tetapi berpotensi menyetujui sesi yang tidak seimbang."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Rekonsiliasi Bank - detail sesi (status Disetujui)", "issues": ["Banner ringkasan masih merah 'selisih belum terjelaskan Rp 125.000' pada sesi yang sudah Disetujui - membingungkan; sebaiknya tampilkan ringkasan approved_summary/ pesan netral."]},
+      {"screen": "Rekonsiliasi Bank - Auto-match", "issues": ["Bila tidak ada baris jurnal kandidat, toast hanya 'Tidak ada data untuk dicocokkan' tanpa menyebut aturan (+-Rp1.000/+-3 hari); aturan hanya ada di subjudul halaman (minor)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter110_bank_recon.py",
+    "/app/backend/tests/test_iter110_extra.py",
+    "/app/backend/tests/seed_iter110_ui_account.py",
+    "/app/test_reports/pytest/iter110_extra.xml"
+  ],
+  "action_items": [
+    "Opsional: tambahkan guard direction='in' pada GET settlement-candidates (samakan dengan link-settlement).",
+    "Opsional: pada sesi berstatus approved, tampilkan approved_summary (bukan banner selisih live) agar tidak tampak 'belum terjelaskan'.",
+    "Opsional: pertimbangkan peringatan/konfirmasi saat approve bila summary.explained=false."
+  ],
+  "critical_code_review_comments": [
+    "dewi_bank_reconciliation.py (841 baris) mendekati batas ukuran file; pertimbangkan pisah helper (_summary/_internal_check/_bank_gl_lines) ke modul terpisah.",
+    "SessionDetail.jsx: onLinkSettlement = () => act(() => Promise.resolve({}), ...) hanya me-reload (POST sebenarnya di SettlementLinkPicker) - berfungsi, tapi penamaan menyesatkan; beri komentar atau ganti nama menjadi onSettlementLinked."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter110_extra.py",
+    "/app/backend/tests/seed_iter110_ui_account.py"
+  ],
+  "success_rate": {"backend": "100% (18/18: 11 + 7)", "frontend": "100% alur inti Rekonsiliasi Bank"},
+  "seed_data_creation": "Cash account 'UI Recon 7ADF' (UI-7ADF -> GL 1-1200-UI-7ADF) + sesi rekonsiliasi 2026-08 (kini approved, 1 mutasi Biaya admin Rp6.500 + JE-20260805-0001); cash account 'Bank Extra ...' (UI/API) dan sesi 2026-07 sudah dihapus oleh test cleanup; cash accounts QA dari test_iter110_bank_recon tetap ada.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123",
+  "context_for_next_testing_agent": "Navigasi UI: login -> portal-selector-finance-card -> klik teks 'KAS & BANK' (pill) -> nav-item-fin-bank-recon. Sesi 2026-08 'UI Recon 7ADF' sudah APPROVED (tidak bisa dihapus) - untuk uji ulang, buat cash account baru via POST /api/rahaza/cash-accounts lalu sesi periode lain (script: python3 /app/backend/tests/seed_iter110_ui_account.py). Perhatikan: gl_account_code cash account baru diturunkan otomatis menjadi 1-1200-<CODE> walau body mengirim 1-1201 (perilaku existing, bukan bug iterasi ini) sehingga sesi baru tidak punya baris jurnal GL -> auto-match akan berkata 'Tidak ada data untuk dicocokkan'; gunakan tombol Penyesuaian untuk menghasilkan baris jurnal pada akun sesi. Regresi cepat: pytest tests/test_iter110_bank_recon.py tests/test_iter110_extra.py -q -n 0.",
+  "rca_of_the_issue": "Tidak ada isu kritis. Dua temuan minor bersifat guard/ tampilan: (1) settlement-candidates tanpa validasi arah (link-settlement sudah memvalidasi sehingga tidak dapat dieksploitasi menjadi data salah); (2) banner ringkasan pada sesi approved memakai _summary live sehingga selisih closing_balance vs GL tetap ditandai merah setelah mutasi belum cocok dihapus."
+}

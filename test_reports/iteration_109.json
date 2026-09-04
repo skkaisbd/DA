@@ -1,0 +1,34 @@
+{
+  "summary": "Verifikasi ulang iterasi 108 (3 fitur finance) setelah restore dari GitHub. Backend: tests/test_iter108_finance.py 11/11 PASS; test cepat baru tests/test_iter109_verify.py 7/7 PASS (AR aging canonical total==Σ amount_due, filter source=internal/maklon, /api/dewi/maklon/reports/aging, posting profile cmt_ap_invoice 1-1403/7-120, balance-sheet balanced=true, /api/production/cmt-billing 200). Frontend: modul Invoice/Tagihan CMT (Portal Produksi → Keuangan & Analitik) termuat tanpa error, detail tagihan menampilkan jurnal AP CMT Dr 1-1403 / Cr 2-1100 (BUKAN 5-231), panel cmt-pay-panel + bayar Rp1.000 sukses (JE-20260904-0031, Dibayar 201.000 / Sisa 99.000), lalu Void berhasil (kembali 200.000 / Sisa 100.000). Layar Aging Piutang (fin-ar-360, Portal Keuangan → Penjualan & Penerimaan) termuat: Total Rp919.200 = internal Rp120.000 (4 invoice QA Cust) + maklon Rp799.200 (PT Aruna) — sama dengan /api/rahaza/ar-aging. Tidak ada console error atau API 4xx/5xx.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/rahaza/ar-aging", "issue": "Untuk baris source=internal, field customer_name/client_name dikembalikan string kosong (nama customer tidak di-resolve), sedangkan /api/rahaza/ar-360/aging berhasil menampilkan 'QA Cust 288A82'. Konsumen API lain akan menampilkan nama kosong."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter108_finance.py",
+    "/app/backend/tests/test_iter109_verify.py",
+    "/app/test_reports/pytest/iter109_results.xml"
+  ],
+  "action_items": [
+    "Opsional (minor): resolve customer_name pada baris internal di compute_ar_aging (rahaza_ar_canonical.py) agar konsisten dengan ar-360/aging."
+  ],
+  "critical_code_review_comments": [
+    "voidDisbursement di ProductionCMTBillingModule.jsx memakai window.confirm() native — bekerja, tapi kurang konsisten dgn dialog UI lain dan menghambat otomasi (Playwright otomatis dismiss). Pertimbangkan AlertDialog shadcn dengan data-testid.",
+    "cmt-pay-cash-account memakai SmartNativeSelect (bukan <select> native) — test harus klik '<testid>-trigger' lalu '<testid>-option-<value>'; sudah didokumentasikan agar agent berikut tidak salah pakai select_option()."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter109_verify.py"],
+  "success_rate": {"backend": "100% (18/18: 11 iter108 + 7 iter109)", "frontend": "100% (semua alur yang diminta lulus)"},
+  "seed_data_creation": "Tidak membuat seed baru. Memakai baris qa-cmt-* dari pytest iter108; pembayaran Rp1.000 yang dibuat saat uji UI sudah di-void kembali sehingga state kembali (Dibayar 200.000 / Sisa 100.000).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123",
+  "context_for_next_testing_agent": "Navigasi UI: login → portal-selector-production-card → section-pill 'Keuangan & Analitik' → nav-item-prod-cmt-billing. AR aging UI = Portal Keuangan (portal-selector-finance-card) → pill 'Penjualan & Penerimaan' → nav-item-fin-ar-360 (memakai /api/rahaza/ar-360/aging, totalnya cocok dgn canonical /api/rahaza/ar-aging = 919.200). Untuk Void pembayaran, WAJIB pasang handler dialog async: page.on('dialog', lambda d: asyncio.ensure_future(d.accept())) — kalau tidak, klik Void hang/di-dismiss. SmartNativeSelect butuh pola trigger+option. Backend regresi cepat: pytest tests/test_iter108_finance.py tests/test_iter109_verify.py -q -n 0.",
+  "rca_of_the_issue": "Tidak ada defect fungsional ditemukan. Dua kegagalan awal saat pengujian adalah masalah skrip test (bukan aplikasi): (1) asumsi field 'total_outstanding' padahal response memakai 'total'; (2) select_option() pada SmartNativeSelect dan window.confirm yang tidak di-accept — keduanya sudah diperbaiki di skrip."
+}

@@ -1,0 +1,32 @@
+{
+  "flow_id": "flow-keuangan-ap",
+  "title": "Alur AP/Hutang (Bill/PO Supplier -> Verifikasi/Send/Auto-JE -> Pembayaran/Auto-JE)",
+  "portal": "finance",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Keuangan untuk hutang usaha (Accounts Payable): buat AP invoice/bill dari supplier (manual atau 3-way match dari Goods Receipt), verifikasi & kirim (send) yang otomatis posting jurnal Dr Persediaan/Beban / Cr Hutang Usaha, lalu catat pembayaran (penuh/parsial) yang otomatis posting Dr Hutang Usaha / Cr Kas/Bank dan mengurangi saldo rekening kas.",
+  "modules_touched": ["fin-3way-match", "fin-ap-aging"],
+  "critical_endpoints": [
+    "/api/rahaza/ap-invoices",
+    "/api/rahaza/ap-invoices/{iid}/send",
+    "/api/rahaza/ap-invoices/{iid}/payment"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/ap-invoices",
+    "/api/rahaza/ap-invoices/from-gr",
+    "/api/rahaza/ap-invoices/{iid}/status",
+    "/api/rahaza/ap-invoices/{iid}/post-to-gl",
+    "/api/rahaza/ap-aging",
+    "/api/rahaza/cash-accounts"
+  ],
+  "test_script": "tests/flow_keuangan_ap_test.py",
+  "doc": "docs/user-guide/keuangan/flow-keuangan-ap.md",
+  "db_collections": ["rahaza_ap_invoices", "rahaza_cash_movements", "rahaza_cash_accounts", "rahaza_journal_entries"],
+  "happy_path_steps": [
+    "Buat AP invoice/bill (draft) untuk supplier",
+    "Verifikasi & kirim (send) -> status sent + auto-post JE (Dr Persediaan/Beban / Cr Hutang Usaha)",
+    "Catat pembayaran penuh -> status paid, balance 0 + auto-post JE (Dr Hutang Usaha / Cr Bank)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-keuangan-ap_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (JE ter-posting keduanya, aging 200); E2E UI pending batch"
+}

@@ -1,0 +1,23 @@
+{
+  "summary": "Iterasi 108 lulus: (A) Bayar Vendor CMT — /api/dewi/maklon/finance/cmt-payments/{id}/pay: pembayaran parsial 100k dari total 300k => JE ap_payment Dr 2-1100 100000 / Cr 1-1200-T2-BANK 100000 dan payment_status partial_paid; AP CMT internal auto-posted Dr 1-1403 300000 / Cr 2-1100 300000 (BUKAN 5-231); pay tanpa amount => sisa 200k, status paid; pay ulang => 400 'Tagihan sudah lunas'; void disbursement pertama => JE voided, status kembali partial_paid, paid_amount 200000. (B) Aging tunggal — POST /rahaza/ar-invoices + /send => status 'issued' dan field total/total_amount/amount_due/balance semua 50000; payment 20000 => amount_paid=paid_amount=20000, amount_due=balance=30000, status partial_paid. /api/rahaza/ar-aging berisi 2 baris (internal bucket 61_90 30000 + maklon current 799200), total=jumlah; ?source=internal hanya 30000; /dewi/maklon/reports/aging hanya baris maklon dengan balance_amount/client_name/bucket. (C) HPP absorption unit — post_wip_to_fg_on_job_complete menghasilkan JE Dr 1-1404 450000 / Cr 1-1403 450000 dgn deskripsi 'WIP keluar — Job JOB-QA (fg_cost_layers)', layer ter-set gl_job_id, panggilan kedua already_posted. Posting profile cmt_ap_invoice.debit_cmt_wip_internal='1-1403' dan debit_cmt_expense_maklon='7-120'. (D) Regresi balance-sheet balanced=true, GET /rahaza/ar-invoices 200, GET /dewi/maklon/invoices 200. Frontend: login admin -> Portal Produksi -> Keuangan & Analitik -> Invoice/Tagihan CMT (ProductionCMTBillingModule) termuat tanpa error (0 tagihan, sehingga panel cmt-pay-panel tidak dibuka — sesuai instruksi 'minimal verifikasi modul termuat'). Cleanup: JE=0, layer/qa-cmt-1/t2-cust dihapus, po-mk-demo-2 AR dikembalikan ke draft/amount_paid=0.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/scripts/verify_iter108.py",
+    "/app/backend/scripts/verify_iter108_hpp.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "verify_iter108.py bekerja end-to-end (login token diambil dari /app/.tok_admin). Idempoten, self-cleaning.",
+    "post_wip_to_fg_on_job_complete signature: (db, job, user) — pastikan callsite di rahaza_posting/production hooks memasok user; sudah aman untuk seed.",
+    "ProductionCMTBillingModule.jsx: data-testid cmt-pay-panel/open/cash-account/amount/date/ref/submit lengkap dan konsisten."
+  ],
+  "updated_files": ["/app/backend/scripts/verify_iter108_hpp.py"],
+  "success_rate": {"backend": "100%", "frontend": "100% (module load only, tidak ada invoice CMT untuk buka panel)"},
+  "test_credentials": "admin@garment.com / Admin@123 (JWT disimpan di /app/.tok_admin)",
+  "seed_data_creation": "Menggunakan /api/seed/maklon-full sebelum test; semua data uji (qa/t2 cash acct, t2-cust, invoices, JE, fg_cost_layer ly-qa1, dewi_cmt_payments qa-cmt-1) telah dibersihkan; po-mk-demo-2 dikembalikan via /production-pos/{id}/sync-maklon-finance.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regresi finance iter 108 dijalankan via: python3 /app/backend/scripts/verify_iter108.py (membutuhkan /app/.tok_admin JWT admin dan seed maklon-full aktif). Untuk unit HPP absorption: python3 /app/backend/scripts/verify_iter108_hpp.py. Untuk membuka panel cmt-pay-panel di UI, perlu insert dewi_cmt_payments (open status) atau approve Terima FG dari CMT dulu.",
+  "rca of the issue": "N/A - semua fitur iter 108 lulus."
+}

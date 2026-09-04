@@ -1,0 +1,52 @@
+{
+  "flow_id": "flow-maklon-inti",
+  "title": "Alur Maklon Inti (PO -> Confirm -> Surat Jalan -> Invoice)",
+  "portal": "maklon",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Maklon (jasa CMT): buat PO Maklon dari klien, Confirm PO (otomatis membuat Work Order per item + Draft AR Invoice), kirim hasil produksi via Surat Jalan/Dispatch (partial/penuh), lalu posting AR Invoice ke Finance GL. Pembayaran & finalisasi status invoiced ada di modul Billing (ringkas).",
+  "modules_touched": [
+    "maklon-po",
+    "maklon-po-360",
+    "maklon-billing"
+  ],
+  "critical_endpoints": [
+    "/api/dewi/maklon/pos",
+    "/api/dewi/maklon/pos/{id}/confirm",
+    "/api/dewi/maklon/dispatches",
+    "/api/dewi/maklon/finance/pos/{id}/post-ar"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/maklon/pos/{id}",
+    "/api/dewi/maklon/pos/{id}/cancel",
+    "/api/dewi/maklon/pos/{id}/dispatches",
+    "/api/dewi/maklon/dispatches/{id}/confirm",
+    "/api/dewi/maklon/dispatches/{id}/cancel",
+    "/api/dewi/maklon/material-receive",
+    "/api/dewi/maklon/bom",
+    "/api/dewi/maklon/clients",
+    "/api/dewi/maklon/buyer-catalog",
+    "/api/dewi/maklon/invoices/generate",
+    "/api/dewi/maklon/pos/{id}/360",
+    "/api/dewi/maklon/finance/pos/{id}/advance-payment"
+  ],
+  "test_script": "tests/flow_maklon_inti_test.py",
+  "doc": "docs/user-guide/maklon/flow-maklon-inti.md",
+  "manifests": [
+    "docs/user-guide/_manifests/maklon-po.manifest.json",
+    "docs/user-guide/_manifests/maklon-po-360.manifest.json",
+    "docs/user-guide/_manifests/maklon-billing.manifest.json"
+  ],
+  "db_collections": [
+    "dewi_maklon_pos",
+    "dewi_maklon_dispatches",
+    "rahaza_work_orders",
+    "rahaza_ar_invoices"
+  ],
+  "happy_path_steps": [
+    "Buat PO Maklon: pilih klien + tambah item (seri, artikel, qty, rate CMT) -> POST /pos -> status draft.",
+    "Confirm PO: POST /pos/{id}/confirm -> status confirmed + auto Work Order per item + auto Draft AR Invoice.",
+    "Surat Jalan/Dispatch: POST /dispatches (pilih item & qty) lalu PUT /dispatches/{id}/confirm -> PO partial_delivered/completed.",
+    "Posting AR: POST /finance/pos/{id}/post-ar -> AR Invoice ter-posting ke GL (status issued).",
+    "(Opsi) Pembayaran & finalisasi invoiced di modul Billing."
+  ]
+}

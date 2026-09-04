@@ -1,0 +1,77 @@
+{
+  "summary": "AUDIT read-only Portal Maklon (iter 104). Semua 24 menu Portal Maklon RENDER tanpa crash / console-error / 4xx-5xx (F1). Namun ditemukan (a) RBAC LEAK BERAT: token klien_maklon (Aruna) dan cmt_vendor (JMC) sama-sama dapat GET 200 pada 8/9 endpoint /api/dewi/maklon/* + /api/prod/cmt-receipts dan LIHAT DATA MILIK KLIEN LAIN (PT Langit) — mis. /pos, /invoices, /clients, /summary, /payments, /reports/aging, dan bahkan detail 360 PO klien lain /api/dewi/maklon/pos/po-mk-demo-3/360. Hanya /api/production/cmt-billing?scope=maklon yang menolak klien (403); untuk cmt_vendor bahkan endpoint itu masih 200. (b) TIGA/EMPAT STATUS BERBEDA UNTUK PO YANG SAMA di layar admin: PO-MK-DEMO-2 muncul sebagai 'In Production' (PO Maklon & Tutup PO), 'Sebagian Terkirim'/'partial_delivered' (Detail PO 360 & mirror /pos), 'Packing' (Dashboard Maklon), 'Partially Shipped' (Dispatch Buyer). PO-MK-DEMO-3 muncul 'Closed' (PO Maklon & Tutup PO 'Sudah Ditutup'), 'Ditagih'/'invoiced' (Detail PO 360, Dashboard, /pos mirror) — mirror TIDAK sinkron dengan production_pos. (c) Detail PO 360 melaporkan DIKIRIM 0/150 & 0/200 untuk kedua PO padahal Dispatch ke Buyer punya SJ-BYR-MK-DEMO-2 (60 pcs) & SJ-BYR-PO-MK-DEMO-3 (200 pcs) — /api/dewi/maklon/dispatches memang balikkan [] (koleksi legacy dewi_maklon_dispatches kosong; 360 baca dari sana, bukan dari buyer_shipments). (d) DUA SISTEM INVOICE bertabrakan: layar Invoice (maklon-billing) hanya menampilkan 1 baris INV-MKL-2026-0001 (Rp 3.330.000, PT Langit) sedangkan enrichment /api/dewi/maklon/pos menaruh ar_invoice_number INV-MKL-2026-0005 (auto) di PO-MK-DEMO-2 → invoice ini TIDAK ada di layar Invoice. Sebaliknya 360 DEMO-3 tidak punya ar_invoice sama sekali walau list-nya mengaku ada INV-MKL-2026-0001. Auto AR INV-MKL-2026-0002 yang seharusnya untuk DEMO-3 (Rp 3.000.000) TIDAK terlihat di manapun. (e) MONITORING CMT rekonsiliasi sendiri MELAPORKAN KETIDAKSEIMBANGAN: '✗ Lolos QC + Permak Berhasil = Ke Buyer + Sisa Bisa Kirim → 0 vs 60 (selisih -60)' — SJ-BYR-MK-DEMO-2 (60 pcs) dikirim tanpa jejak CMT receipt/QC. Buku kualitas nol tapi dispatch 60. (f) DASHBOARD MAKLON kartu 'Order Selesai 0' padahal DEMO-3 sudah Closed. 'Total Revenue Rp 4.800.000' = 1.800.000+3.000.000 (nilai PO), bukan dari invoice terbit; angka ini menyesatkan (real invoice terbit hanya 3.330.000). 'Order Terbaru' hanya tampilkan 2 PO — PO-MK-DEMO-1 (Draft) hilang. Status kolom PO-MK-DEMO-2='Packing' (label ke-4 untuk PO yang sama). (g) TUTUP PO tab 'Perlu Ditutup (3)' memasukkan 2 PO Draft (MKL-ZZFT-2026-0001, PO-MK-DEMO-1) yang belum layak ditutup (production=0, dispatched=0) — noise. Hanya PO-MK-DEMO-2 yang legal (tombol 'Close Short' muncul). (h) Detail PO 360 (maklon-po-360) selector list menampilkan status 'Sebagian Terkirim' & 'Ditagih' (label EN/ID campur) berbeda dari layar lain. (i) Dispatch ke Buyer PO-MK-DEMO-2 progres '60 / 100 pcs' — base 100 bukan 150 (total PO). Item i2 (qty 50, produced 20) tidak muncul. Portal klien lands di 'Pilih Portal' dengan 'Tidak ada akses' pada SEMUA kartu portal — klien praktis tidak punya UI portal (mungkin regresi; backend tetap terbuka). Terima FG dari CMT tampilan Indonesia (Sedang QC / Selesai QC) tanpa raw 'on_qc'/'Draft' — OK. Semua 24 menu Portal Maklon load tanpa console error atau 4xx/5xx. Tidak melakukan POST/PUT/DELETE.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/dewi/maklon/pos", "issue": "Klien_maklon (Aruna) & cmt_vendor (JMC) mendapat 200 dan MELIHAT PO klien lain (PO-MK-DEMO-3 PT Langit + PO-MK-DEMO-2 PT Aruna). Tidak ada filter buyer_id/scope. RBAC LEAK.", "priority": "CRITICAL"},
+      {"endpoint": "GET /api/dewi/maklon/pos/po-mk-demo-3/360", "issue": "Klien Aruna & vendor JMC mendapat 200 dengan detail PO milik PT Langit (invoice, item, dsb).", "priority": "CRITICAL"},
+      {"endpoint": "GET /api/dewi/maklon/invoices", "issue": "Klien Aruna & vendor JMC menerima 200 berisi INV-MKL-2026-0001 milik PT Langit.", "priority": "CRITICAL"},
+      {"endpoint": "GET /api/dewi/maklon/clients", "issue": "Klien & vendor melihat SEMUA 3 klien (bocor master data lintas-tenant).", "priority": "CRITICAL"},
+      {"endpoint": "GET /api/dewi/maklon/summary | /payments | /reports/aging | /api/prod/cmt-receipts", "issue": "Semua 200 untuk klien & vendor; aging bahkan menampilkan baris PT Langit ke klien Aruna.", "priority": "CRITICAL"},
+      {"endpoint": "GET /api/production/cmt-billing?scope=maklon", "issue": "cmt_vendor menerima 200 (klien diblok 403). Vendor bisa melihat billing lintas semua vendor/PO maklon.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/dewi/maklon/pos", "issue": "field ar_invoice_number pada mirror /pos (mis. INV-MKL-2026-0005 untuk DEMO-2, INV-MKL-2026-0001 untuk DEMO-3) TIDAK selaras dengan hasil /api/dewi/maklon/pos/{id}/360 (DEMO-3 ar_invoice=None; DEMO-2 invoices=[]). Dua sumber invoice belum konvergen."},
+      {"endpoint": "GET /api/dewi/maklon/pos", "issue": "PO-MK-DEMO-3 status='invoiced' & production_po_status='In Production' padahal production_pos.status='Closed'. Mirror TIDAK terupdate saat production_pos ditutup — konfirm 'close PO does not sync mirror status'."},
+      {"endpoint": "GET /api/dewi/maklon/pos/{id}/360", "issue": "dispatches=[] & material_receives=[] untuk DEMO-2 & DEMO-3 walau buyer_shipments SJ-BYR-MK-DEMO-2 (60 pcs) & SJ-BYR-PO-MK-DEMO-3 (200 pcs) ADA. 360 masih baca dewi_maklon_dispatches (legacy kosong)."},
+      {"endpoint": "GET /api/dewi/maklon/pos (item-level)", "issue": "PO-MK-DEMO-2 qty_dispatched agregat PO=0 tapi item i1.qty_dispatched=60 (tidak konsisten dalam SATU response). PO-MK-DEMO-3 items dispatched=120+80=200 tapi PO.qty_dispatched=0. Ringkasan PO tidak menjumlahkan item."},
+      {"endpoint": "GET /api/dewi/maklon/invoices", "issue": "Hanya 1 baris (manual INV-MKL-2026-0001). Auto-AR INV-MKL-2026-0005 (attached ke DEMO-2 di mirror) dan INV-MKL-2026-0002 (owner menyebut untuk DEMO-3) TIDAK terdaftar. Dua sistem invoice pakai penomoran/koleksi berbeda."},
+      {"endpoint": "GET /api/production-pos (items)", "issue": "items[].sku_code=null, produced_qty=null, dispatched_qty=null pada view maklon — Detail PO engine akan menampilkan '-' kolom SKU."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Detail PO (maklon-po-360) card list", "issue": "Kolom 'Dikirim' 0/150 untuk PO-MK-DEMO-2 dan 0/200 untuk PO-MK-DEMO-3 padahal Dispatch ke Buyer menampilkan 60 pcs & 200 pcs. Progress 0% untuk PO yang FullyShipped.", "selector": "#maklon-po-360 list card", "priority": "HIGH"},
+      {"component": "Dashboard Maklon (maklon-dashboard)", "issue": "Order Selesai=0 & Order Aktif=1 padahal PO-MK-DEMO-3 status Closed. Total Revenue Rp 4.800.000 memakai nilai PO bukan invoice terbit (3.330.000). Order Terbaru hanya 2 PO (DEMO-1 draft hilang). Status kolom PO-MK-DEMO-2='Packing' berbeda dari layar lain.", "selector": "#maklon-dashboard", "priority": "HIGH"},
+      {"component": "Tutup PO (po-closure)", "issue": "Tab 'Perlu Ditutup (3)' memuat 2 PO Draft (MKL-ZZFT-2026-0001, PO-MK-DEMO-1) yang belum berproduksi (Produksi=0, Dikirim=0) — kurang filter status legal.", "selector": "#po-closure tab perlu-ditutup", "priority": "MEDIUM"},
+      {"component": "Dispatch ke Buyer (prod-shipments-buyer)", "issue": "PO-MK-DEMO-2 progres '60 / 100 pcs' → base 100 bukan qty total PO 150; item i2 (50 pcs) tidak diperhitungkan dalam progres agregat.", "selector": "#prod-shipments-buyer row PO-MK-DEMO-2", "priority": "MEDIUM"},
+      {"component": "Monitoring CMT (cmt-monitor)", "issue": "Panel Rekonsiliasi sendiri melaporkan '✗ Lolos QC + Permak Berhasil = Ke Buyer + Sisa Bisa Kirim → 0 vs 60 selisih -60'. Dispatch 60 pcs terjadi tanpa CMT receipt/QC — jejak kualitas hilang.", "selector": "#cmt-monitor rekonsiliasi", "priority": "HIGH"},
+      {"component": "Portal Klien (login klien_maklon)", "issue": "Setelah login klienmaklon, halaman 'Pilih Portal' menampilkan 'Tidak ada akses' pada SEMUA 12 kartu portal — klien tidak punya jalur UI ke portal maklon-nya. (Backend endpoint /api/dewi/maklon/* tetap terbuka.)", "selector": "PortalSelector /", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Status PO lintas layar", "issue": "PO-MK-DEMO-2 muncul dgn 4 label berbeda: 'In Production' (PO Maklon, Tutup PO) / 'Sebagian Terkirim' (Detail PO 360) / 'partial_delivered' (mirror) / 'Packing' (Dashboard). PO-MK-DEMO-3: 'Closed' vs 'Ditagih' vs 'invoiced'.", "affected_selectors": ["#maklon-pos-engine","#maklon-po-360","#maklon-dashboard","#po-closure"]},
+      {"flow": "Invoice", "issue": "Layar Invoice menampilkan 1 invoice (INV-MKL-2026-0001 3.330.000). Auto-AR INV-MKL-2026-0005 (attached DEMO-2 di list backend) & INV-MKL-2026-0002 (expected DEMO-3) tidak muncul. Dua sistem invoice belum menyatu.", "affected_selectors": ["#maklon-billing"]},
+      {"flow": "Detail PO (maklon-po-360) → dispatch/invoice", "issue": "360 view membaca dewi_maklon_dispatches (kosong) — dispatch_count=0, dispatches=[] untuk 2 PO yang sudah punya buyer_shipments; sehingga qty dikirim di card list 0/150 & 0/200.", "affected_selectors": ["#maklon-po-360"]}
+    ],
+    "design_issues": [
+      {"screen": "Dashboard Maklon 'Order Terbaru' status column", "issues": ["Label 'Packing'/'Ditagih' campur ID/EN dengan layar lain ('In Production','Closed','partial_delivered')."]},
+      {"screen": "Detail PO 360 list card", "issues": ["Label 'Sebagian Terkirim' vs 'Ditagih' — bahasa ID tapi metric 'Dikirim 0 / 150' salah (masih 0)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/tests/audit_maklon_rbac.py",
+    "/tmp/rbac_probe_results.json",
+    "/tmp/maklon_ui_sweep.json"
+  ],
+  "action_items": [
+    "CRITICAL: Tambahkan RBAC guard pada seluruh route /api/dewi/maklon/* (pos, pos/{id}/360, invoices, clients, summary, payments, reports/aging) — klien_maklon hanya boleh membaca buyer_id-nya sendiri; cmt_vendor tidak boleh mengakses endpoint ini sama sekali (arahkan ke /api/vendor-cmt/*). Endpoint /api/prod/cmt-receipts juga harus difilter per role.",
+    "CRITICAL: /api/production/cmt-billing?scope=maklon harus tolak cmt_vendor (bukan hanya klien).",
+    "HIGH: Sinkronkan mirror dewi_maklon_pos.status saat production_pos ditutup — DEMO-3 masih 'invoiced'/'In Production' padahal Closed.",
+    "HIGH: /api/dewi/maklon/pos/{id}/360 harus baca buyer_shipments (bukan dewi_maklon_dispatches legacy) — sekarang dispatch selalu 0.",
+    "HIGH: Satukan sistem invoice (manual maklon-billing vs auto-AR bridge) atau minimal /api/dewi/maklon/invoices harus menyertakan invoice auto-AR yang tercantum di mirror (INV-MKL-2026-0005 dsb).",
+    "HIGH: PO-level qty_dispatched di /api/dewi/maklon/pos harus Σ item.qty_dispatched (sekarang 0 walau item 60).",
+    "HIGH: Standardkan label status PO satu bahasa/mapping (In Production / Sebagian Terkirim / Closed / Ditagih / Packing muncul untuk PO yang sama).",
+    "HIGH: Dashboard Maklon 'Order Selesai' harus baca production_pos.status='Closed' (bukan mirror). 'Total Revenue' beri label jelas (nilai PO vs invoice terbit).",
+    "MEDIUM: Tutup PO tab 'Perlu Ditutup' saring hanya status legal (In Production / Production Complete / Variance Review / Return Review / Ready to Close) sebagaimana teks aturan di panel — jangan tampilkan Draft.",
+    "MEDIUM: Dispatch ke Buyer basis progres = total qty PO (150) bukan qty item pertama (100).",
+    "HIGH: Rekonsiliasi CMT '0 vs 60 selisih -60' — DEMO-2 punya buyer_shipment 60 pcs tanpa CMT receipt; putuskan apakah dispatch tanpa cmt_receipt boleh, atau harus punya jejak QC.",
+    "HIGH: Portal klien_maklon UI — semua kartu portal 'Tidak ada akses'; sediakan entry point /klien-maklon setelah login klien."
+  ],
+  "critical_code_review_comments": [
+    "routes/dewi_maklon_po_360.py — masih baca collection legacy dewi_maklon_dispatches. Ganti ke buyer_shipments filter po_id + business_type='maklon'. Konfirmasi: /api/dewi/maklon/dispatches balikkan []; buyer_shipments punya SJ-BYR-MK-DEMO-2 & SJ-BYR-PO-MK-DEMO-3.",
+    "routes/dewi_maklon_pos.py — hilang RBAC dependency get_current_klien / get_current_user_scoped; endpoint list mengembalikan semua PO walau role klien_maklon/cmt_vendor. Perlu depends(require_role) atau filter buyer_id = current_user.buyer_id di query. Sama untuk /invoices /clients /summary /payments /reports/aging /pos/{id}/360.",
+    "routes/dewi_maklon_billing.py — hasil /invoices harus union dengan invoice hasil production_maklon_bridge (auto AR) atau simpan di collection yang sama. INV-MKL-2026-0005 muncul di enrichment PO tapi tidak di daftar invoice.",
+    "core/po-closure sync — status production_pos → mirror dewi_maklon_pos tidak dipropagasi; DEMO-3 tetap 'invoiced' setelah Closed. Tambah trigger di POST close_po.",
+    "moduleRegistry: banyak menu 'maklon-*' redirect ke engine generic (prod-shipments-buyer, po-closure) — namun tab 'Perlu Ditutup' pada po-closure tidak menyaring status Draft untuk maklon; filter di komponen harus per business_type."
+  ],
+  "updated_files": ["/app/tests/audit_maklon_rbac.py"],
+  "success_rate": {
+    "backend_rbac_probe": "3/27 pemanggilan terlindungi (11%) — 24 dari 27 kombinasi (klien+vendor) mengembalikan 200 dengan data lintas-tenant",
+    "frontend_render": "24/24 menu (100% render), namun 6 layar menampilkan angka/status yang berbenturan"
+  },
+  "seed_data_creation": "Tidak ada. Audit read-only; hanya GET.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123; klienmaklon@dewiaditya.id / Dewi@123; cmtvendor@dewiaditya.id / Dewi@123 (dari /app/memory/test_credentials.md)",
+  "context_for_next_testing_agent": "Rate-limit login 10 req/60s per IP — reuse token: /tmp/ta.tok, /tmp/tk.tok, /tmp/tc.tok (jika sesi masih valid). Script probe RBAC: /app/tests/audit_maklon_rbac.py (python3 -u). Ringkasan: SEMUA /api/dewi/maklon/* GET terbuka untuk klien & vendor. Detail PO 360 baca legacy collection kosong. Mirror status tidak sync closure. Dua sistem invoice belum menyatu. Portal klien UI tidak punya kartu portal aktif. PO-MK-DEMO-2 punya buyer_shipment 60 pcs tanpa cmt_receipt (rekonsiliasi -60). Setelah main-agent memperbaiki RBAC, jalankan ulang audit_maklon_rbac.py — hasil ideal: klien menerima 200 hanya untuk pos/invoices/summary yang buyer_id=demo-cl-aruna (list boleh empty untuk endpoint lintas-klien), 403 pada /pos/po-mk-demo-3/360, /clients (kecuali profil sendiri). Vendor idealnya 403 pada seluruh /api/dewi/maklon/*.",
+  "rca_of_the_issue": "1) RBAC leak: routes /api/dewi/maklon/* mengandalkan JWT valid tapi tidak memeriksa role/buyer scope — depends() hanya get_current_user. Ditambah lagi cmt_vendor role tidak diblok. Fix: tambah require_role(['superadmin','admin_produksi','finance']) di list-level; klien via /api/maklon-client/* saja; vendor via /api/vendor-cmt/*. 2) Detail PO 360 baca dewi_maklon_dispatches (legacy) yang tidak terisi lagi sejak buyer_shipments menjadi SSOT — ganti sumber. 3) Mirror status: tidak ada listener/on-close hook dari production_pos ke dewi_maklon_pos. 4) Dua invoice source: manual endpoint /invoices vs auto-AR bridge menulis ke koleksi berbeda dengan seri berbeda; enrichment /pos menaruh salah satunya tapi /invoices tidak menyatukan. 5) Portal klien tidak punya entry — PortalSelector card 'Portal Maklon' mungkin gate by role='klien_maklon' yang belum dipetakan ke portal manapun."
+}

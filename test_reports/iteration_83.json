@@ -1,0 +1,102 @@
+{
+  "summary": "W4 Session #29 Returns Bridge Testing - Completed testing of 12 flows (7 backend, 5 frontend) that were marked 'NOT TESTED' in iteration 82. Backend: 29/31 tests passed (93.5%). Frontend: Partial success with modal overlay issues blocking some interactions.",
+  "backend_issues": {
+    "minor_bugs": [
+      {
+        "endpoint": "/api/wh/returns/{id}/quick-restock",
+        "issue": "Second call to quick-restock returns 200 with 'already=true' instead of 400 error",
+        "impact": "Test expected 400 error for duplicate restock, but endpoint returns 200 with idempotent response. This is actually a valid design pattern (idempotent with success response).",
+        "fix_priority": "LOW",
+        "note": "This is a design choice, not a bug. The endpoint correctly prevents duplicate stock additions and returns success with 'already=true' flag."
+      },
+      {
+        "endpoint": "/api/wh/returns/{id}/quick-restock",
+        "issue": "Quick-restock on unlinked return returns 200 instead of expected 400",
+        "impact": "Test expected 400 error when trying to restock a return without material_id, but got 200. Need to verify if the endpoint properly validates material_id presence.",
+        "fix_priority": "MEDIUM",
+        "note": "Code at line 592-597 in dewi_wh_returns.py should raise HTTPException(400) if material_id is missing. Need to investigate why test got 200."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "WHReturnsModule - Create Return Modal",
+        "issue": "Modal overlay blocks button clicks - cannot interact with 'Catat Return' button when detail panel is open",
+        "selector": "[data-testid='btn-add-return']",
+        "fix_priority": "HIGH",
+        "note": "Modal overlay (<div class='fixed inset-0 bg-foreground/40 z-50'>) intercepts pointer events. Need to close detail panel before opening create form, or fix z-index layering."
+      },
+      {
+        "component": "ReturnsRefundsModule - Marketing Portal",
+        "issue": "Condition selection in create return form may not be properly saved - created return shows '+1 stok jual (ZNA-FG)' instead of expected '+2 karantina'",
+        "selector": "[data-testid='return-condition-select']",
+        "fix_priority": "CRITICAL",
+        "note": "When creating a return with condition='Rusak' and qty=2, the stock effect shows '+1 stok jual' instead of '+2 karantina'. This indicates either: (1) condition not saved correctly, (2) qty not saved correctly, or (3) bridge logic not working as expected."
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Quick Restock via UI",
+        "issue": "Cannot complete full flow due to modal overlay blocking interactions",
+        "affected_selectors": ["[data-testid='btn-add-return']", "[data-testid='quick-restock-*']"],
+        "note": "Flow 9 could not be fully tested due to modal overlay issues. Partial verification shows stock badge displays correctly."
+      },
+      {
+        "flow": "Ambiguous Return Relink",
+        "issue": "Cannot open detail panel for ambiguous return due to modal overlay",
+        "affected_selectors": ["tr[data-testid^='ret-row-']"],
+        "note": "Flow 11 could not be fully tested. Backend test confirmed relink endpoint works correctly."
+      }
+    ]
+  },
+  "passed_tests": [
+    "Backend Flow 1: POST /api/marketing/returns with condition='Baik', qty=2 - PASSED (wh_return_code, restocked=true, stock_effect='sellable', location='ZNA-FG')",
+    "Backend Flow 2: POST /api/marketing/returns with condition='Rusak', qty=3 - PASSED (stock_effect='quarantine', location='ZNA-KARANTINA')",
+    "Backend Flow 3: Idempotent create-wh-return - PASSED (2nd call returns already_exists=true)",
+    "Backend Flow 4a: Quick-restock first call - PASSED (restocked=true, location='ZNA-FG')",
+    "Backend Flow 5: Relink ambiguous return RET-20260819-011 - PASSED (link_status='needs_manual_resolution', reason present)",
+    "Backend Flow 6a: Manual WH return with material_id - PASSED (sku_code filled, product_name filled, link_status='linked', quick-restock succeeds)",
+    "Backend Flow 6b: Manual WH return without material_id - PASSED (link_status='no_master_link')",
+    "Backend Flow 7: Manual 3-step flow (receive → inspect → resolve) - PASSED (all steps completed, restock_result.restocked=true, location_code='ZNA-KARANTINA')",
+    "Frontend Flow 8: Detail panel master link display - PASSED (all required fields displayed: Kode master, Kategori, Warna, Opsi, Masuk lokasi, Kondisi)",
+    "Frontend Flow 12: Marketing portal form has required fields - PASSED (return-condition-select and return-qty-input present)"
+  ],
+  "test_report_links": [
+    "/app/backend/backend_test_w4_returns_comprehensive.py",
+    "/root/.emergent/automation_output/20260819_144809/console_20260819_144809.log"
+  ],
+  "action_item_for_main_agent": {
+    "critical": [
+      "Fix Marketing Portal return creation: condition='Rusak' with qty=2 should create warehouse return with stock_effect='quarantine' and qty=2, but currently shows '+1 stok jual'. Verify condition and qty are properly passed to backend API."
+    ],
+    "high_priority": [
+      "Fix modal overlay z-index issue in WHReturnsModule: detail panel overlay blocks interactions with 'Catat Return' button and other UI elements. Ensure modals can be properly closed or layered correctly.",
+      "Verify quick-restock endpoint properly validates material_id presence and returns 400 when material is not linked (Backend Flow 4c and 6b discrepancy)."
+    ],
+    "medium_priority": [
+      "Review idempotent design of quick-restock endpoint: currently returns 200 with 'already=true' on duplicate calls. Consider if 400 error would be more appropriate for API consistency."
+    ],
+    "cleanup_required": [
+      "Test data cleanup: Delete all returns with order_id starting with 'QA-W4-' (3 marketing_returns, 7 wh_returns created during testing)",
+      "Stock cleanup: 6 stock operations were performed during testing. Verify total material stock qty returns to 33503.",
+      "Ledger cleanup: Delete rahaza_stock_ledger entries with ref.ref_id matching test wh_return IDs"
+    ]
+  },
+  "updated_files": [
+    "/app/backend/backend_test_w4_returns_comprehensive.py"
+  ],
+  "success_percentage": {
+    "backend": "93.5% (29/31 tests passed)",
+    "frontend": "40% (2/5 flows fully passed, 3 flows partially tested due to modal overlay issues)"
+  },
+  "should_call_test_agent_after_fix": "true",
+  "should_main_agent_test_itself": "false",
+  "notes": {
+    "known_state_verified": "wh_returns=22 (21 restocked, 1 needs_manual_resolution=RET-20260819-011) - VERIFIED",
+    "ambiguous_return_tested": "RET-20260819-011 (order 585044253894673420) - relink endpoint works correctly, returns link_status='needs_manual_resolution'",
+    "test_data_created": "3 marketing_returns + 7 wh_returns with order_id prefix 'QA-W4-'",
+    "stock_operations": "6 stock additions performed (2+3+1+1+1+2 = 10 units total across ZNA-FG and ZNA-KARANTINA locations)",
+    "gate_status": "49 gates should remain passing - no changes made to core functionality"
+  }
+}

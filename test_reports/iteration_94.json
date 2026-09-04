@@ -1,0 +1,28 @@
+{
+  "summary": "Putaran ke-4 (final) sesi #35 — UI-only Playwright nyata di preview URL. Verifikasi 3 perbaikan MINOR dari iteration_93 + regresi admin. HASIL: FIX 1 LULUS, FIX 3 LULUS, REGRESI LULUS, FIX 2 LULUS SEBAGIAN (mode Per Konten sudah bersih; mode group-by Per Kreator/Per Toko masih menampilkan catatan generik termasuk 'Cakupan KPI 0.0%' di samping kalimat KEWENANGAN). 0 console error di semua skenario, tidak ada NaN/undefined. Detail: (FIX 1) /#marketing-kol -> tab-weekly: page.fill('2026-09-30') pada weekly-week-end -> nilai OTOMATIS di-clamp menjadi 2026-08-24, panel tetap '7 hari bergulir: 2026-08-18 s/d 2026-08-24' (tidak pernah pekan masa depan), tabel tetap 3 baris kreator; fill('2026-08-19') -> nilai tetap 2026-08-19, rentang 2026-08-13..19, 3 baris (Bayu 5.704, Sinta 3.496, Rina 0) — clamp tidak merusak alur normal; atribut max=2026-08-24 masih ada. (FIX 2) staffmkt@dewiaditya.id -> /#marketing-content-calendar -> content-tab-performa: mode Per Konten -> perf-notes HANYA 1 kalimat KEWENANGAN (tanpa 'BELUM punya KPI', tanpa 'Cakupan KPI') SESUAI spesifikasi; perf-empty tampil dengan teks kewenangan berwarna amber. Namun mode Per Kreator (KOL) dan Per Toko -> perf-notes = kalimat KEWENANGAN + 3 catatan generik, termasuk 'Cakupan KPI 0.0%: hanya konten yang KPI-nya sudah diisi...' yang tetap membingungkan pada layar kosong-karena-kewenangan. Penyebab: gating 'if not scope_empty' hanya diterapkan pada endpoint /performance/contents (baris 864), tidak pada content_performance (notes dibangun tanpa syarat di baris 719-727 marketing_content_calendar_routes.py). (FIX 3) /creator kre-demo-01 -> tab Performa -> creator-weekly-card: pekan berjalan 2026-08-18..24 dengan 0 konten menampilkan creator-weekly-idle ('Belum ada konten pada pekan ini — angka 0 di atas bukan berarti performa turun, memang belum ada yang diposting.'), creator-weekly-next disabled=True; klik prev 1x -> 2026-08-11..17 (2 konten, 9.200 views, GMV Rp 1.850.000) hint HILANG; prev 2x -> 2026-08-04..10 (2 konten, 18.500 views, GMV Rp 8.100.000) hint tetap hilang, next kembali aktif. (REGRESI Admin) Per Konten = tepat 15 baris pada rentang bawaan 2026-07-26..2026-08-24, KPI cards: Konten 15, cakupan 60.0% (9 ber-KPI), views 139.400, GMV Rp 48.300.000; perf-notes '6 dari 15 konten BELUM punya KPI…' dan TIDAK memuat KEWENANGAN; perf-empty tidak muncul; kelima mode group-by (content/creator/content_type/account/platform) memuat tanpa NaN/undefined/error; dialog content-kpi-dialog dibuka lalu ditutup dengan 'Batal' tanpa error. Tidak ada data uang/stok/KPI yang diubah pada putaran ini (read-only kecuali perubahan tanggal filter).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/marketing/content-calendar/performance (group_by=creator/account/content_type/platform)", "issue": "Saat scope_empty=True, data_notes masih menyertakan 3 catatan generik termasuk 'Cakupan KPI 0.0%: hanya konten yang KPI-nya sudah diisi…' berdampingan dengan kalimat KEWENANGAN — spesifikasi FIX 2 meminta hanya kalimat KEWENANGAN. Gating 'if not scope_empty' baru ada di /performance/contents."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Performa Konten — mode Per Kreator/Per Toko untuk akun tanpa toko (perf-notes)", "issues": ["Catatan 'Cakupan KPI 0.0%' masih tampil pada layar yang kosong karena kewenangan; membingungkan karena mengesankan ada konten tanpa KPI (padahal 0 konten yang terlihat)."]},
+      {"screen": "Performa Konten — mode Per Platform (admin)", "issues": ["MINOR kosmetik: kolom Nama menampilkan '(kosong)' karena konten demo tidak punya field platform; sebaiknya label 'Tanpa platform' agar tidak terbaca seperti bug."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_94.json"],
+  "action_items": ["Terapkan gating scope_empty pada notes endpoint /performance (group-by) agar hanya kalimat KEWENANGAN yang muncul, konsisten dengan /performance/contents (opsional/MINOR).", "Opsional kosmetik: ganti label '(kosong)' pada group-by Per Platform menjadi 'Tanpa platform'."],
+  "critical_code_review_comments": ["marketing_content_calendar_routes.py: dua endpoint performa membangun data_notes secara duplikatif dengan aturan scope_empty berbeda — ekstrak helper _perf_notes(scope_empty, totals, truncated) agar tidak divergen lagi."],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (frontend-only request)", "frontend": "3.5/4 skenario LULUS (~90%)"},
+  "seed_data_creation": "Tidak ada. Tidak ada data uang/stok/KPI yang diubah.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com/Admin@123; staffmkt@dewiaditya.id/Dewi@123; kre-demo-01@creator.demo/Dewi@123",
+  "context_for_next_testing_agent": "FIX 1 (clamp weekly-week-end), FIX 3 (creator-weekly-idle), dan regresi admin Performa Konten sudah terverifikasi LULUS pada putaran 4 — tidak perlu diulang. Satu-satunya sisa: catatan 'Cakupan KPI 0.0%' pada perf-notes mode group-by untuk akun tanpa toko (MINOR, backend notes). Native <select data-testid=perf-group-by> dipakai untuk mode group-by (nilai: content/creator/content_type/account/platform), bukan tombol.",
+  "rca_of_the_issue": "FIX 2 diterapkan hanya pada content_performance_per_content() (list notes dibangun dengan '... if not scope_empty else []'), sedangkan content_performance() untuk mode group-by tetap membangun 3 catatan generik tanpa memeriksa scope_empty, sehingga catatan cakupan KPI 0.0% masih muncul pada mode Per Kreator/Per Toko."
+}

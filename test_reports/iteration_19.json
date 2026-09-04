@@ -1,0 +1,22 @@
+{
+  "summary": "Frontend E2E testing untuk fitur baru RnD (upload foto desain di form Style + Bandingkan Revisi side-by-side). Semua alur yang diminta jalan tanpa error. Login admin OK, Portal RnD → Tech Pack → Tambah Style dengan bagian 'Foto / Sketsa Desain' terlihat (data-testid style-photos-section & style-photo-input ada). Membuat style QA-FOTO-01 dengan 1 foto: pratinjau 'Akan diunggah: design1.png' muncul, save berhasil, toast 'Style dibuat + 1 foto desain diunggah' tampil. Edit style: galeri style-photo-grid menampilkan foto yang tersimpan dengan naturalWidth=200 (URL /api/files/... ber-query ?auth=<token>, tidak broken/401). Upload foto kedua tanpa reload — toast 'Foto desain diunggah' muncul & jumlah foto bertambah. Hapus salah satu foto lewat style-photo-delete-<id> → toast 'Foto desain dihapus' & foto hilang. Ubah Nama Style + Fabric Type lalu Simpan → di tab 'Revisi & Approval' muncul 4 entri revisi otomatis (Tambah foto design1.png, Tambah foto design2.png, Hapus foto design1.png, Ubah Nama Style, Bahan) dengan snapshot sebelum/sesudah. Dropdown 'Semua Style' (combobox custom) pilih QA-FOTO-01 → tombol compare-revisions-btn aktif → klik membuka rnd-revision-compare berisi rnd-compare-left-select (opsi 'Kondisi Sekarang' + 4 revisi), rnd-compare-right-select, rnd-compare-table dengan baris field (2 baris 'berubah': Nama Style & Bahan), rnd-compare-changed-count '2 field berubah', dua panel foto rnd-compare-photos-left/right, dan tombol rnd-compare-close berfungsi. Mengubah dropdown A/B memuat ulang tanpa error. Tombol per-kartu (compare-revision-<id>) juga membuka panel yang sama. Ajukan Review dari row (submit-review-dialog → confirm-submit-review-btn) berhasil. Di Portal Manajemen → Ringkasan RnD (rnd-approval-cockpit), tombol rnd-detail- pada item QA-FOTO-01 membuka rnd-detail-dialog, galeri rnd-detail-images menampilkan foto (naturalWidth=200 — bukan broken), tombol rnd-detail-compare membuka panel rnd-revision-compare berisi 2 foto. Approve/reject buttons (rnd-approve-*, rnd-reject-*) dan rnd-history-table tetap muncul (regresi ringan aman). Style uji QA-FOTO-01 dihapus di akhir.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Konsisten: URL foto memakai query ?auth=<token> (helper authImageUrl) sehingga <img> bisa memuat aset ter-proteksi tanpa Authorization header — bekerja baik. Pastikan token tidak bocor via referer/log; pertimbangkan opsi cookie-based token untuk file endpoint agar tidak muncul di history.",
+    "Semua data-testid yang dijanjikan hadir dan stabil (create-style-btn, style-photos-section, style-photo-input, save-style-btn, style-photo-grid, style-photo-delete-*, compare-revisions-btn, rnd-revision-compare, rnd-compare-left-select/right-select/table/changed-count/photos-left/right/close, compare-revision-*, submit-review-dialog, confirm-submit-review-btn, rnd-approval-cockpit, rnd-detail-*, rnd-detail-dialog, rnd-detail-images, rnd-detail-compare, rnd-approve-/rnd-reject-/rnd-decision-dialog/rnd-decision-submit, rnd-history-table)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "test_credentials": "admin@garment.com / Admin@123",
+  "seed_data_creation": "Membuat & menghapus style uji QA-FOTO-01 (create → edit + upload foto kedua → hapus foto pertama → edit field → submit review → delete style). Foto uji dihasilkan runtime di /tmp/testimg/design1.png & design2.png (PNG 200x200).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Frontend adalah static build (static_server.js) dan sudah rebuilt. Untuk uji ulang jalankan bash /app/scripts/rebuild_frontend.sh setelah perubahan. Untuk file upload di form: input file dengan data-testid='style-photo-input' bersifat hidden (dipicu tombol Pilih Foto), gunakan page.set_input_files langsung ke selector data-testid — Playwright bisa fill hidden input tanpa perlu klik. Dropdown 'Semua Style' di tab Revisi & Approval adalah combobox custom (bukan <select>), buka dengan click text='Semua Style' lalu klik opsi berlabel 'QA-FOTO-01 — ...'. Row action buttons pada tabel Style ada 4: [Ajukan/Review (0)], [eye (1)], [pencil (2)], [trash (3)]."
+}

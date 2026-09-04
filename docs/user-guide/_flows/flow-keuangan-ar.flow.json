@@ -1,0 +1,31 @@
+{
+  "flow_id": "flow-keuangan-ar",
+  "title": "Alur AR/Piutang (Invoice -> Kirim/Auto-JE -> Pembayaran/Auto-JE)",
+  "portal": "finance",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Keuangan untuk piutang usaha: buat AR invoice ke pelanggan, kirim (send) yang otomatis posting jurnal Dr Piutang / Cr Pendapatan, lalu catat pembayaran (penuh/parsial) yang otomatis posting Dr Kas/Bank / Cr Piutang dan menambah saldo rekening kas.",
+  "modules_touched": ["fin-ar-invoices"],
+  "critical_endpoints": [
+    "/api/rahaza/ar-invoices",
+    "/api/rahaza/ar-invoices/{id}/send",
+    "/api/rahaza/ar-invoices/{id}/payment"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/ar-invoices",
+    "/api/rahaza/customers",
+    "/api/rahaza/cash-accounts",
+    "/api/rahaza/ar-invoices/{id}/post-to-gl",
+    "/api/rahaza/channel-gl-mapping"
+  ],
+  "test_script": "tests/flow_keuangan_ar_test.py",
+  "doc": "docs/user-guide/keuangan/flow-keuangan-ar.md",
+  "db_collections": ["rahaza_ar_invoices", "rahaza_cash_movements", "rahaza_cash_accounts", "rahaza_journal_entries"],
+  "happy_path_steps": [
+    "Buat AR invoice (draft) untuk pelanggan",
+    "Kirim invoice -> status sent + auto-post JE (Dr AR / Cr Revenue)",
+    "Catat pembayaran penuh -> status paid, balance 0 + auto-post JE (Dr Cash / Cr AR)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-keuangan-ar_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (JE ter-posting keduanya); E2E UI (iteration_80) Invoice->Send->Payment 100% PASS"
+}

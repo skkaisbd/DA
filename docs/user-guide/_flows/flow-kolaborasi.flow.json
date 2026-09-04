@@ -1,0 +1,57 @@
+{
+  "flow_id": "flow-kolaborasi",
+  "title": "Alur Kolaborasi Internal (Portal Kolaborasi): Channel -> Pesan -> Thread -> Reaksi/Pin -> DM -> Unread/Search -> Pengumuman",
+  "portal": "collaboration",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal komunikasi internal tim (Portal Kolaborasi / Communication Hub, moduleId collab-communication). Karyawan membuat CHANNEL (public/private/department) berisi beberapa anggota, mengirim PESAN, membalas dalam THREAD (Slack-style), memberi REAKSI emoji, meng-EDIT/PIN pesan, dan mengirim DIRECT MESSAGE (DM 1:1). Sistem melacak UNREAD per channel/DM via read-receipt, menyediakan PENCARIAN konten, serta presence (online users) melalui WebSocket. Selain chat, sisi PENGUMUMAN (announcement board) memungkinkan HR mempublikasikan pengumuman ke Portal Selector/portal tertentu. Guardrail: channel tanpa nama ditolak, pesan kosong ditolak, reaksi tanpa emoji ditolak, reply pada thread-reply ditolak, edit pesan oleh non-pemilik ditolak, update channel oleh non-creator/non-admin ditolak, dan pembuatan pengumuman oleh non-HR ditolak.",
+  "modules_touched": ["collaboration", "collab-communication"],
+  "critical_endpoints": [
+    "/api/comm/channels",
+    "/api/comm/channels/{id}/messages",
+    "/api/comm/messages/{id}/thread/reply",
+    "/api/comm/messages/{id}/reaction",
+    "/api/comm/conversations/{other_uid}/messages",
+    "/api/comm/unread",
+    "/api/announcements"
+  ],
+  "supporting_endpoints": [
+    "/api/comm/channels/{id}",
+    "/api/comm/channels/{id}/members",
+    "/api/comm/channels/{id}/pinned",
+    "/api/comm/messages/{id}",
+    "/api/comm/messages/{id}/thread",
+    "/api/comm/messages/{id}/pin",
+    "/api/comm/conversations",
+    "/api/comm/read/{ref_id}",
+    "/api/comm/search",
+    "/api/comm/online-users",
+    "/api/announcements/active",
+    "/api/announcements/all",
+    "/api/announcements/{id}",
+    "/api/announcements/{id}/toggle"
+  ],
+  "test_script": "tests/flow_kolaborasi_test.py",
+  "doc": "docs/user-guide/kolaborasi/flow-kolaborasi.md",
+  "db_collections": [
+    "comm_channels",
+    "comm_messages",
+    "comm_conversations",
+    "comm_read_receipts",
+    "announcements"
+  ],
+  "happy_path_steps": [
+    "Buat channel (public, member A+B) -> id channel, type=public",
+    "List + detail + update channel (deskripsi persisted); lihat member",
+    "Kirim pesan channel -> id pesan; list feed memuat pesan",
+    "Balas thread + baca thread -> reply_count=1",
+    "Reaksi emoji, edit pesan (edited=true), pin -> pinned list -> unpin",
+    "DM: kirim ke user lain -> conversation_id; list percakapan + riwayat 2 arah",
+    "Unread per channel/DM -> mark read -> unread=0",
+    "Pencarian pesan + online users (presence)",
+    "Pengumuman: buat (HR) -> aktif -> all -> detail -> toggle"
+  ],
+  "qa": "docs/user-guide/_qa/flow-kolaborasi_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_kolaborasi_test.py: create channel -> list/detail/update -> members -> send message -> feed -> thread reply (reply_count=1) -> reaction 👍 -> edit (edited=true) -> pin/pinned/unpin -> DM send + list + riwayat 2 arah -> unread -> mark read -> unread=0 -> search + online-users -> announcement create(201)/active/all/detail/toggle; 7 guardrail: channel tanpa nama 400, pesan kosong 400, reaksi tanpa emoji 400, reply-on-reply 400, edit non-owner 403, update channel non-creator 403, announcement non-HR 403); audit_testids LULUS (0 FAIL); E2E UI PASS (Communication Hub render + sidebar Channels/Pesan Langsung + presence Online via WebSocket, verified screenshot tool); DB pristine (self-cleanup channel/pesan/percakapan/receipt/pengumuman/user).",
+  "notes_qa": "Tidak ada bug blocker ditemukan. Observasi LOW dicatat di _qa: (1) auditor A4 WARN (39 elemen interaktif) = false-positive parsing arrow-function (konsisten flow sebelumnya); (2) moduleId collab-communication/collaboration memakai inline lazy() di registry sehingga extract_module.py tidak dapat meng-crawl otomatis -> audit dijalankan via --file eksplisit (main portal + subkomponen communication-hub/*)."
+}

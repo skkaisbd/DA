@@ -1,0 +1,32 @@
+{
+  "flow_id": "flow-sdm-payroll",
+  "title": "Alur Penggajian (Run -> Finalisasi/Auto-JE -> Bayar/Auto-JE)",
+  "portal": "hr",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal SDM/HRIS untuk penggajian: buat Payroll Run periode (otomatis menghasilkan payslip untuk karyawan yang punya profil gaji aktif), finalisasi yang otomatis posting jurnal Dr Beban Gaji / Cr Hutang Gaji, lalu bayar gaji yang otomatis posting Dr Hutang Gaji / Cr Bank.",
+  "modules_touched": ["hr-payroll-hub"],
+  "critical_endpoints": [
+    "/api/rahaza/payroll-runs",
+    "/api/rahaza/payroll-runs/{id}/finalize",
+    "/api/rahaza/payroll-runs/{id}/pay"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/payroll-runs",
+    "/api/rahaza/payroll-runs/{id}",
+    "/api/rahaza/employees",
+    "/api/rahaza/payroll-profiles",
+    "/api/rahaza/payroll-runs/{id}/post-to-gl"
+  ],
+  "test_script": "tests/flow_sdm_payroll_test.py",
+  "doc": "docs/user-guide/sdm/flow-sdm-payroll.md",
+  "db_collections": ["rahaza_payroll_runs", "rahaza_payslips", "rahaza_payroll_profiles", "rahaza_employees", "rahaza_journal_entries"],
+  "happy_path_steps": [
+    "Pastikan karyawan + profil gaji aktif",
+    "Buat Payroll Run periode -> payslip ter-generate (draft)",
+    "Finalisasi -> auto-post JE gaji (Dr Beban Gaji / Cr Hutang Gaji)",
+    "Bayar gaji -> payment_status paid + auto-post JE (Dr Hutang Gaji / Cr Bank)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-sdm-payroll_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (2 JE ter-posting); E2E UI (iteration_81) Run->Finalize->Pay 100% PASS"
+}

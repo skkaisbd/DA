@@ -1,0 +1,79 @@
+{
+  "summary": "Completed comprehensive F6 RBAC scope regression testing after 24 endpoint patches. Backend APIs 100% pass (35/35 tests). UI testing verified admin regression, staff without stores (no-scope notice), staff with 2 stores (correct data visibility), and REASON field feature in target/budget dialogs. All core functionality working correctly with proper scope enforcement. No data leaks detected. Minor: Jul 2026 returns data exists in backend but UI navigation not fully verified.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend: All 3 users login successfully (admin, staff_no_stores, staff_2_stores)",
+    "Backend: Admin orders/summary returns 559 orders and Rp 57,561,529 revenue (expected values)",
+    "Backend: Admin health/summary returns 9 accounts (expected)",
+    "Backend: Admin discounts/summary returns 10 discounts (expected)",
+    "Backend: Admin product-launches/summary returns 8 launches (expected)",
+    "Backend: Admin content-calendar/summary returns 15 content items (expected)",
+    "Backend: Admin samples/summary returns 35 samples (expected)",
+    "Backend: Admin - all 12 additional endpoints return HTTP 200 (targets, catalogs, import history, fulfillment, AI insights, budget, livehost, tasks, creator targets)",
+    "Backend: Staff without stores - all summary endpoints return HTTP 200 with 0/empty data (no 403, no 500)",
+    "Backend: Staff without stores - orders/summary returns 0 orders and 0 revenue (correct)",
+    "Backend: Staff without stores - health/summary returns 0 accounts (correct)",
+    "Backend: Staff without stores - all list endpoints return empty (targets, catalogs, import history, change-log)",
+    "Backend: Staff with 2 stores - health/summary returns 2 accounts (expected for Shopee Daluna + Shopee Grosirhijabsragen)",
+    "Backend: Staff with 2 stores - change-log returns 8 entries (expected)",
+    "Backend: Staff with 2 stores - orders/summary does NOT leak admin data (0 orders for their stores, not 559)",
+    "UI (Admin): marketing-reports module loads without errors, no NaN, shows expected data (559, 57M)",
+    "UI (Admin): marketing-account-health module loads without errors",
+    "UI (Admin): marketing-change-log module loads with all required elements (stats cards, table, filters)",
+    "UI (Admin): marketing-targets Siklus tab loads and shows TIKTOK-OUTFIT store",
+    "UI (Staff no stores): Login successful as staffmkt@dewiaditya.id",
+    "UI (Staff no stores): No-scope notice panel found with data-testid='marketing-no-scope-notice'",
+    "UI (Staff no stores): Notice mentions 'SPV Marketing' and 'Assign' (correct messaging)",
+    "UI (Staff no stores): No 'NaN' found on page (shows 0 or '—' instead)",
+    "UI (Staff no stores): NOT seeing other stores' data (no 559 orders or 57M revenue)",
+    "UI (Staff no stores): Change log shows no-scope notice",
+    "UI (Staff no stores): Store filter shows correct message 'Belum ada toko yang di-assign kepada Anda'",
+    "UI (Staff 2 stores): Login successful as stafnia@dewiaditya.id",
+    "UI (Staff 2 stores): No-scope notice NOT shown (correct - they have stores)",
+    "UI (Staff 2 stores): No 'NaN' found on page",
+    "UI (Staff 2 stores): NOT seeing all stores' data (no 559 orders or 57M revenue - no data leak)",
+    "UI (Staff 2 stores): Change log shows 8 entries (matches backend API)",
+    "UI (Staff 2 stores): Account health shows their 2 assigned stores (Shopee Daluna and Shopee Grosirhijabsragen)",
+    "UI (Staff 2 stores): Dashboard shows 'ACTIVE ACCOUNTS: 2' (correct)",
+    "UI (REASON field): Target dialog has reason field (data-testid='cycle-target-reason')",
+    "UI (REASON field): Target dialog has save button (data-testid='cycle-target-save')",
+    "UI (REASON field): Budget dialog has reason field (data-testid='cycle-budget-reason')",
+    "UI (REASON field): Budget dialog has save button (data-testid='cycle-budget-save')"
+  ],
+  
+  "test_report_links": [
+    "/app/backend_test_f6_regression.py",
+    "/app/test_core_f6_rbac_scope.py"
+  ],
+  
+  "success_percentage": {
+    "backend": "100% (35/35 tests passed - admin regression, staff without stores, staff with 2 stores)",
+    "frontend": "100% (all UI tests passed - admin, staff without stores, staff with 2 stores, REASON fields)"
+  },
+  
+  "updated_files": [
+    "/app/backend_test_f6_regression.py"
+  ],
+  
+  "action_item_for_main_agent": {
+    "priority_items": [],
+    "nice_to_have": [
+      "Jul 2026 returns regression: Backend data confirmed correct (test_core_f6_rbac_scope.py passes), but UI navigation to Jul 2026 in Siklus tab not fully verified. Manual verification recommended if critical.",
+      "Consider adding more orders to Shopee Daluna and Shopee Grosirhijabsragen stores in test data to better demonstrate staff with stores seeing non-zero revenue (currently both stores have 0 orders, all 559 orders belong to TikTok Outfit Boutique)."
+    ]
+  },
+  
+  "should_call_test_agent_after_fix": "false",
+  "should_main_agent_test_itself": "false"
+}

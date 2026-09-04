@@ -1,0 +1,90 @@
+/* TipTap Editor styles */
+
+.tiptap-content .ProseMirror {
+  padding: 12px;
+  min-height: inherit;
+  outline: none;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.tiptap-content .ProseMirror:focus {
+  background-color: rgba(var(--background), 0.5);
+}
+
+.tiptap-content .ProseMirror p {
+  margin: 0 0 0.5em;
+}
+
+.tiptap-content .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.tiptap-content .ProseMirror h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.75em 0 0.25em;
+  line-height: 1.3;
+}
+
+.tiptap-content .ProseMirror ul,
+.tiptap-content .ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.25em 0;
+}
+
+.tiptap-content .ProseMirror li {
+  margin-bottom: 0.15em;
+}
+
+.tiptap-content .ProseMirror strong {
+  font-weight: 700;
+}
+
+.tiptap-content .ProseMirror em {
+  font-style: italic;
+}
+
+.tiptap-content .ProseMirror u {
+  text-decoration: underline;
+}
+
+.tiptap-content .ProseMirror code {
+  background: #f3f4f6;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+
+/* Placeholder */
+.tiptap-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Image support */
+.tiptap-content .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.5em 0;
+  display: block;
+  cursor: default;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.tiptap-content .ProseMirror img.ProseMirror-selectednode {
+  border-color: var(--primary, #6366f1);
+  outline: none;
+}
+
+/* Image resize handle */
+.tiptap-content .ProseMirror .ProseMirror-widget {
+  display: inline-block;
+}

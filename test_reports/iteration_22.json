@@ -1,0 +1,77 @@
+{
+  "summary": "Completed comprehensive testing of RBAC notification fixes, alert configuration, and RnD photo lifecycle. All backend APIs working correctly. Frontend notification bell, preferences dialog, and alert threshold configuration verified.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend: GET /api/notifications/categories returns 'personal' category for HR and Finance users",
+    "Backend: Category totals match categorized items count (no phantom counts)",
+    "Backend: GET /api/notifications/my-category-prefs returns locked_categories with 'personal'",
+    "Backend: PUT my-category-prefs silently drops 'personal' from muted_categories",
+    "Backend: Muted category disappears from categorized list, unmuting restores it",
+    "Backend: GET /api/rahaza/management/alert-config returns all 4 thresholds (po_warn_days, ar_warn_days, rnd_attention_days, rnd_stale_days)",
+    "Backend: PUT alert-config with valid values returns 200",
+    "Backend: PUT alert-config with attention > stale returns 400 with Indonesian error message",
+    "Backend: PUT alert-config with value > 60 returns 400",
+    "Backend: PUT alert-config with value < 0 returns 400",
+    "Backend: PUT alert-config as HR returns 403 (permission check)",
+    "Backend: GET /api/dewi/rnd/approvals/pending returns thresholds object with attention_days, stale_days, source",
+    "Backend: POST /api/dewi/rnd/styles/{id}/images uploads photo and returns url starting with /api/files/",
+    "Backend: GET file with Authorization header returns 200 image/*",
+    "Backend: GET file with ?auth=jwt returns 200 (browser <img> support)",
+    "Backend: GET file without credentials returns 401",
+    "Backend: GET file with forged JWT returns 401 (security fix verified - no longer accepts verify_signature=False)",
+    "Backend: DELETE /api/dewi/rnd/styles/{id}/images/{img_id} removes photo",
+    "Backend: 12 valid logins succeed (rate limit tier raised to 30/60s)",
+    "Backend: Brute-force protection still works (6 wrong passwords trigger lockout)",
+    "Regression: POC RBAC script passes 57/57 tests (notification isolation, personal category, muting, approval gates)",
+    "Frontend: Notification bell found and clickable in Portal Manajemen",
+    "Frontend: Notification bell dropdown opens with category chips",
+    "Frontend: Gear button (preferences) found in bell dropdown",
+    "Frontend: Notification preferences dialog opens (data-testid=notif-prefs-dialog)",
+    "Frontend: 'Untuk Saya' category shows 'selalu aktif' lock indicator in preferences dialog",
+    "Frontend: Alert threshold form found with 4 number inputs (PO, Piutang, RnD kuning, RnD merah)",
+    "Frontend: Alert threshold values can be changed and saved",
+    "Frontend: Success toast shown after saving thresholds",
+    "Frontend: RnD summary page shows updated threshold sentence (kuning ≥ 2 hari · merah ≥ 5 hari)",
+    "Frontend: Invalid threshold input (attention > stale) shows error message",
+    "Frontend: Original threshold values restored successfully"
+  ],
+  "test_report_links": [
+    "/app/backend/backend_test.py",
+    "/app/scripts/poc_rbac_notif_approval.py"
+  ],
+  "success_percentage": {
+    "backend": "100% (48/48 tests passed)",
+    "frontend": "100% (all critical UI elements verified)",
+    "regression": "100% (57/57 POC tests passed)"
+  },
+  "updated_files": [
+    "/app/backend/backend_test.py"
+  ],
+  "action_item_for_main_agent": "",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false,
+  "notes": [
+    "All backend APIs working correctly with proper validation and permission checks",
+    "Frontend notification bell and preferences dialog working as expected",
+    "Alert threshold configuration UI working with proper validation",
+    "RnD photo upload/download/delete lifecycle verified",
+    "Security fix verified: file download now requires valid JWT signature",
+    "Rate limiting tier successfully raised to 30/60s while maintaining brute-force protection",
+    "POC RBAC script confirms all notification isolation and RBAC features working correctly",
+    "Demo data preserved: existing photos on DA-HD02-RND not deleted, test photo cleaned up",
+    "Original alert threshold values (3, 3, 3, 7) restored after testing"
+  ],
+  "skipped_tests": [
+    "RnD style edit photo upload via file input (Playwright file input interaction not tested, but backend API verified)",
+    "Admin notification settings module 'Untuk Saya' locked checkboxes (not critical as backend enforces the lock)",
+    "Notification center modal 'Lihat Semua' detailed testing (bell dropdown and prefs dialog verified, which are the main features)"
+  ]
+}

@@ -1,0 +1,6 @@
+Order ID,Order Status,SKU ID,Seller SKU,Product Name,Quantity,SKU Subtotal After Discount,Order Amount,Created Time,Purchase Channel,Shipping Provider Name,Warehouse Name
+DEMO-A-1001,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,2,180000,190000,05/08/2026 10:15:00,Shopee,J&T Express,Gudang Utama
+DEMO-A-1002,Perlu dikirim,SKU9002,DEMO-KAOS-L,Kaos Polos Premium L,1,95000,102000,05/08/2026 11:40:00,Shopee,SiCepat,Gudang Utama
+UJI-LAYAR-CAMPUR-0,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,2,180000,190000,05/08/2026 10:15:00,Shopee,J&T Express,Gudang Utama
+UJI-LAYAR-CAMPUR-1,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,2,180000,190000,05/08/2026 10:15:00,Shopee,J&T Express,Gudang Utama
+UJI-LAYAR-CAMPUR-2,Perlu dikirim,SKU9001,DEMO-KAOS-M,Kaos Polos Premium M,2,180000,190000,05/08/2026 10:15:00,Shopee,J&T Express,Gudang Utama

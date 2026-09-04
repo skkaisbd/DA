@@ -1,0 +1,38 @@
+
+[1mA — PINTU DI LAYAR (langkah 1 tidak boleh kosong lagi)[0m
+  [92m✓ F45-1[0m layar memanggil GET /source-groups (pemilih kelompok)
+  [92m✓ F45-2[0m layar memanggil POST /detect (usulan jenis dari isi berkas)
+  [92m✓ F45-3[0m `groupKey` benar-benar diisi dari layar (bukan selalu kosong)
+  [92m✓ F45-4:import-group-[0m data-testid `import-group-` ada di layar
+  [92m✓ F45-4:import-detect-panel[0m data-testid `import-detect-panel` ada di layar
+  [92m✓ F45-4:import-detect-result[0m data-testid `import-detect-result` ada di layar
+  [92m✓ F45-4:import-detect-use-[0m data-testid `import-detect-use-` ada di layar
+  [92m✓ F45-4:import-group-back[0m data-testid `import-group-back` ada di layar
+  [92m✓ F45-4:import-toggle-deprecated[0m data-testid `import-toggle-deprecated` ada di layar
+  [92m✓ F45-5:groups[0m `groups` dipakai 5× (bukan state mati)
+  [92m✓ F45-5:detectRes[0m `detectRes` dipakai 19× (bukan state mati)
+  [92m✓ F45-5:showDeprecated[0m `showDeprecated` dipakai 4× (bukan state mati)
+
+[1mB — KONTRAK BACKEND: setiap jenis punya kelompok yang benar-benar ada[0m
+  [92m✓ F45-6[0m 6 kelompok · 22 jenis data
+  [92m✓ F45-7[0m semua jenis punya `group_key` yang ada di daftar kelompok
+  [92m✓ F45-8[0m tidak ada kelompok kosong (kartu yang diklik selalu berisi)
+
+[1mC — DETEKSI: usulan berperingkat + jumlah baris yang JUJUR[0m
+  [92m✓ F45-9[0m ekspor pesanan Shopee → usulan marketplace_orders (154 baris, platform shopee)
+  [92m✓ F45-10[0m usulan membawa BUKTI: 39/50 kolom cocok · wajib 4/4
+  [92m✓ F45-11[0m berkas tanpa baris data dilaporkan `row_count=0` (layar memperingatkan SEBELUM unggah), bukan diam-diam dianggap siap
+
+[1mD — PENCAIRAN: jurnal POSTED mengunci, jurnal VOID melepas[0m
+  [92m✓ F45-12[0m jurnal draft terbit (200)
+  [92m✓ F45-13[0m jurnal diposting (200)
+  [92m✓ F45-14[0m selama jurnalnya HIDUP, pencairan tidak bisa dihapus (400)
+  [92m✓ F45-15[0m selama jurnalnya HIDUP, angkanya tidak bisa diubah (400)
+  [92m✓ F45-16[0m jurnal di-void (200)
+  [92m✓ F45-17[0m sesudah void, angka pencairan BISA diperbaiki (200)
+  [92m✓ F45-18[0m tautan jurnal yang sudah void DILEPAS & tombol sunting hidup lagi
+  [92m✓ F45-19[0m sesudah void, pencairan salah-input bisa dihapus (200)
+  [92m✓ F45-20[0m artefak jurnal uji dibersihkan
+
+──────────────────────────────────────────────────────────────────────
+[92m[1mVERDICT HIJAU — 27 invarian INV-F45 terjaga[0m

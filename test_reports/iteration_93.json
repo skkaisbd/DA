@@ -1,0 +1,47 @@
+{
+  "summary": "Putaran ke-3 sesi #35 (UI-only, Playwright nyata di preview URL). Fokus: verifikasi 2 perbaikan cacat desain iteration_92 + regresi C/D/E. HASIL: 5/5 skenario LULUS, 0 console error (kecuali 1x HTTP 400 yang MEMANG diharapkan dari validasi KPI negatif). (A) Portal Kreator /creator kre-demo-01 → Performa → creator-weekly-card: pada pekan berjalan (7 hari bergulir 2026-08-18 s/d 2026-08-24) tombol creator-weekly-next BENAR-BENAR disabled (is_disabled()=True, tampak pudar; klik paksa timeout = tidak bisa diklik). Klik creator-weekly-prev 2x → rentang 2026-08-04..10 (2 konten, 18.500 views, GMV Rp 8.100.000) dan next menjadi AKTIF; maju 1x → 2026-08-11..17 (2 konten, 9.200 views, GMV Rp 1.850.000); maju 1x lagi → kembali ke pekan berjalan 2026-08-18..24 dan next kembali DISABLED — tidak ada cara membuka pekan masa depan. Angka kartu berubah tiap pindah pekan; tidak ada kata hpp/margin/laba/modal/cogs/profit; tidak ada NaN/undefined (case-sensitive). (B) Staf marketing tanpa toko (staffmkt@dewiaditya.id) → /#marketing-content-calendar → content-tab-performa: perf-empty kini berbunyi 'Belum ada toko yang di-assign kepada akun Anda — layar ini kosong karena kewenangan, bukan karena tidak ada konten. Minta admin meng-assign toko Anda.' dengan class text-amber-600 (amber, sesuai spesifikasi). perf-notes memuat kalimat ber-'KEWENANGAN'. Mode Per Kreator (KOL) dan Per Toko: pesan kewenangan tetap konsisten (perf-empty sama, notes 'kosong karena KEWENANGAN'), tanpa NaN/undefined, tanpa console error. (C) Admin pada layar yang sama: mode Per Konten menampilkan tepat 15 baris pada rentang bawaan 2026-07-26..2026-08-24, perf-empty TIDAK muncul, notes berbunyi '6 dari 15 konten BELUM punya KPI…' dan TIDAK memuat kata KEWENANGAN. Kartu KPI: Konten 15, cakupan 60.0%, views 139.400, GMV Rp 48.300.000. (D) Rapor Mingguan /#marketing-kol → tab-weekly: input weekly-week-end punya atribut max=2026-08-24 (hari ini) sehingga date-picker tidak bisa memilih tanggal masa depan; set 2026-08-19 → 3 baris kreator (Bayu 5.704 views, Sinta 3.496, Rina 0), klik Kirim pada baris Bayu → HTTP 200, toast 'Rapor: 0 terkirim · 1 tanpa SMTP · 0 tanpa email · 0 gagal' + 'SMTP belum dikonfigurasi — rapor tersimpan & bisa dibaca kreator di portalnya.', kolom Status kirim → 'SMTP belum diisi', tombol → 'Kirim ulang'; tidak ada 500 (semua response /api/marketing/kol/weekly-report* = 200). (E) Validasi KPI masih utuh: dialog content-kpi-dialog pada seedc-kre-demo-01-2026-08-09-9, views=-1 → ditolak toast \"KPI 'views' tidak boleh negatif (diterima -1.0) — views/likes/pesanan/GMV tidak pernah minus.\" dan dialog tetap terbuka; lalu views 3000/likes 150/comments 12/shares 5/orders 6/gmv 1.500.000 → panel kpi-derived menghitung Engagement 167, Eng. rate 5.57%, CVR 0.2000%, GMV/view Rp 500, AOV Rp 250.000 → Simpan → toast 'KPI konten tersimpan', dialog tertutup, baris menjadi 'terisi' (3.000 / 167 / 5.57% / Rp 1.500.000), cakupan naik 60.0%→66.7% dan notes '5 dari 15'. Data uji ini SUDAH DIPULIHKAN kembali.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Rapor Mingguan (/#marketing-kol → tab-weekly) — input weekly-week-end",
+        "issues": [
+          "MINOR: batas masa depan hanya dipasang lewat atribut HTML max (2026-08-24), belum di-clamp di onChange. Bila pengguna MENGETIK tanggal (bukan lewat picker), mis. 2026-09-30, nilai tetap diterima, request dikirim (HTTP 200) dan panel menampilkan pekan MASA DEPAN '2026-09-24 s/d 2026-09-30' dengan semua metrik 0 serta catatan '3 kreator TIDAK punya satu konten pun pekan ini' — persis kelemahan yang sudah diperbaiki di portal kreator. Saran: clamp nilai ke hari ini di onChange (seperti CreatorWeeklyCard.shiftWeek) atau tolak dengan hint."
+        ]
+      },
+      {
+        "screen": "Kalender Konten → Performa Konten (akun tanpa toko) — perf-notes",
+        "issues": [
+          "SANGAT MINOR: pada mode Per Konten, di bawah kalimat KEWENANGAN masih tercetak '0 dari 0 konten BELUM punya KPI…' yang redundan/berpotensi membingungkan saat lingkup kosong. Pertimbangkan menyembunyikan catatan cakupan saat scope_empty=true (mode Per Kreator/Per Toko sudah lebih bersih)."
+        ]
+      },
+      {
+        "screen": "Portal Kreator → Performa → creator-weekly-card (pekan berjalan)",
+        "issues": [
+          "SANGAT MINOR (tindak lanjut, bukan cacat baru): pada pekan berjalan kreator KRE-DEMO-01 semua angka 0 (konten terakhirnya 2026-08-12) tanpa keterangan 'belum ada konten pekan ini'; kartu hanya menampilkan nol. Satu baris hint akan menghindari kesalahpahaman."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "OPSIONAL (minor): clamp nilai weekly-week-end ke hari ini di onChange CreatorWeeklyReportPanel.jsx — atribut max saja tidak mencegah tanggal masa depan yang DIKETIK, sehingga masih bisa muncul pekan masa depan bernilai 0.",
+    "OPSIONAL (sangat minor): sembunyikan catatan cakupan KPI ('0 dari 0 konten…') saat data.scope_empty=true agar pesan kewenangan tidak tercampur angka 0/0.",
+    "OPSIONAL (sangat minor): tampilkan hint 'belum ada konten pekan ini' pada creator-weekly-card bila konten pekan = 0."
+  ],
+  "critical_code_review_comments": [
+    "CreatorPortalApp.jsx CreatorWeeklyCard: `atCurrentWeek = weekEnd >= todayStr` + disabled pada creator-weekly-next + clamp di shiftWeek = pola yang benar dan terbukti dari UI. Pola inilah yang belum diterapkan pada input weekly-week-end di CreatorWeeklyReportPanel.jsx (hanya atribut max).",
+    "ContentPerformanceView.jsx perf-empty bercabang pada data.scope_empty sudah benar dan warna amber memberi sinyal 'ini soal kewenangan'. Tidak ada isu fungsional.",
+    "marketing_content_calendar_routes.py: kedua endpoint performa mengirim scope_empty + catatan KEWENANGAN secara konsisten (per-konten & rekap) — terbukti dari dua mode berbeda di UI."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "not tested (permintaan frontend-only; semua response API yang terpantau di Network = 200 kecuali 400 validasi yang diharapkan)", "frontend": "100% (5/5 skenario A/B/C/D/E LULUS)" },
+  "seed_data_creation": "DATA UJI SUDAH DIPULIHKAN: KPI yang diisi untuk skenario E pada konten 'seedc-kre-demo-01-2026-08-09-9' (Before-after outfit kerja — Rina Live) sudah di-$unset kembali (kpi, kpi_derived, kpi_updated_at, kpi_source) → jumlah konten ber-KPI pada 2026-08-01..24 kembali 9 dari 15 (cakupan 60.0%). YANG TIDAK DIPULIHKAN: dokumen run rapor mingguan pekan berakhir 2026-08-19 untuk kreator Bayu Konten (KRE-DEMO-02) bertambah 2 kali dengan status skipped_no_smtp akibat uji Kirim/Kirim ulang — hanya catatan pengiriman, tidak mempengaruhi uang/stok. Tidak ada data uang/stok yang diubah.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123 (ERP), staffmkt@dewiaditya.id / Dewi@123 (staf marketing tanpa toko), kre-demo-01@creator.demo / Dewi@123 (portal kreator)",
+  "context_for_next_testing_agent": "Kedua cacat desain iteration_92 sudah TERBUKTI diperbaiki dari UI nyata (creator-weekly-next disabled pada pekan berjalan + clamp maju; perf-empty/perf-notes membedakan lingkup kosong karena KEWENANGAN dengan tulisan amber). Regresi C (admin 15 baris, notes '6 dari 15'), D (max=hari ini, kirim → 'SMTP belum diisi' + 'Kirim ulang', 200), dan E (tolak views negatif, simpan angka wajar) semuanya LULUS. Data KPI uji sudah dipulihkan (9/15 ber-KPI). Satu-satunya temuan baru bersifat MINOR: weekly-week-end masih menerima tanggal masa depan bila DIKETIK (max HTML tidak mencegah), memunculkan pekan 2026-09-24..30 dengan semua nol. Selector penting: content-tab-performa, perf-empty, perf-notes, perf-group-by, perf-fill-kpi-<id>, kpi-input-<field>, kpi-save, tab-weekly, weekly-week-end, weekly-send-<creatorId> (hati-hati: '[data-testid^=\"weekly-send-\"]' juga menangkap weekly-send-all sebagai index 0), creator-nav-performance, creator-weekly-card/prev/next.",
+  "rca_of_the_issue": "Tidak ada bug fungsional. Temuan minor: CreatorWeeklyReportPanel hanya menambahkan atribut max pada input date; atribut ini hanya membatasi UI picker, bukan nilai yang diketik/di-set programatis, sehingga state weekEnd masa depan masih memicu GET /api/marketing/kol/weekly-report?week_end=2026-09-30 (200) dan menampilkan pekan nol. Reproduksi: tab-weekly → ketik 09/30/2026 pada weekly-week-end. Mitigasi: clamp di onChange ke min(value, hari ini)."
+}

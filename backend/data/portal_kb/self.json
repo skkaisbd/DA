@@ -1,0 +1,78 @@
+{
+  "portal": "self",
+  "label": "Portal Saya",
+  "ringkasan": "Portal Saya adalah ruang pribadi karyawan: absen, cuti, slip gaji, kasbon, KPI, pelatihan, dan dokumen. Semua yang Anda lihat di sini hanya milik Anda sendiri.",
+  "prinsip": [
+    "Data yang tampil selalu terbatas pada akun yang sedang masuk.",
+    "Pengajuan dari sini masuk ke antrean persetujuan atasan/HR.",
+    "Slip gaji baru muncul setelah penggajian difinalisasi HR."
+  ],
+  "alur": [
+    {
+      "judul": "Absen masuk dan pulang",
+      "kata_kunci": ["absen", "clock in", "clock out", "kehadiran saya", "absen sekarang"],
+      "modul": ["portal-absen", "self-dashboard"],
+      "langkah": [
+        "Tekan tombol 'Absen Sekarang' di kartu profil atau buka menu 'Absen Saya'.",
+        "Izinkan kamera dan lokasi — absen memerlukan swafoto dan titik lokasi.",
+        "Sistem memeriksa jarak Anda ke lokasi kerja terdaftar sebelum menerima absen.",
+        "Riwayat kehadiran Anda bisa dilihat di menu 'Kehadiran'."
+      ]
+    },
+    {
+      "judul": "Mengajukan cuti atau lembur",
+      "kata_kunci": ["ajukan cuti", "izin", "lembur", "kuota cuti"],
+      "modul": ["portal-cuti"],
+      "langkah": [
+        "Buka 'Cuti & Lembur' → buat pengajuan, pilih jenis dan tanggalnya.",
+        "Pengajuan diteruskan ke atasan/HR untuk disetujui.",
+        "Status pengajuan dan sisa kuota tampil di layar yang sama."
+      ]
+    },
+    {
+      "judul": "Melihat slip gaji dan kasbon",
+      "kata_kunci": ["slip gaji", "gaji saya", "kasbon saya", "potongan"],
+      "modul": ["portal-payslip", "portal-kasbon"],
+      "langkah": [
+        "Buka 'Slip Gaji' untuk melihat rincian per periode.",
+        "Slip hanya tampil setelah HR memfinalisasi penggajian periode tersebut.",
+        "'Kasbon' menampilkan sisa pinjaman dan cicilan yang dipotong dari gaji."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "portal-dashboard", "nama": "Dashboard", "deskripsi": "Ringkasan pribadi hari ini."},
+    {"modul": "portal-profile", "nama": "Profil", "deskripsi": "Data diri dan kontak."},
+    {"modul": "portal-absen", "nama": "Absen Saya", "deskripsi": "Absen masuk/pulang dengan swafoto dan lokasi."},
+    {"modul": "self-dashboard", "nama": "Kehadiran", "deskripsi": "Riwayat kehadiran pribadi."},
+    {"modul": "portal-cuti", "nama": "Cuti & Lembur", "deskripsi": "Pengajuan dan sisa kuota."},
+    {"modul": "portal-notifikasi", "nama": "Notifikasi", "deskripsi": "Pemberitahuan yang ditujukan kepada Anda."},
+    {"modul": "portal-payslip", "nama": "Slip Gaji", "deskripsi": "Rincian gaji per periode."},
+    {"modul": "portal-kasbon", "nama": "Kasbon", "deskripsi": "Pinjaman dan cicilannya."},
+    {"modul": "kpi-portal", "nama": "KPI", "deskripsi": "Target dan capaian pribadi."},
+    {"modul": "portal-annual-review", "nama": "Annual Review", "deskripsi": "Penilaian kinerja tahunan."},
+    {"modul": "portal-training", "nama": "Training", "deskripsi": "Materi pelatihan yang harus diselesaikan."},
+    {"modul": "portal-peer-feedback", "nama": "Peer Feedback", "deskripsi": "Umpan balik antar rekan kerja."},
+    {"modul": "portal-career-coach", "nama": "Career Coach", "deskripsi": "Saran pengembangan karier."},
+    {"modul": "portal-workspace", "nama": "Ruang Kerja", "deskripsi": "Catatan dan tugas pribadi."},
+    {"modul": "portal-documents", "nama": "Dokumen", "deskripsi": "Dokumen kepegawaian Anda."}
+  ],
+  "faq": [
+    {
+      "q": "Tombol absen tidak berfungsi atau ditolak.",
+      "kata_kunci": ["absen ditolak", "tidak bisa absen", "lokasi"],
+      "a": "Pastikan izin kamera dan lokasi diberikan ke peramban, dan Anda berada dalam radius lokasi kerja terdaftar. Bila Anda memang bekerja di lokasi lain, minta HR menambahkan lokasi itu."
+    },
+    {
+      "q": "Slip gaji saya belum muncul.",
+      "kata_kunci": ["slip belum ada", "gaji belum muncul"],
+      "a": "Slip baru terbit setelah HR memfinalisasi run penggajian periode tersebut. Bila periodenya sudah lewat dan slip belum ada, hubungi HR."
+    }
+  ],
+  "saran": [
+    "Bagaimana cara absen dari Portal Saya?",
+    "Bagaimana mengajukan cuti?",
+    "Kenapa slip gaji saya belum muncul?",
+    "Di mana melihat sisa kasbon saya?"
+  ]
+}

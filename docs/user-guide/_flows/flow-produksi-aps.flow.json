@@ -1,0 +1,49 @@
+{
+  "flow_id": "flow-produksi-aps",
+  "title": "Alur Penjadwalan APS (Portal Produksi): Preview schedule -> Commit -> Monitoring",
+  "portal": "produksi",
+  "strategy": "flow-centric v4",
+  "description": "Alur Advanced Planning & Scheduling (APS) PT Rahaza di Portal Produksi. Planner (admin/manager/supervisor) menjadwalkan Work Order ke line produksi lewat tiga langkah utama: (1) PREVIEW SCHEDULE -> menjalankan mesin penjadwalan hybrid (priority-first lalu balance kapasitas) atas WO berstatus draft/released; menghasilkan run 'preview' berisi proposal (bar per WO->line + daily_plan), daftar unassigned, dan KPI (scheduled/unassigned/overload/avg_load/utilization) TANPA menulis ke WO/assignment. (2) COMMIT -> menerapkan proposal: meng-update target_start_date/target_end_date tiap WO + menyisipkan draft line_assignments (source='aps', aps_run_id) per hari, menandai run 'committed', dan mencatat audit; disertai kemampuan ROLLBACK yang mengembalikan tanggal WO dari snapshot + menonaktifkan assignment. (3) MONITORING -> memantau hasil via Gantt (bars, heatmap kapasitas, KPI risiko overdue/at_risk/load), histori run, detail run, detail WO (progress per proses + risk), dan reschedule manual (PATCH). Ditopang derivasi SMV (Standard Minute Value) dengan cache + override admin. Guardrail: hanya run 'preview' yang bisa di-commit, hanya 'committed' yang bisa di-rollback, rentang tanggal to>=from, reschedule end>=start, dan hak akses planner.",
+  "modules_touched": ["prod-aps-gantt", "production-dashboard"],
+  "critical_endpoints": [
+    "/api/rahaza/aps/auto-schedule/preview",
+    "/api/rahaza/aps/auto-schedule/commit",
+    "/api/rahaza/aps/auto-schedule/rollback",
+    "/api/rahaza/aps/auto-schedule/runs",
+    "/api/rahaza/aps/auto-schedule/runs/{run_id}",
+    "/api/rahaza/aps/gantt",
+    "/api/rahaza/aps/wo/{wo_id}",
+    "/api/rahaza/aps/wo/{wo_id}/reschedule"
+  ],
+  "supporting_endpoints": [
+    "/api/rahaza/aps/smv",
+    "/api/rahaza/aps/smv/recompute",
+    "/api/rahaza/aps/smv/override"
+  ],
+  "test_script": "tests/flow_produksi_aps_test.py",
+  "doc": "docs/user-guide/produksi/flow-produksi-aps.md",
+  "db_collections": [
+    "rahaza_aps_schedule_runs",
+    "rahaza_work_orders",
+    "rahaza_line_assignments",
+    "rahaza_lines",
+    "rahaza_processes",
+    "rahaza_models",
+    "rahaza_smv_cache",
+    "rahaza_wip_events",
+    "rahaza_production_calendar"
+  ],
+  "happy_path_steps": [
+    "Planner buka Gantt (production-dashboard tab schedule / prod-aps-gantt) lalu klik Auto-Schedule",
+    "Preview: POST /api/rahaza/aps/auto-schedule/preview -> run 'preview' + proposal (WO->line, daily_plan, KPI), tanpa menulis WO/assignment",
+    "Commit: POST /api/rahaza/aps/auto-schedule/commit {run_id} -> update target date WO + insert draft line_assignments (source=aps) + run 'committed'",
+    "Monitoring Gantt: GET /api/rahaza/aps/gantt -> bars per line + heatmap kapasitas + KPI risiko (overdue/at_risk/load)",
+    "Monitoring histori: GET /api/rahaza/aps/auto-schedule/runs + GET /api/rahaza/aps/auto-schedule/runs/{run_id}",
+    "Detail & reschedule: GET /api/rahaza/aps/wo/{wo_id} + PATCH /api/rahaza/aps/wo/{wo_id}/reschedule",
+    "Rollback (opsional): POST /api/rahaza/aps/auto-schedule/rollback {run_id} -> kembalikan target date WO + nonaktifkan assignment + run 'rolled_back'"
+  ],
+  "qa": "docs/user-guide/_qa/flow-produksi-aps_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_produksi_aps_test.py: seed process/line/model/WO -> preview (scheduled=1, WO->line, tanpa tulis WO) -> guard to<from 400 -> guard commit run-tidak-ada 404 -> commit (WO date ter-set + 1 assignment aps aktif) -> guard re-commit 400 -> gantt (bar WO di line, KPI) -> runs + run detail committed -> wo detail (progress+risk) -> guard reschedule end<start 400 -> reschedule PATCH -> rollback (WO date restore None + assignment nonaktif) -> guard re-rollback 400 -> SMV override set/get/delete). Semua endpoint grounded ke rahaza_aps_scheduler.py & rahaza_aps.py; DB pristine (hard-cleanup).",
+  "notes_qa": "OBSERVASI (dicatat di _qa, TIDAK di materi training): (a) mesin scheduler mempertimbangkan SEMUA WO draft/released global (bukan filter per proses), sehingga commit dapat menyentuh WO lain; POC mengisolasi dgn DB tanpa WO lain + fixture unik + rollback/cleanup. (b) reschedule adalah PATCH (bukan PUT). (c) rollback me-restore target date WO dari snapshot.before namun tidak mengembalikan qty split; assignment hanya di-nonaktifkan (active=false), bukan dihapus."
+}

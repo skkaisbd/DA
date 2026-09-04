@@ -1,0 +1,36 @@
+{
+  "flow_id": "flow-gudang-outbound",
+  "title": "Alur Outbound Gudang (Pick List -> Surat Jalan -> Kirim -> Terima)",
+  "portal": "warehouse",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal Portal Gudang untuk barang keluar: buat Pick List (ambil barang), lalu terbitkan Surat Jalan (Delivery Note) sebagai dokumen legal pengiriman -> issue (Kirim) -> konfirmasi Terima oleh penerima. Status SJ: draft -> issued -> received.",
+  "modules_touched": ["wh-picklist", "wms-delivery-notes"],
+  "critical_endpoints": [
+    "/api/wms/picklist",
+    "/api/wms/picklist/{id}/item/{pick_item_id}/pick",
+    "/api/wms/picklist/{id}/complete",
+    "/api/wms/delivery-notes",
+    "/api/wms/delivery-notes/{id}/issue",
+    "/api/wms/delivery-notes/{id}/receive"
+  ],
+  "supporting_endpoints": [
+    "/api/wms/picklist",
+    "/api/wms/picklist/{id}",
+    "/api/wms/delivery-notes",
+    "/api/wms/delivery-notes/{id}",
+    "/api/wms/delivery-notes/{id}/pdf"
+  ],
+  "test_script": "tests/flow_gudang_outbound_test.py",
+  "doc": "docs/user-guide/gudang/flow-gudang-outbound.md",
+  "db_collections": ["wms_picklists", "wh_delivery_notes"],
+  "happy_path_steps": [
+    "Buat Pick List dari item (status pending)",
+    "Tandai tiap item picked lalu complete Pick List",
+    "Buat Surat Jalan (draft) dengan lines",
+    "Issue Surat Jalan (Kirim) -> status issued",
+    "Konfirmasi Terima -> status received"
+  ],
+  "qa": "docs/user-guide/_qa/flow-gudang-outbound_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS; E2E UI (iteration_78) Surat Jalan draft->issue->terima 100% PASS"
+}

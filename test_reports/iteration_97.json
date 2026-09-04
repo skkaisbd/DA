@@ -1,0 +1,63 @@
+{
+  "summary": "Audit sesi #40 diverifikasi ulang secara independen (backend + frontend, semua lewat URL publik preview). Backend: berkas baru /app/backend/tests/test_iter97_sesi40_impor_settlement.py (8 tes, 8 LULUS) menguji GET /source-groups (6 kelompok, 21 aktif + 1 usang = 22 jenis), GET /source-types, POST /detect (154 baris + platform SHOPEE + ranking berbukti + matching_accounts, berkas 0-baris, tolak .pdf, wajib auth), dan siklus penuh pencairan: POST -> dedupe (409) -> /journal -> /post -> PUT 400 & DELETE 400 -> void jurnal -> PUT 200 (je_id null, can.edit true) -> DELETE 200 -> GET 404. Gate scripts/verify_impor_pintar_pintu_layar.py dijalankan ulang: VERDICT HIJAU 27/27. Frontend: langkah 1 wizard menampilkan 6 kartu kelompok + panel deteksi, penghitung berbunyi tepat '22 jenis data dalam 6 kelompok'; klik 'Pesanan & Penjualan' -> '3 dari 22 jenis data' + kartu import-type-marketplace_orders, tombol kembali memulihkan 6 kartu; deteksi otomatis order_pesanan_shopee.xlsx -> 'SHOPEE · 50 kolom · 154 baris', 4 usulan berperingkat dengan bukti (39/50 kolom, wajib 4/4, skor 93%), 'Pakai jenis ini' memindahkan ke langkah 2 dengan jenis 'Pesanan Marketplace (ekspor Seller Center)'; retur_refund_shopee.xls -> peringatan import-detect-empty-file muncul dengan kalimat yang jujur; alur penuh sampai langkah 5 utuh (57 baru / 19 ditolak / tombol 'Simpan 47 baris' aktif) TANPA commit; layar Pencairan Toko kosong & jujur (Rp 0 · 0 pencairan tercatat, 'Belum ada pencairan tercatat', tanpa SET-TEST-001). 0 error konsol. DB pasca-uji: marketing_orders = 0, marketing_settlements = 0 (sama seperti sebelum uji).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/marketing/data-import/source-groups vs GET /source-types",
+        "issue": "Penghitung layar memakai /source-types (bawaan include_deprecated=TRUE -> 22) sedangkan badge tiap kartu kelompok memakai jenis non-usang (3+2+3+3+3+7 = 21). Jadi header berkata '22 jenis data dalam 6 kelompok' tetapi menjumlahkan badge hanya dapat 21. Dua angka benar menurut definisinya masing-masing, tapi di satu layar keduanya terlihat bertentangan. Saran: header memakai total_types dari /source-groups (21) + keterangan '1 jenis usang disembunyikan', atau badge ikut menghitung yang usang."
+      },
+      {
+        "endpoint": "POST /api/marketing/settlements (dedupe)",
+        "issue": "Dedupe settlement_id membalas 409 Conflict, bukan 400. Perilakunya BENAR — hanya catatan agar deskripsi tugas/gate menyebut 409 supaya tes berikutnya tidak salah harap."
+      },
+      {
+        "endpoint": "koleksi marketing_data_import_sessions",
+        "issue": "Unggahan yang dibatalkan sebelum commit meninggalkan sesi status 'ready'/'mapping' (kini 92 dokumen) yang tidak pernah dipanen. Tidak ada data pesanan yang terbentuk (marketing_orders tetap 0), jadi ini murni housekeeping: pertimbangkan TTL/pembersih sesi staging yang tidak dilanjutkan."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Pencairan Toko (/#marketing-settlements)",
+        "issues": [
+          "Filter toko memakai <select> HTML asli (data-testid settlement-account-filter, MarketingSettlementsView.jsx:100) padahal layar marketing lain memakai komponen Select/MarketingAccountSelect shadcn — tampilan dropdown jadi tidak seragam antar layar."
+        ]
+      },
+      {
+        "screen": "Impor Data langkah 1",
+        "issues": [
+          "Header '22 jenis data dalam 6 kelompok' tidak sama dengan jumlah badge kartu (21) — lihat catatan backend minor #1."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter97_sesi40_impor_settlement.py",
+    "/app/test_reports/pytest/iter97_results.xml"
+  ],
+  "action_items": [
+    "Rapikan ketidakcocokan angka 22 vs 21 di langkah 1 wizard (pakai satu sumber angka + sebut jenis usang secara eksplisit).",
+    "Opsional: seragamkan filter toko di layar Pencairan memakai komponen Select shadcn.",
+    "Opsional: bersihkan/beri TTL sesi impor staging yang tidak pernah di-commit (92 dokumen)."
+  ],
+  "critical_code_review_comments": [
+    "_je_still_binding() benar: membaca status jurnal terkini, memperlakukan jurnal hilang & jurnal voided sebagai TIDAK mengikat, dan dipakai bersama oleh PUT, DELETE, serta blok 'can' di GET /{sid} — jadi tombol layar dan penjaga API mustahil berbeda pendapat. Verifikasi runtime: PUT/DELETE 400 saat posted, 200 sesudah void, dan je_id dilepas (je_voided_ref menyimpan jejak nomor lama).",
+    "POST /detect hanya MENGUSULKAN: mengembalikan ranking berbukti (mapped_columns, required_hit, required_missing, score) + platform fingerprint + matching_accounts, tanpa menulis apa pun ke DB. Frontend memfilter ranking per kelompok terpilih dan tetap menampilkan buktinya — kontraknya konsisten.",
+    "DataImportWizard.jsx ~2500 baris — jauh di atas panduan 700 baris. Langkah 1 (panel deteksi + kartu kelompok), tabel pemetaan, dan pratinjau/commit layak dipecah menjadi komponen tersendiri.",
+    "GET /api/marketing/settlements/{sid} meletakkan 'can' di level respons (bukan di dalam 'data'); tidak salah, tapi mudah salah baca oleh klien — pertimbangkan mendokumentasikannya, sudah saya catat untuk penguji berikutnya."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter97_sesi40_impor_settlement.py (berkas tes baru; TIDAK ada kode aplikasi yang saya ubah)"
+  ],
+  "success_rate": {"backend": "100% (8/8 pytest + gate INV-F45 27/27 HIJAU)", "frontend": "100% dari 6 alur yang diminta"},
+  "seed_data_creation": "Satu pencairan uji SET-QA-<random> pada toko Shopee aktif, dijurnal + diposting, lalu jurnalnya di-void dan pencairannya DIHAPUS oleh tes (fixture cleanup juga mem-void jurnal dulu bila tes gagal di tengah). Alur impor frontend dihentikan di langkah 5 tanpa commit sehingga tidak ada pesanan yang terbentuk. Verifikasi akhir: marketing_orders = 0, marketing_settlements = 0.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123 (UI) dan finance@dewiaditya.id / Dewi@123 (API pencairan) — login sekali per sesi tes, token dipakai ulang (rate limit dihormati)",
+  "context_for_next_testing_agent": "Regresi: `cd /app/backend && python3 -m pytest tests/test_iter97_sesi40_impor_settlement.py -n 0 -v`. Catatan penting: (1) dedupe settlement membalas 409, bukan 400; (2) blok 'can' ada di LEVEL ATAS respons GET /api/marketing/settlements/{sid}, bukan di dalam 'data'; (3) 'Shopee Official Store DEMO' TIDAK ada di daftar toko — toko Shopee aktif yang tersedia: Shopee Moen, Shopee Grosirhijabsragen, Shopee Daluna (saya pakai Shopee Moen); (4) input berkas panel deteksi (import-detect-file) TERSEMBUNYI — jangan wait_for_selector state 'visible', langsung set_input_files; (5) navigasi UI: window.location.hash = 'marketing-import' / 'marketing-settlements' sesudah login.",
+  "rca_of_the_issue": "Tidak ada cacat baru yang ditemukan pada 3 pekerjaan sesi #40. Satu-satunya ketidakcocokan (22 vs 21) berakar pada dua sumber angka: /source-types memakai bawaan include_deprecated=True (22 baris, 1 di antaranya usang) sementara badge kartu kelompok menyaring jenis usang (21). Bukan cacat fungsional, tapi angka di satu layar sebaiknya lahir dari satu sumber."
+}

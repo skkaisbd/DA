@@ -1,0 +1,25 @@
+{
+  "summary": "INV-F28 iter77 — verified the 12-KPI Monitoring CMT redesign + balance-checker strip + PO TELAT/Komponen Kurang demotion to chips. Backend: /app/backend/tests/test_inv_f28_iter77.py 5/5 PASSED (dashboard fields, balance block shape with 5 identity keys, scope=all>=running, buyer offenders reference PO-MK-DEMO-2, KPI sanity). Frontend E2E via Playwright — logged in as admin@garment.com, opened Portal Maklon → Monitoring Progress → Monitoring CMT → tab 'Dashboard Owner'. ALL 12 KPI cards present in the required order and with the expected values from the current seed data: kpi-order=550 (sub '4 PO berjalan · 1 draft'), kpi-belum-ke-cmt=300 (sub 'masih di gudang · dari PO Draft: 50 pcs'), kpi-potongan-ke-cmt=250 (sub 'sesuai order · +5 pengganti/tambahan'), kpi-sisa-di-cmt=150, kpi-disetor=100 (sub '1x setor'), kpi-lolos-qc=90, kpi-reject-belum-jelas=10 (sub 'dari 10 reject · masih dipermak / belum diputuskan'), kpi-permak-berhasil=0, kpi-scrap=0, kpi-sisa-bisa-kirim=90, kpi-ke-buyer=60, kpi-biaya composite card holds kpi-biaya-jahit=Rp1.620.000 and kpi-biaya-permak=Rp0 as two separate lines. Titles are prefixed 1..12. NO standalone 'Biaya Permak' card, NO standalone 'PO Telat' or 'Komponen Kurang' cards. monitor-balance-strip renders 5 rows; order/cmt/qc/reject = ✓ (not clickable), buyer = ✗ 'selisih -60' → clicking exposed data-testid=balance-offenders-buyer which explicitly lists 'PO-MK-DEMO-2' with the intended explanation. chip-po-telat and chip-komponen-kurang render inside the 'Distribusi Status Kejar' panel with 0/0 counts (as expected since demo data has no late POs). monitor-scope chip: switching to 'Semua PO' recomputes kpi-order to 750 (5 PO + 1 draft), returning to running restores 550 — balance strip recomputes correctly. Regression: Kejar CMT / Potongan Masuk / Cek Seri / Rekap Aksesoris / Kapasitas CMT / Rekonsiliasi tabs all load; the 'PO Perlu Dikejar (TELAT)' panel still renders at the bottom ('Tidak ada PO telat 👍'); no fatal console errors; card text is readable at 1920px viewport, no truncation observed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_inv_f28_iter77.py",
+    "/app/test_reports/pytest/inv_f28_iter77.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "frontend/src/components/erp/CMTMonitorModule.jsx (~lines 190-350) — 12 KPI numbering + composite kpi-biaya card + monitor-balance-strip cleanly implemented. openBalance toggling by row key works; only ✗ rows are clickable (per spec).",
+    "backend/services/cmt_kejar.py — owner_dashboard `balance.checks` returns the 5 required identities with { key, label, left, right, ok, diff, offenders[] }. offenders is a list of PO number strings (not dicts) — UI consumes them directly by rendering the string. If dict shape is ever needed for tooltip enrichment, note this contract.",
+    "Contract for kpi-biaya sub-testids (kpi-biaya-jahit / kpi-biaya-permak) is now stable — future card refactors must keep these testids or update the acceptance tests."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_inv_f28_iter77.py (new — 5 tests: 12 KPI fields present, balance block shape, scope=all>=running, buyer offenders reference PO-MK-DEMO-2, KPI numeric sanity)"
+  ],
+  "success_rate": {"backend": "100% (5/5)", "frontend": "100% (all 5 acceptance items GREEN)"},
+  "test_credentials": "admin@garment.com / Admin@123 (login returns key `token`)",
+  "seed_data_creation": "Did NOT run scripts/_seed_uji_monitoring_cmt.py — the demo data (PO-MKL-202608-9294 100pcs, PO-MKL-202608-9400 Completed 200, PO-MKL-202608-9075 Draft 50, PO-MK-DEMO-1 250, PO-MK-DEMO-2 150 with 60 to buyer without QC) was already seeded and produced the expected 550/300/250… numbers.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "The 12-KPI redesign is stable end-to-end. If seed data changes, kpi-biaya-jahit value and buyer 'selisih' may shift. Run `REACT_APP_BACKEND_URL=... pytest backend/tests/test_inv_f28_iter77.py -o addopts='' -v`. Balance offenders API returns a plain string list — do NOT change back to dict without updating both the UI and this test.",
+  "rca of the issue": "n/a — all acceptance items GREEN."
+}

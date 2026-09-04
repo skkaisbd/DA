@@ -1,0 +1,76 @@
+{
+  "portal": "_umum",
+  "label": "Umum",
+  "ringkasan": "Pengetahuan umum tentang sistem ERP CV. Dewi Aditya: cara berpindah portal, arti istilah yang sering dipakai, dan hal-hal yang berlaku di semua portal.",
+  "prinsip": [
+    "Sistem terbagi menjadi 14 portal. Yang bisa Anda buka tergantung peran Anda.",
+    "Semua angka stok dan uang berasal dari satu sumber kebenaran, tidak ada catatan ganda.",
+    "Dokumen penting tidak dihapus — dibatalkan lewat void/reverse supaya jejak audit utuh."
+  ],
+  "alur": [
+    {
+      "judul": "Berpindah portal dan mencari menu",
+      "kata_kunci": ["pindah portal", "ganti portal", "cari menu", "menu di mana", "navigasi"],
+      "modul": [],
+      "langkah": [
+        "Tekan nama portal di bilah atas untuk berpindah ke portal lain yang boleh Anda buka.",
+        "Menu di sisi kiri disusun dua tingkat: Section → Pintu. Satu pintu = satu layar kerja.",
+        "Bila sebuah portal tidak terlihat, berarti peran Anda belum diberi akses ke sana."
+      ]
+    },
+    {
+      "judul": "Notifikasi dan persetujuan",
+      "kata_kunci": ["notifikasi", "lonceng", "bel", "approval", "menunggu persetujuan"],
+      "modul": ["unified-approval-hub"],
+      "langkah": [
+        "Lonceng di bilah atas menampilkan notifikasi terbaru, dikelompokkan per portal sumber.",
+        "Tekan 'Lihat Semua' untuk membuka Pusat Notifikasi lengkap dengan filter kategori.",
+        "Item yang perlu keputusan Anda muncul juga di 'Pusat Approval'."
+      ]
+    },
+    {
+      "judul": "Ekspor & impor data lewat Excel",
+      "kata_kunci": ["ekspor", "impor", "excel", "csv", "template", "upload data", "unduh data"],
+      "modul": ["mgmt-system-hub"],
+      "langkah": [
+        "Unduh template terlebih dulu supaya nama kolomnya benar.",
+        "Isi datanya, lalu unggah dalam mode pratinjau (dry-run) untuk melihat baris valid/invalid.",
+        "Perbaiki baris yang bermasalah, lalu jalankan commit. Baris yang sudah ada akan diperbarui berdasarkan kode uniknya."
+      ]
+    }
+  ],
+  "fitur": [],
+  "faq": [
+    {
+      "q": "Apa arti satuan dasar, satuan kemasan, dan konversi?",
+      "kata_kunci": ["satuan dasar", "uom", "konversi", "arti satuan"],
+      "a": "Satuan dasar adalah satuan terkecil yang dipakai menyimpan stok dan HPP (mis. pcs atau meter). Satuan kemasan (pak, karton, rol) adalah cara membeli/menghitungnya, disertai isi per kemasan. Sistem selalu mengonversi ke satuan dasar saat menyimpan."
+    },
+    {
+      "q": "Apa itu HPP, WIP, dan COGS?",
+      "kata_kunci": ["hpp", "wip", "cogs", "istilah", "arti"],
+      "a": "HPP = harga pokok produksi, biaya membuat satu unit barang. WIP = barang dalam proses, nilai barang yang sedang dikerjakan. COGS = harga pokok penjualan, nilai HPP yang diakui sebagai beban saat barang terjual/terkirim."
+    },
+    {
+      "q": "Apa itu GRN, PR, PO, dan SJ?",
+      "kata_kunci": ["grn", "pr", "po", "surat jalan", "singkatan", "istilah dokumen"],
+      "a": "PR = Permintaan Pembelian (usulan beli). PO = Purchase Order (pesanan resmi ke supplier). GRN = bukti penerimaan barang. SJ = Surat Jalan, dokumen resmi pengiriman barang keluar."
+    },
+    {
+      "q": "Kenapa saya tidak bisa membuka sebuah portal atau menu?",
+      "kata_kunci": ["tidak bisa buka", "akses", "terkunci", "403"],
+      "a": "Akses ditentukan peran Anda dan ditegakkan di dua sisi (tampilan dan API), jadi tautan langsung pun tetap ditolak. Minta admin menambahkan akses lewat Portal Administrasi Sistem → Kontrol Akses, lalu masuk ulang."
+    },
+    {
+      "q": "Saya salah memasukkan data, bagaimana membatalkannya?",
+      "kata_kunci": ["salah input", "batalkan", "hapus data", "koreksi"],
+      "a": "Untuk dokumen keuangan gunakan void/reverse — jangan dihapus. Untuk stok, gunakan penyesuaian resmi atau stok opname. Untuk penempatan barang, cukup pindahkan kembali. Semua langkah itu meninggalkan jejak audit yang bisa ditelusuri."
+    }
+  ],
+  "saran": [
+    "Apa arti satuan dasar dan konversi kemasan?",
+    "Bagaimana cara ekspor/impor data lewat Excel?",
+    "Kenapa saya tidak bisa membuka sebuah portal?",
+    "Apa itu HPP, WIP, dan COGS?"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "summary": "Iterasi 103 diverifikasi LULUS penuh di backend (13/13 test baru) dan UI (F1-F4 + regresi 8 modul). Blocker iterasi 102 (PO internal tidak bisa dikirim ke buyer) SUDAH TERTUTUP: alur PO internal baru (PO-INT-202609-9763 dll) → Confirmed → job + auto MI draft → MI issued → progress 10 pcs pada proses 'Jahit (CMT)' → GET /buyer-dispatch-capacity (internal_produced=10, source='internal', shippable=10, totals.internal_produced=10) → GET /buyer-dispatch-outstanding memuat item PO internal (shippable=10) → POST /buyer-shipments TANPA source_receipt_ids => 201 (business_type internal, source_receipt_ids []). Pagar tetap ketat: qty 11 > produced 10 → 400 'melebihi qty diproduksi'; setelah kirim 10 → shippable=0/dispatched=10; PO maklon tanpa source_receipt_ids tetap 400 'wajib source_receipt_ids[]'. fulfillment PO internal basis='produced' (produced 10, fulfilled 10, short 15, 60%), close-short {closed_reason:'deadline_expired'} → qty_produced=10/qty_fulfilled=10/qty_short=15/60.0, status 'Closed Short'. quantity-summary PO-INT-202609-9023 → received 25, available 25, produced 10. control-tower memuat all_active_wos (11 == kpis.active_wos) + kpis.unknown_deadline=1. stage-summary memuat by_process[] dengan klasifikasi dari nama (Cutting→cutting, Jahit (CMT)→sewing, Finishing→finishing, QC Final→qc, Packing→packing, Rework/Revisi→rework) dan sewing_output=0 untuk PO-9023 (WIP-nya di proses rework, qty 10). seed-sample idempotent: message 'Sample data sudah lengkap' + 'PO Internal demo sudah ada: PO-INT-DEMO-20260903-001'. UI: panel internal-dispatch-info tanpa pemilih CMT, kolom 'Diproduksi', formula 'Sisa bisa kirim = hasil produksi − sudah dikirim', prefill 10, Simpan berhasil (SJ-BYR-202609-0006 muncul di daftar); PO produced 0 → badge 'BELUM PRODUKSI' + input qty kosong; tab Kekurangan Kirim menampilkan 8 baris PO internal; Pusat Kendali KPI 'TANPA DEADLINE 1' + tab 'Semua WO (11)' dengan 11 baris & klik baris → prod-work-orders; Production Jobs caption 'Status per baris SKU (14 SKU)' + kartu SKU Belum Mulai/Sedang Jalan/Selesai. 8 modul produksi + modul Maklon 'Dispatch ke Buyer' (masih memakai CMT Receipt & formula lolos QC) render tanpa error konsol.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/production-tracking (+ GET /api/prod/control-tower/wo-list qty_shipped)",
+        "issue": "Dispatch PO internal TIDAK terhitung sebagai 'dikirim' pada layar Production Jobs / Pusat Kendali. Grup 'Produksi Internal' melaporkan total_shipped_to_buyer=0 dan total_accepted=0 padahal 50 pcs sudah benar-benar dikirim (header Production Jobs sendiri menulis 'Dikirim ke Buyer 50', grup di bawahnya 'Dikirim 0'). RCA: create_buyer_shipment jalur internal menulis buyer_shipment_items dengan job_item_id=None (dibuktikan langsung di MongoDB untuk 5 surat jalan internal), sedangkan agregasi di routes/production_execution.py:63-77 match-nya pada 'job_item_id'. Saran: isi job_item_id saat dispatch internal (resolve dari production_job_items via po_item_id) atau tambahkan fallback agregasi berbasis po_item_id."
+      },
+      {
+        "endpoint": "GET /api/buyer-dispatch-outstanding",
+        "issue": "PO internal yang belum berproduksi (mis. PO-INT-202609-9102 / 9919, ordered 25, dikirim 0) TIDAK muncul di daftar kekurangan kirim karena _apply_internal_produced(seed_all=True) hanya menyemai job item dengan produced_qty>0. Akibatnya KPI 'Item Belum Lunas 8 / Total Qty Order 200' bukan backlog lengkap PO internal. Perlu keputusan produk: tampilkan dengan shippable=0 atau dokumentasikan bahwa daftar hanya memuat barang yang siap kirim."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Serah Terima FG → tab 'Kekurangan Kirim' (BuyerShipmentModule outstanding panel)",
+        "issues": [
+          "Untuk baris PO INTERNAL kolom masih 'Lolos QC' & 'Permak' (nilainya 0) sedangkan 'Sisa Bisa Kirim'=10, dan keterangan di atas tabel tetap 'Sisa Bisa Kirim = lolos QC + hasil permak − sudah dikirim' — menyesatkan karena sumber kirimnya hasil produksi. Form dispatch sudah benar (kolom 'Diproduksi'), tab outstanding belum disesuaikan (mis. tampilkan kolom 'Diproduksi'/label per source seperti di form).",
+          "Kolom 'Stok FG' menampilkan '—' (fg_stock null karena master FG SKU MDL-SWEATER-DEMO-M tidak ada) tanpa tooltip/penjelasan bahwa itu berarti master FG belum ada, bukan stok 0."
+        ]
+      },
+      {
+        "screen": "Production Jobs (prod-work-orders)",
+        "issues": [
+          "Header 'Dikirim ke Buyer 50' vs kartu grup 'Dikirim 0' & 'Total Diterima 0' pada grup Produksi Internal — dua angka berbeda untuk hal yang sama di satu layar (akar masalahnya isu backend job_item_id di atas)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter103_internal_dispatch.py",
+    "/app/backend/tests/test_iter102_prod_audit.py",
+    "/app/scripts/_iter103_seed_fe.py",
+    "/app/test_reports/pytest/iter103_results.xml"
+  ],
+  "action_items": [
+    "Isi job_item_id (atau fallback po_item_id) pada buyer_shipment_items jalur dispatch internal agar /api/production-tracking & control-tower wo-list melaporkan qty dikirim yang benar (saat ini 0 vs 50 nyata).",
+    "Selaraskan tab 'Kekurangan Kirim' untuk sumber internal: kolom 'Diproduksi' + keterangan formula per source (form dispatch sudah benar, tab belum).",
+    "Putuskan apakah PO internal produced=0 harus muncul di daftar kekurangan kirim (saat ini hilang dari backlog)."
+  ],
+  "critical_code_review_comments": [
+    "core/dispatch_capacity.py: satu rumus kapasitas sudah konsisten (good_from_cmt + reworked_ok + internal_produced − dispatched) dan dipakai layar + pagar backend — bagus. Namun _apply_internal_produced tidak menyentuh production_job_items sehingga tidak ada jejak 'shipped' di buku kuantitas job; setiap pembaca lain (production_execution) yang bergantung pada job_item_id jadi tidak sinkron.",
+    "routes/buyer_shipment.py: create_buyer_shipment sudah >1500 baris; jalur internal (internal_dispatch) menyebar di 3 tempat (pra-flight ~795, cap C-1 ~1205, FG precheck ~380). Pertimbangkan ekstraksi ke core/ agar pagar internal tidak mudah lepas saat perubahan berikutnya.",
+    "routes/production_stage_tracking.py: STAGE_KEYWORDS menaruh 'cmt' di bucket sewing — nama proses maklon apa pun yang memuat 'CMT' (mis. 'Kirim CMT') akan terhitung sewing_output. Prioritaskan process_type sebelum keyword nama."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter103_internal_dispatch.py",
+    "/app/backend/tests/test_iter102_prod_audit.py",
+    "/app/scripts/_iter103_seed_fe.py"
+  ],
+  "success_rate": {"backend": "100% (13/13 iter103 + 12/12 iter102)", "frontend": "100% (F1, F1b, F2, F3, F4, regresi 8 modul + maklon)"},
+  "seed_data_creation": "PO internal uji baru: PO-INT-202609-9763 (seed FE, dikirim 10 lewat UI → SJ-BYR-202609-0006), 9063/9066/9121/9304 (dari pytest, masing-masing dikirim 10). PO maklon uji PO-MKL-202609-9272 (status Distributed, item TEST-ITER103-MKL) dipakai untuk pagar A3 & verifikasi UI maklon. PO existing 9023/9248/9250/9919/9102 TIDAK diubah dan tidak ada surat jalan uji di atasnya (tidak perlu cleanup DELETE /api/buyer-shipments).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com / Admin@123 (dari /app/memory/test_credentials.md)",
+  "context_for_next_testing_agent": "Jalankan `cd /app/backend && python -m pytest tests/test_iter103_internal_dispatch.py tests/test_iter102_prod_audit.py -n 0 -s` (setiap run membuat PO internal baru PO-INT-{YYYYMM}-{9000-9899}; penomoran PO internal & maklon MANUAL: PO-INT-.../PO-MKL-{YYYYMM}-{SEQ:4}). PENTING: sejak iterasi 103 event WIP pada proses 'Rework/Revisi' TIDAK dihitung sebagai sewing_output — catat progress pada proses yang namanya memuat 'Jahit/Sew' (test_iter102 test_09 sudah diperbaiki untuk ini; itu satu-satunya perubahan pada file lama). PO maklon di list UI hanya muncul bila status In Production/Completed/Distributed (transisi legal Confirmed → Distributed). Untuk seed PO internal produced=10 siap uji UI: `python /app/scripts/_iter103_seed_fe.py` (mencetak po_id). Login UI: data-testid login-email-input/login-password-input/login-submit-button; PO select = buyer-shipment-po-select-trigger + -option-<po_id>. Rate-limit login 10 req/60s per IP.",
+  "rca_of_the_issue": "Fitur utama iterasi 103 bekerja. Satu sisa ketidaksinkronan: dispatch internal menyimpan buyer_shipment_items tanpa job_item_id (job_item_id=None untuk seluruh 5 surat jalan internal di DB), sedangkan routes/production_execution.py meng-agregasi qty kirim/terima per job_item_id, sehingga Production Jobs & Pusat Kendali menampilkan 'Dikirim 0' untuk WO internal yang barangnya sudah dikirim. Reproduksi: buat PO internal → produksi 10 → POST /api/buyer-shipments (tanpa source_receipt_ids) → GET /api/production-tracking → grup 'Produksi Internal' total_shipped_to_buyer=0. Mitigasi: isi job_item_id dari production_job_items (lookup po_item_id) saat membuat item surat jalan internal, atau tambahkan agregasi fallback berbasis po_item_id."
+}

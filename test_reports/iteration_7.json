@@ -1,0 +1,41 @@
+{
+  "summary": "Fresh regression pass on Portal Gudang (Warehouse) after the session's input_uom refactor in wms_putaway.py and wms_opname3.py, per user's verification request. Backend: 15/15 new pytest tests PASSED (100%), covering the two highest-risk files explicitly plus general no-500 smoke across all warehouse GET endpoints (dashboard-adjacent, master, structure, picklist, delivery-notes, cmt-dispatches, fabric-rolls, quarantine, rack-alerts). Frontend UI verification could NOT be completed this iteration — the public preview URL is stuck serving an infrastructure-level 'Preparing preview... static bundle is being built' splash page (Cloudflare challenge script) instead of the actual app, even though the local static frontend server (port 3000) responds 200 and supervisor shows frontend RUNNING. This is a preview-gateway/infra issue, not an app code issue.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "wms_putaway / wms_structure", "issue": "Warehouse physical structure (wh_buildings/wh_zones/wh_racks/wh_positions) is completely EMPTY in the current DB (0 buildings, 0 positions) — confirmed via direct DB query before testing. This means Put-Away and location-scoped Stock Opname flows have NOTHING to place into or scan against out-of-the-box; a real user opening 'Penyimpanan/Put-Away' or scoped 'Stok Opname' today would see empty location trees until an admin first creates Building→Zone→Rack via 'Struktur Gudang'. Not a code bug (structure CRUD works correctly, verified below), but worth flagging since the seed data notes says 'transaksi sengaja kosong' and this includes zero warehouse structure — the put-away/opname UX may look broken/empty on first login."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "All Portal Gudang UI screens", "issue": "Could not verify via Playwright — public preview URL (REACT_APP_BACKEND_URL host) served a persistent 'Preparing preview… The static bundle is being built' infra splash page for the full test window (~3+ minutes, multiple retries), never resolving to the actual React app. Local port 3000 responds 200 directly and supervisor confirms frontend is RUNNING, so this looks like a preview-gateway/ingress issue outside the app code, not a regression caused by recent changes.", "affected_selectors": []}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_7_warehouse_regression.py",
+    "/app/test_reports/pytest/iteration7_warehouse.xml"
+  ],
+  "action_items": [
+    "Re-run frontend Playwright verification of Portal Gudang once the preview gateway resolves past the 'Preparing preview' splash (infra, not app — may just need a retry/redeploy trigger).",
+    "Consider whether warehouse structure (building/zone/rack/bin) should be seeded by default, or at least surface a clearer empty-state CTA on Put-Away/Opname screens telling admin_gudang to set up Struktur Gudang first — currently these screens will look empty with zero locations."
+  ],
+  "critical_code_review_comments": [
+    "wms_opname3.py: input_uom handling in scan() correctly converts to base uom via core.uom before storing counted_qty (INV-UOM-2 preserved); unknown uom raises HTTPException(400) not 500 — verified live. Variance/reconciliation math (counted - expected_snapshot) is unaffected by input_uom since conversion happens before storage. No regression found.",
+    "wms_putaway.py place(): input_uom conversion happens before validating qty <= unshelved, which is correct order (compares base-uom qty against base-uom unshelved). Unknown uom returns 400 cleanly — verified live. uom_trace metadata correctly attached to wh_placement_movements audit record.",
+    "core/uom.py: SSOT is clean, well-documented with clear INV-UOM-1..6 invariants, has backward-compat fallback (build_from_legacy) for the ~1031 existing materials without explicit `uoms` array — good defensive design, no regression risk found.",
+    "wms_receiving.py (pending movements / scan-in / scan-out) also converts input unit via core.uom when unit differs from base and is a known uom on the material (line ~469-484) — consistent with the SSOT pattern used in putaway/opname3. No issues found.",
+    "Minor: wms_opname3.approve() has no explicit test-data cleanup path (approved sessions are terminal by design, cannot be cancelled/reversed via API) — acceptable for production but means any accidental approve during testing requires a manual DB-level stock reversal, which this run had to perform (see seed_data_creation note). Consider adding an admin-only 'reverse opname adjustment' endpoint for cases like this, low priority."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_7_warehouse_regression.py (new)"
+  ],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "not verified this iteration — blocked by preview infra"},
+  "test_credentials": "admin@garment.com / Admin@123 (confirmed working via API login)",
+  "seed_data_creation": "Temporarily created TEST warehouse structure (building TESTB1 / zone TESTZ1 / rack TESTR1, 4 bins) to exercise put-away 'place' and opname scan/submit/approve end-to-end since the DB had zero warehouse structure. During the opname approve step, a real +1 unit adjustment was posted to material 'KAIN-CONDRU-PALMER-KN-BATA' (be9df156-...) canonical stock as an unavoidable side-effect of testing the approve reconciliation path. This was manually reverted (confirmed onhand back to original 6.0 kg via stock_service.adjust_material(-1)). All TEST_ building/zone/rack/positions and opname test sessions/counts were deleted afterward. DB verified clean post-cleanup.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend regression for wms_putaway.py and wms_opname3.py input_uom changes is CONFIRMED PASSING — both the happy path (input_uom empty/base-uom, no behavior change) and the error path (unknown uom -> 400 not 500) work correctly for both place() and scan(). All other warehouse GET endpoints (picklist, delivery-notes, cmt-dispatches, fabric-rolls, quarantine, rack-alerts, structure, pending/summary) return non-500. Frontend UI could not be visually verified this run due to an external preview-gateway issue (persistent 'Preparing preview...' splash unrelated to app code — local port 3000 was confirmed healthy). Next agent should retry the Playwright UI pass first before assuming any app-level frontend bug. Also flag to main agent: warehouse structure (buildings/zones/racks/bins) is currently EMPTY in DB — if the user expects Put-Away/Opname to show real bins on first use, structure needs to be created via Struktur Gudang UI first; this is a data/setup gap, not a code bug.",
+  "rca of the issue": "No functional bug found in wms_putaway.py or wms_opname3.py input_uom logic. The only 'issue' surfaced is environmental: (1) preview gateway stuck on splash page (infra, needs retry/redeploy, not app-related), (2) warehouse structure collections empty in DB (data/seed gap, not code bug) which would make Put-Away/Opname look non-functional to an end user until bins are created."
+}

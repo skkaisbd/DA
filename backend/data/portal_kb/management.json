@@ -1,0 +1,63 @@
+{
+  "portal": "management",
+  "label": "Portal Manajemen",
+  "ringkasan": "Portal Manajemen adalah ruang eksekutif: angka bisnis menyeluruh, laporan, OKR, dan pusat persetujuan. Isinya ringkasan — bukan tempat memasukkan transaksi.",
+  "prinsip": [
+    "Semua angka di sini adalah turunan dari transaksi di portal operasional.",
+    "Menu berisiko (kontrol akses, backup) sengaja dipindah ke Portal Administrasi Sistem.",
+    "Persetujuan lintas bagian dikumpulkan di satu pintu."
+  ],
+  "alur": [
+    {
+      "judul": "Menyetujui pengajuan lintas bagian",
+      "kata_kunci": ["approval", "persetujuan", "setujui", "pusat approval", "menunggu approval"],
+      "modul": ["unified-approval-hub"],
+      "langkah": [
+        "Buka 'Pusat Approval' untuk melihat seluruh pengajuan yang menunggu keputusan Anda.",
+        "Isinya mencakup permintaan pengadaan, invoice supplier, cuti, dan pengajuan lain sesuai peran.",
+        "Lonceng di bilah atas juga menampilkan jumlah item yang perlu tindakan."
+      ]
+    },
+    {
+      "judul": "Membaca angka bisnis",
+      "kata_kunci": ["dashboard eksekutif", "ringkasan bisnis", "laporan", "kinerja perusahaan"],
+      "modul": ["management-dashboard", "mgmt-overview", "reports-hub"],
+      "langkah": [
+        "'Dashboard Eksekutif' menampilkan indikator utama berjalan.",
+        "'Ringkasan Bisnis' merangkum penjualan, produksi, dan keuangan.",
+        "'Pusat Laporan' berisi laporan siap unduh per bidang."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "management-dashboard", "nama": "Dashboard Eksekutif", "deskripsi": "Indikator utama perusahaan."},
+    {"modul": "mgmt-overview", "nama": "Ringkasan Bisnis", "deskripsi": "Gabungan angka penjualan, produksi, dan keuangan."},
+    {"modul": "reports-hub", "nama": "Pusat Laporan", "deskripsi": "Kumpulan laporan lintas bidang."},
+    {"modul": "phase7-reports", "nama": "Laporan Maklon", "deskripsi": "Kinerja lini maklon."},
+    {"modul": "mgmt-reports", "nama": "Laporan Umum", "deskripsi": "Laporan operasional umum."},
+    {"modul": "mgmt-rahaza-customers", "nama": "Data Pelanggan", "deskripsi": "Daftar pelanggan dan riwayat transaksinya."},
+    {"modul": "rnd-dashboard", "nama": "Ringkasan RnD", "deskripsi": "Progres pengembangan produk."},
+    {"modul": "unified-approval-hub", "nama": "Pusat Approval", "deskripsi": "Semua pengajuan yang menunggu keputusan."},
+    {"modul": "mgmt-okr", "nama": "OKR Tracker", "deskripsi": "Sasaran dan capaian tim."},
+    {"modul": "mgmt-tools", "nama": "Digest Mingguan", "deskripsi": "Ringkasan mingguan otomatis."},
+    {"modul": "ai-usage-monitor", "nama": "Monitor AI", "deskripsi": "Pemakaian dan biaya fitur AI."}
+  ],
+  "faq": [
+    {
+      "q": "Kenapa saya tidak menemukan menu backup di Portal Manajemen?",
+      "kata_kunci": ["backup di manajemen", "menu backup hilang"],
+      "a": "Backup dan kontrol akses dipindah ke Portal Administrasi Sistem karena beda audiens dan risikonya tinggi. Buka portal itu (khusus super admin/admin) → 'Backup Data'."
+    },
+    {
+      "q": "Angka di dashboard tidak cocok dengan laporan keuangan.",
+      "kata_kunci": ["angka beda", "tidak cocok", "selisih dashboard"],
+      "a": "Dashboard eksekutif memakai rentang waktu berjalan dan sebagian indikator operasional (belum tentu sudah dijurnal). Laporan keuangan hanya menghitung jurnal yang sudah diposting. Bandingkan dengan periode dan basis yang sama."
+    }
+  ],
+  "saran": [
+    "Di mana melihat pengajuan yang menunggu persetujuan saya?",
+    "Apa isi Dashboard Eksekutif?",
+    "Kenapa menu backup tidak ada di sini?",
+    "Bagaimana memantau biaya pemakaian AI?"
+  ]
+}

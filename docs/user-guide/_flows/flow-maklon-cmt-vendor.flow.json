@@ -1,0 +1,50 @@
+{
+  "flow_id": "flow-maklon-cmt-vendor",
+  "title": "Alur CMT Vendor / Sub-contract (Maklon): Kirim Komponen ke Vendor -> SJ-CMT -> Terima Hasil Jadi -> QC -> Posting FG",
+  "portal": "maklon",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal sub-contract garmen (CMT = Cut-Make-Trim / maklon keluar). Terdiri dua sisi yang saling melengkapi dalam satu hub SSOT (moduleId wms-cmt-dispatches): (A) KIRIM KE VENDOR -> membuat dispatch draft berisi komponen (kain/aksesoris) per Work Order, meng-eksekusi pengiriman yang otomatis menerbitkan Surat Jalan SJ-CMT, lalu mencatat retur material dari vendor. Status: draft -> dispatched -> partially_returned/fully_returned; jalur cancel dari draft. (B) TERIMA HASIL JADI -> tim packing membuat CMT Receipt saat barang jadi tiba, menambah baris per SKU/warna/ukuran dengan qty_expected, menghitung fisik (qty_actual = kontrol mutu/QC), submit ke Admin Produksi, lalu approve yang memposting stok Finished Goods ke rahaza_material_stock (ownership cv_da, kategori fg_internal) beserta jejak audit rahaza_fg_movements; jalur reject bila mutu tidak lolos. Guardrail: eksekusi dispatch non-draft ditolak, return-line pada draft ditolak, create tanpa cmt_name ditolak, submit receipt tanpa qty_actual ditolak, dan submit ganda ditolak.",
+  "modules_touched": ["wms-cmt-dispatches", "prod-cmt-packing", "wms-delivery-notes"],
+  "critical_endpoints": [
+    "/api/wms/cmt-dispatches",
+    "/api/wms/cmt-dispatches/{id}/dispatch",
+    "/api/wms/cmt-dispatches/{id}/return-line",
+    "/api/prod/cmt-receipts",
+    "/api/prod/cmt-receipts/{id}/lines",
+    "/api/prod/cmt-receipts/{id}/submit",
+    "/api/prod/cmt-receipts/{id}/approve",
+    "/api/prod/cmt-receipts/{id}/reject"
+  ],
+  "supporting_endpoints": [
+    "/api/wms/cmt-dispatches/{id}",
+    "/api/wms/cmt-dispatches/{id}/cancel",
+    "/api/wms/cmt-dispatches/by-wo/{wo_id}",
+    "/api/prod/cmt-receipts/summary",
+    "/api/prod/cmt-receipts/{id}",
+    "/api/prod/cmt-receipts/{id}/lines/{line_id}",
+    "/api/prod/display-rak"
+  ],
+  "test_script": "tests/flow_maklon_cmt_vendor_test.py",
+  "doc": "docs/user-guide/maklon/flow-maklon-cmt-vendor.md",
+  "db_collections": [
+    "wh_cmt_dispatches",
+    "wh_delivery_notes",
+    "cmt_receipts",
+    "cmt_receipt_lines",
+    "rahaza_material_stock",
+    "rahaza_fg_movements"
+  ],
+  "happy_path_steps": [
+    "Buat dispatch draft (cmt_name + lines komponen) -> status=draft, nomor CMD/YYYY/MM/NNNN",
+    "Eksekusi dispatch (shipper/vehicle) -> status=dispatched + auto Surat Jalan SJ-CMT/YYYY/MM/NNNN di wh_delivery_notes",
+    "Catat retur material dari vendor (return-line) -> partially_returned / fully_returned",
+    "Buat CMT Receipt (cmt_name) -> status=Draft, kode CMT-RCV-NNNNN",
+    "Tambah baris per SKU (qty_expected) lalu hitung fisik/QC (qty_actual)",
+    "Submit receipt -> Submitted, lalu Approve -> Approved + posting FG ke rahaza_material_stock + jejak rahaza_fg_movements",
+    "Jalur reject: receipt dengan mutu buruk -> Rejected (tanpa posting FG)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-maklon-cmt-vendor_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_maklon_cmt_vendor_test.py: create->dispatch(+SJ-CMT)->return-line fully_returned; receipt create->add line->qty_actual->submit->approve posting FG qty=95; jalur reject; guard re-dispatch 400, return-line-on-draft 400, submit-tanpa-qty 400, double-submit 400); FIX HIGH BUG frontend (WMSCMTDispatchesModule memakai kontrak dispatch obsolete -> HTTP 422; direbuild jadi hub 2-seksi selaras backend); E2E UI PASS (dispatch create+execute+SJ, receipt create+count+submit+approve posting FG) via screenshot tool + testing_agent_v3 iteration_84 100% (backend 21/21, frontend 29/29)",
+  "notes_qa": "FIX: frontend WMSCMTDispatchesModule.jsx sebelumnya mengirim payload single-material lama (cmt_partner_name/qty_sent) sehingga POST create dispatch mengembalikan 422 (cmt_name Field required). Direbuild menjadi hub SSOT 2-seksi (Kirim ke Vendor + Terima Hasil Jadi). Observasi Low dicatat di _qa: field display lama (dispatch_number/qty_sent/status pending) dihapus; modul prod-cmt-packing tetap redirect ke wms-cmt-dispatches (O1.2 single-SSOT)."
+}

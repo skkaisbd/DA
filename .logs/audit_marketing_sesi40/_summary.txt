@@ -1,0 +1,12 @@
+marketing_scope rc=0
+marketing_cycle rc=0
+marketing_rbac_scope rc=0
+katalog_stok rc=0
+margin_katalog rc=0
+pencairan_finance rc=0
+cogs_fifo_jurnal rc=0
+impor_pintar_hpp rc=0
+kpi_konten rc=0
+dashboard_marketing rc=0
+sinkron_mkt_gudang rc=0
+retur_mkt_gudang rc=0

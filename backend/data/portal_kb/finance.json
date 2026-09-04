@@ -1,0 +1,120 @@
+{
+  "portal": "finance",
+  "label": "Portal Keuangan",
+  "ringkasan": "Portal Keuangan disusun mengikuti SIKLUS UANG: dari penjualan & piutang, pengadaan & hutang, kas/bank, sampai jurnal, anggaran, dan aset tetap. Hampir semua jurnal terbentuk OTOMATIS dari kejadian operasional lewat Posting Profile.",
+  "prinsip": [
+    "Kode akun jurnal SELALU diambil dari Posting Profile, tidak pernah ditulis manual di kode.",
+    "Setiap transaksi operasional (terima barang, kirim barang, gaji, penyusutan) punya event type yang dipetakan ke pasangan akun Debit/Kredit.",
+    "Periode akuntansi bisa dikunci supaya jurnal periode lama tidak bisa diubah."
+  ],
+  "alur": [
+    {
+      "judul": "Dari pesanan sampai uang masuk (AR)",
+      "kata_kunci": ["piutang", "ar", "invoice pelanggan", "uang masuk", "penagihan"],
+      "modul": ["fin-ar-360", "fin-cash", "fin-journal-hub"],
+      "langkah": [
+        "Invoice AR dibuat dari pengiriman (maklon/marketing) atau manual.",
+        "Invoice diposting → jurnal Dr Piutang / Cr Pendapatan.",
+        "Pembayaran dicatat di 'Kas & Bank' → jurnal Dr Kas / Cr Piutang.",
+        "Sisa umur piutang dipantau di 'Aging Piutang'."
+      ]
+    },
+    {
+      "judul": "Dari permintaan beli sampai uang keluar (P2P/AP)",
+      "kata_kunci": ["hutang", "ap", "pengadaan", "pr", "po", "3 way match", "bayar supplier"],
+      "modul": ["fin-procurement-requests", "fin-3way-match", "fin-approval", "fin-cash"],
+      "langkah": [
+        "Permintaan Pengadaan (PR) diajukan → disetujui.",
+        "PR menjadi Purchase Order di Portal Gudang.",
+        "Barang datang (GRN) → 'Rekonsiliasi PO' mencocokkan PO ↔ GRN ↔ Invoice (3-way match).",
+        "Invoice AP disetujui di 'Persetujuan Invoice' → jurnal Dr Persediaan/Beban / Cr Hutang.",
+        "Pembayaran di 'Kas & Bank' → jurnal Dr Hutang / Cr Kas."
+      ]
+    },
+    {
+      "judul": "Jurnal & laporan keuangan",
+      "kata_kunci": ["jurnal", "je", "neraca", "laba rugi", "buku besar", "trial balance", "laporan keuangan"],
+      "modul": ["fin-journal-hub", "fin-reports-hub", "fin-accounting-master-hub"],
+      "langkah": [
+        "Jurnal bisa otomatis (dari event) atau manual di 'Jurnal'.",
+        "Jurnal diposting ke Buku Besar → Neraca Saldo harus balance.",
+        "Laporan tersedia: Buku Besar, Laba Rugi, Neraca, dan Arus Kas.",
+        "Jurnal salah tidak dihapus — dibatalkan lewat void/reverse agar jejak audit utuh."
+      ]
+    },
+    {
+      "judul": "Kas kecil, kasbon, dan klaim",
+      "kata_kunci": ["kas kecil", "petty cash", "kasbon", "klaim", "reimburse", "dinas"],
+      "modul": ["fin-petty-cash", "fin-kasbon", "fin-expenses", "fin-settlement-queue"],
+      "langkah": [
+        "Kas kecil diisi ulang lewat 'Kas Kecil' dengan batas saldo tertentu.",
+        "Kasbon karyawan dicatat di 'Kasbon & Pinjaman' dan dipotong lewat penggajian.",
+        "Klaim perjalanan dinas masuk 'Settlement Dinas' untuk diselesaikan."
+      ]
+    },
+    {
+      "judul": "Aset tetap & penyusutan",
+      "kata_kunci": ["aset tetap", "penyusutan", "depresiasi", "disposal"],
+      "modul": ["fin-fixed-assets"],
+      "langkah": [
+        "Daftarkan aset beserta nilai perolehan dan masa manfaatnya.",
+        "Jalankan penyusutan per aset atau massal per periode → jurnal otomatis.",
+        "Pelepasan aset (disposal) menghitung laba/rugi dan menjurnalnya."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "finance-dashboard", "nama": "Dashboard Keuangan", "deskripsi": "Ringkasan kas, piutang, hutang, dan laba berjalan."},
+    {"modul": "fin-recap", "nama": "Rekap Keuangan", "deskripsi": "Rekap angka kunci per periode."},
+    {"modul": "fin-reports-hub", "nama": "Laporan Keuangan", "deskripsi": "Neraca Saldo, Buku Besar, Laba Rugi, Neraca, Arus Kas."},
+    {"modul": "fin-executive-report", "nama": "Laporan Eksekutif", "deskripsi": "Ringkasan naratif untuk manajemen."},
+    {"modul": "fin-ai-cashflow", "nama": "Prediksi Kas", "deskripsi": "Perkiraan arus kas berbasis AI."},
+    {"modul": "fin-ar-360", "nama": "Aging Piutang", "deskripsi": "Umur piutang per pelanggan."},
+    {"modul": "fin-channel-gl", "nama": "Channel GL", "deskripsi": "Pemetaan channel penjualan ke akun GL."},
+    {"modul": "fin-procurement-requests", "nama": "Permintaan Pengadaan", "deskripsi": "PR dan persetujuannya."},
+    {"modul": "fin-3way-match", "nama": "Rekonsiliasi PO", "deskripsi": "Pencocokan PO ↔ penerimaan ↔ invoice."},
+    {"modul": "fin-approval", "nama": "Persetujuan Invoice", "deskripsi": "Persetujuan invoice supplier sebelum dibayar."},
+    {"modul": "fin-cash", "nama": "Kas & Bank", "deskripsi": "Semua penerimaan dan pengeluaran uang."},
+    {"modul": "fin-petty-cash", "nama": "Kas Kecil", "deskripsi": "Pengelolaan kas kecil dan pengisian ulangnya."},
+    {"modul": "fin-bank-transfer", "nama": "Transfer Bank", "deskripsi": "Pemindahan dana antar rekening."},
+    {"modul": "fin-bank-recon", "nama": "Rekonsiliasi Bank", "deskripsi": "Mencocokkan mutasi bank dengan catatan sistem."},
+    {"modul": "fin-expenses", "nama": "Pengeluaran & Klaim", "deskripsi": "Biaya operasional dan klaim karyawan."},
+    {"modul": "fin-kasbon", "nama": "Kasbon & Pinjaman", "deskripsi": "Pinjaman karyawan dan cicilannya."},
+    {"modul": "fin-settlement-queue", "nama": "Settlement Dinas", "deskripsi": "Penyelesaian uang muka perjalanan dinas."},
+    {"modul": "fin-accounting-master-hub", "nama": "Master Akuntansi", "deskripsi": "Bagan Akun (COA) dan Posting Profile."},
+    {"modul": "fin-journal-hub", "nama": "Jurnal", "deskripsi": "Jurnal umum, posting, dan pembatalan."},
+    {"modul": "fin-acctg-adjust-hub", "nama": "Penyesuaian", "deskripsi": "Akrual, jurnal berulang, dan tutup periode."},
+    {"modul": "fin-budget", "nama": "Anggaran", "deskripsi": "Anggaran per akun dan analisis selisihnya."},
+    {"modul": "fin-cost-centers", "nama": "Pusat Biaya", "deskripsi": "Pengelompokan biaya per unit kerja."},
+    {"modul": "fin-hpp", "nama": "HPP", "deskripsi": "Harga pokok produksi per job."},
+    {"modul": "fin-fixed-assets", "nama": "Aset Tetap", "deskripsi": "Register aset, penyusutan, dan pelepasan."}
+  ],
+  "faq": [
+    {
+      "q": "Kenapa jurnal tidak terbentuk otomatis untuk suatu kejadian?",
+      "kata_kunci": ["jurnal tidak muncul", "tidak terjurnal", "posting profile"],
+      "a": "Cek 'Master Akuntansi' → Posting Profile. Setiap event type (mis. inventory_receive, cogs_shipment, payroll) harus punya pemetaan akun Debit/Kredit yang menunjuk akun POSTABLE, bukan akun header/grup. Bila akun tujuannya header, posting akan ditolak."
+    },
+    {
+      "q": "Neraca Saldo tidak balance.",
+      "kata_kunci": ["tidak balance", "trial balance", "selisih jurnal"],
+      "a": "Buka 'Jurnal' dan cari jurnal berstatus posted yang totalnya tidak seimbang atau memakai akun yang belum ada di COA. Jangan hapus jurnal lama; gunakan void/reverse lalu buat yang benar supaya jejak audit tetap utuh."
+    },
+    {
+      "q": "Bagaimana membatalkan jurnal yang salah?",
+      "kata_kunci": ["batalkan jurnal", "void", "reverse", "hapus jurnal"],
+      "a": "Gunakan void/reverse pada jurnal terkait. Sistem membuat jurnal balik dengan referensi ke jurnal asal. Menghapus jurnal tidak diperbolehkan karena merusak jejak audit dan laporan periode."
+    },
+    {
+      "q": "Periode sudah ditutup tapi perlu koreksi.",
+      "kata_kunci": ["tutup periode", "periode terkunci", "koreksi periode lama"],
+      "a": "Periode terkunci menolak jurnal baru. Pilihannya: buka kembali periode lewat 'Penyesuaian' (butuh hak akses), atau catat koreksi di periode berjalan sebagai jurnal penyesuaian."
+    }
+  ],
+  "saran": [
+    "Bagaimana alur dari PR sampai bayar supplier?",
+    "Kenapa jurnal tidak terbentuk otomatis?",
+    "Bagaimana cara membatalkan jurnal yang salah?",
+    "Di mana melihat aging piutang?"
+  ]
+}

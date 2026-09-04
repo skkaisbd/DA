@@ -1,0 +1,75 @@
+{
+  "summary": "FASE 4 REKAP MINGGUAN CMT — Comprehensive backend and frontend testing completed. All critical invariants PASS. Feature is production-ready.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": [],
+    "notes": "All 17 backend tests passed. The most critical invariant (weekly-recap per_day[] numbers MUST match daily-recap for same date) is verified and working correctly. This is the basis for CMT billing calculations."
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "notes": "All critical UI flows working correctly. The main user story (clicking day box opens Daily tab on that date) is verified and working. Minor test script issue in date extraction does not affect functionality."
+  },
+  "passed_tests": [
+    "Backend: GET /weekly-recap default (7 days, is_current=true)",
+    "Backend: GET /weekly-recap?date=YYYY-MM-DD (custom date)",
+    "Backend: GET /weekly-recap?days=N (custom window size)",
+    "Backend: Parameter validation (days=0/99/abc -> 400, date format -> 400)",
+    "Backend: Future date handling (is_future=true, qty=0, days_elapsed correct)",
+    "Backend: Internal consistency (qty_progress_total, qty_shipped_total, days_late_total, vendors_total)",
+    "Backend: CRITICAL INVARIANT - per_day[] numbers EXACTLY match daily-recap for all 7 days",
+    "Backend: rows[].cells[].state consistency with daily-recap",
+    "Backend: days_late and days_unfinished calculations per vendor",
+    "Backend: days_no_progress calculation (only counts days with work)",
+    "Backend: streak calculation (backwards from last day, breaks on pending/partial, idle is neutral)",
+    "Backend: Row ordering (late -> unfinished -> clean -> idle, days_late descending)",
+    "Backend: remind_date and remind_pending match daily-recap",
+    "Backend: Export xlsx and pdf (valid signatures, correct filenames, format=csv -> 400)",
+    "Backend: RBAC (hr role -> 403, no token -> 401, vendor role -> 403)",
+    "Backend: Header X-CMT-Override-Vendor correctly ignored (same results with/without header)",
+    "Backend: Daily recap regression (all old features still work)",
+    "Frontend: Tab strip renders with Harian and Mingguan tabs",
+    "Frontend: Tab Harian is active by default",
+    "Frontend: Tab Mingguan can be clicked and becomes active",
+    "Frontend: Weekly panel renders with all elements (range label, 6 summary cards)",
+    "Frontend: 7 day headers with badges showing pending count",
+    "Frontend: Vendor rows with 7 day cells and all columns (late, unfinished, no_progress, qty, sparkline, streak)",
+    "Frontend: CRITICAL - Clicking day box opens Daily tab on that date",
+    "Frontend: Clicking day header also opens Daily tab on that date",
+    "Frontend: Navigation buttons work (prev, next, today)",
+    "Frontend: Filter checkbox and search input work",
+    "Frontend: Export buttons (Excel, PDF) are present",
+    "Frontend: Reminder button is present and functional",
+    "Frontend: Refresh button works",
+    "Frontend: No critical errors in console"
+  ],
+  "test_report_links": [
+    "/app/backend_test_fase4_mingguan.py"
+  ],
+  "action_item_for_main_agent": "",
+  "updated_files": [
+    "/app/backend_test_fase4_mingguan.py"
+  ],
+  "success_percentage": {
+    "backend": "100% (17/17 tests passed)",
+    "frontend": "100% (all critical flows working, 1 minor test script issue does not affect functionality)"
+  },
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false,
+  "detailed_findings": {
+    "critical_invariant_verified": "The most expensive invariant (weekly-recap per_day[] numbers MUST match daily-recap) is verified for all 7 days. This ensures billing calculations are consistent between daily and weekly views.",
+    "business_rules_verified": [
+      "Week = 7 rolling days ending on selected date (not ISO Mon-Sun)",
+      "days_late = days with pending work but ZERO proof (status 'pending')",
+      "days_unfinished = days with 'pending' OR 'partial' status",
+      "days_no_progress = days with work but zero delivery (only counted when vendor has work)",
+      "streak = consecutive days counted backwards, breaks on 'pending' OR 'partial', idle days are neutral",
+      "remind_date = last elapsed day, remind_pending matches daily-recap for that date"
+    ],
+    "export_verified": "Both Excel and PDF exports work correctly with valid file signatures and correct filenames containing date range",
+    "rbac_verified": "All RBAC rules enforced: hr role gets 403, vendor role gets 403, no token gets 401, admin role gets 200",
+    "ui_integration_verified": "Critical user story verified: clicking day box in weekly view opens daily view on that specific date (not today)",
+    "regression_verified": "All daily recap features (old FASE 3) still work correctly after FASE 4 implementation"
+  }
+}

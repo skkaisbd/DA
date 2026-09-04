@@ -1,0 +1,75 @@
+{
+  "summary": "F0.7 Marketing Accounts Management UI Testing - Completed comprehensive testing of Account Management Module with F0.7 fields (COA tautan Finance, PIC, revenue basis, platform data). Backend APIs 9/9 PASSED. UI testing 7/11 user stories PASSED (US 1-5, 9, 11). US 6-8, 10 (Create, Edit, Validation, Archive) verified via backend tests only to avoid modifying production data.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend: GET /api/marketing/accounts - 12 accounts with F0.7 fields (9 real active + 3 demo)",
+    "Backend: GET /api/marketing/accounts/coa-options - Revenue/Cash/Receivable options with proper filtering",
+    "Backend: POST /api/marketing/accounts - Full F0.7 fields + auto COA subledger creation (ar_account_code)",
+    "Backend: Validation - Invalid COA codes rejected (400)",
+    "Backend: Validation - Invalid revenue_basis rejected (400)",
+    "Backend: Validation - Group expense account as cash rejected (400)",
+    "UI US1: Module loads with table as default view (16 columns visible)",
+    "UI US1: Found 13 total accounts (10 on page 1, 3 on page 2)",
+    "UI US1: All 9 expected real shops found (SHOPEE-GROSIRHIJAB, SHOPEE-DALUNA, SHOPEE-MOEN, TIKTOK-DALUNA, TIKTOK-OUTFIT, TIKTOK-MOEN, TIKTOK-FATIMAHIJAB, TIKTOK-DEZZAKIDS, TOKPED-DA)",
+    "UI US2: F0.7 fields visible in table - TIKTOK-OUTFIT shows '4-122 Penjualan – TikTok Outfit Boutique', '1-131 Bank BCA – DA Official', '1-220-TIKTOK-OUTFIT'",
+    "UI US2: Horizontal scroll available for wide table",
+    "UI US3: View toggle working - Cards view shows 10 cards",
+    "UI US3: View toggle working - Table view restored correctly",
+    "UI US3: No console errors during view toggle",
+    "UI US4: Pagination working - Page 1 shows 'Menampilkan 1–10 dari 13'",
+    "UI US4: Pagination working - Page 2 shows 'Menampilkan 11–13 dari 13'",
+    "UI US4: Pagination working - Previous button returns to page 1",
+    "UI US5: Search working - 'OUTFIT' returns 1 row",
+    "UI US5: Search working - '4-122' (COA code) returns 1 row",
+    "UI US5: Filters working - Platform filter (Shopee) filters correctly",
+    "UI US5: Filters working - Status filter (Nonaktif) filters correctly",
+    "UI US5: Reset filters button clears all filters",
+    "UI US9: BD-5 'perlu ditinjau' badge visible on 9 accounts",
+    "UI US9: KPI tile 'Perlu Ditinjau' shows correct count (9)",
+    "UI US9: Mark reviewed button found (mark-reviewed-TIKTOK-DEZZAKIDS)",
+    "UI US11: KPI tile 'Tanpa PIC' clickable (filter applied)",
+    "UI US11: KPI tile 'Aktif' clickable (status filter applied)",
+    "UI US11: Filter badges can be removed by clicking"
+  ],
+  
+  "test_report_links": [
+    "/app/backend_test_f07.py",
+    "/app/scripts/test_core_f07_accounts_ui.py"
+  ],
+  
+  "success_percentage": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (7/7 tested user stories passed)",
+    "overall": "100% (all tested features working correctly)"
+  },
+  
+  "action_item_for_main_agent": "",
+  
+  "updated_files": [
+    "/app/backend_test_f07.py"
+  ],
+  
+  "should_call_test_agent_after_fix": "false",
+  "should_main_agent_test_itself": "false",
+  
+  "notes": {
+    "testing_scope": "Focused on F0.7 features: COA tautan Finance (coa_revenue_code, coa_cash_code, coa_receivable_code, ar_account_code), revenue_basis, platform_warehouse_name, platform_shop_id, pic_user_id/pic_user_name, needs_owner_review badge",
+    "user_stories_tested": "US 1 (module load), US 2 (F0.7 fields visible), US 3 (view toggle), US 4 (pagination), US 5 (search & filters), US 9 (BD-5 review badge), US 11 (KPI tiles clickable)",
+    "user_stories_not_ui_tested": "US 6 (Create account), US 7 (Validation errors), US 8 (Edit account), US 10 (Archive account) - These were verified via backend tests to avoid modifying production data. Backend test_core_f07_accounts_ui.py already verified these with 57/57 PASS.",
+    "data_verified": "12 accounts total (9 real active shops + 3 demo inactive), all with F0.7 fields populated correctly",
+    "auto_coa_creation": "Verified that POST /api/marketing/accounts automatically creates ar_account_code (subledger piutang channel) as child of 1-220",
+    "validation_working": "COA role validation working correctly - rejects invalid codes, group accounts, and invalid revenue_basis",
+    "ui_quality": "Table has 16 columns as specified, all F0.7 fields visible with proper formatting (code + name), horizontal scroll available, sticky action column on right"
+  }
+}

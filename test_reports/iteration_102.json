@@ -1,0 +1,106 @@
+{
+  "summary": "Audit Portal Produksi iterasi 102: regresi 4 perbaikan main agent (control-tower dari production_jobs, PO stage-summary, seed-sample, klik WO → prod-work-orders) DIVERIFIKASI LULUS di backend maupun UI. Alur produksi internal dijalankan end-to-end dengan data baru: PO internal (PO-INT-202609-9023/9248/9250 + 9919 overdue) → Confirmed → job + auto MI draft → MI submit/approve (issued, stok di-top-up via /api/rahaza/material-receive) → progress 10 pcs (+WIP mirror) → cek konsistensi 6 endpoint → coba buyer shipment (GAGAL/blocker) → close-short (200, status 'Closed Short'). Backend 11/12 test lulus; UI 8 modul produksi dirender tanpa error konsol. Temuan utama: PO INTERNAL TIDAK BISA DIKIRIM KE BUYER sama sekali (jalur dispatch 100% berbasis cmt_receipts) sehingga fulfillment/closure selalu melaporkan 0 diterima / 100% short walau produksi nyata sudah jalan.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/buyer-shipments (+ GET /api/buyer-dispatch-outstanding, GET /api/buyer-dispatch-capacity)",
+        "issue": "PO internal MUSTAHIL dikirim ke buyer. POST /buyer-shipments untuk user DA (receiver_type=buyer) mewajibkan source_receipt_ids[] yang harus merujuk cmt_receipts status Approved (buyer_shipment.py:770-784), sementara produksi internal tidak pernah membuat cmt_receipts. Bukti: dengan job internal yang sudah produksi 10 pcs, POST /buyer-shipments {po_id, items:[{po_item_id, qty_shipped:10}]} → 400 'Buyer shipment dari DA wajib source_receipt_ids[]'; GET /buyer-dispatch-outstanding?po_id=<PO internal> → items:[] totals semua 0; GET /buyer-dispatch-capacity?po_item_ids=<item> → good_from_cmt=0, shippable=0. Efeknya modul UI 'Serah Terima FG' (prod-shipments-buyer) pada Portal Produksi Internal tidak akan pernah bisa membuat surat jalan, PO internal tak pernah bisa mencapai status 'Completed', dan satu-satunya jalan keluar adalah close-short.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "GET /api/production-pos/{po}/fulfillment vs /quantity-summary vs /production-tracking",
+        "issue": "Angka tidak konsisten untuk PO internal: quantity-summary totals.produced=10 & production-tracking produced_qty=10 & control-tower total_produced_qty naik 10, TETAPI fulfillment melaporkan total_received=0, total_shipped=0, qty_short=25, qty_short_pct=100.0. Hasil produksi internal tidak pernah dihitung sebagai 'received' di fulfillment (konsep received=terima dari CMT). Dua layar melaporkan angka berbeda untuk PO yang sama."
+      },
+      {
+        "endpoint": "POST /api/production-pos/{po}/close-short",
+        "issue": "Berhasil (200) tetapi melaporkan qty_received=0, qty_short=25, qty_short_pct=100.0 padahal 10 pcs sudah benar-benar diproduksi. Laporan penutupan PO internal karena itu menyesatkan (produksi nyata dianggap nol). Catatan tambahan: nama field alasan adalah `closed_reason` (bukan `close_reason`/`reason`) — tidak didokumentasikan di komentar CLOSE_SHORT_REASONS."
+      },
+      {
+        "endpoint": "POST /api/rahaza/setup/seed-sample",
+        "issue": "Idempoten & tidak 500, TIDAK membuat PO demo ganda (hanya 1 × PO-INT-DEMO-20260903-001) — bagus. Namun pada pemanggilan ulang responsnya `created` semua 0 dan `messages: []` dengan pesan generik 'Sample data berhasil diseed. Silakan lanjutkan eksplorasi menu Produksi.' Tidak ada satu pun keterangan tentang PO Internal demo (mis. 'sudah ada'), sehingga pemakai tidak tahu apa yang terjadi / ke mana harus pergi."
+      },
+      {
+        "endpoint": "GET /api/production-pos/{po}/quantity-summary",
+        "issue": "Untuk PO internal, per-item `available_qty=0` dan `received_qty=0` padahal production_job_items.available_qty=25 dan progress produksi diizinkan sampai 25. Kolom 'Tersedia' di layar akan menunjukkan 0 walau material sudah di-issue gudang."
+      },
+      {
+        "endpoint": "GET /api/production-pos/{po}/stage-summary",
+        "issue": "Pemetaan tahap kasar: `cutting_output` = processes[0] dan `sewing_output` = processes[-1] (production_stage_tracking.py:120-133). Untuk rantai proses >2 langkah, output proses TERAKHIR (mis. packing/finishing) dilabeli 'sewing_output', dan proses tengah tidak terlihat. progress_pct 57% dihitung dari label yang salah nama itu."
+      },
+      {
+        "endpoint": "GET /api/prod/control-tower/wo-list, GET /api/prod/control-tower/alerts",
+        "issue": "Kedua endpoint berfungsi (200, bentuk benar, filter source=internal/maklon benar) tetapi TIDAK dipakai satu pun komponen frontend (grep 'control-tower' hanya menemukan pemanggilan /api/prod/control-tower?days_window=7 di ProductionControlTowerModule.jsx). Logika risiko/daftar WO jadi dipelihara dua kali tanpa konsumen."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ProductionControlTowerModule.jsx",
+        "issue": "Baris WO HANYA dirender untuk tab Overdue & At Risk (woTabData = data.overdue_wos | data.at_risk_wos, baris 254 & 389-399). Active WO yang 'on_track' atau tanpa deadline (risk 'unknown' — persis kasus job demo JOB-PO-INT-DEMO-20260903-001 yang deadline-nya null) TIDAK muncul di layar mana pun, sehingga perbaikan klik-WO→prod-work-orders tidak bisa dijangkau untuk data demo. Uji hanya lolos setelah saya membuat PO/job dengan deadline lampau (PO-INT-202609-9919).",
+        "selector": "[data-testid^=\"pct-wo-row-\"]",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "ProductionControlTowerModule.jsx — KPI strip",
+        "issue": "Active WOs=6 tidak bisa direkonsiliasi dari kartu yang ditampilkan (On Track 4 + At Risk 0 + Overdue 1 = 5). KPI `unknown_deadline` (=1) dikembalikan API tetapi tidak pernah ditampilkan, jadi 1 WO 'hilang' dari sudut pandang pemakai.",
+        "selector": "KPICell 'Active WOs'",
+        "priority": "LOW"
+      },
+      {
+        "component": "engine/WorkOrderModule.jsx (Production Jobs)",
+        "issue": "Kartu 'Belum Mulai 6 / Sedang Jalan 3 / Selesai 0' menjumlah 9 sementara header di layar yang sama menyebut '6 PO' dan 6 job — angka itu menghitung BARIS SKU (data.flat), bukan job. Label ambigu dan tampak seperti salah hitung.",
+        "selector": "grid-cols-3 status quick stats",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Serah Terima FG / Buyer Shipment untuk Produksi Internal",
+        "issue": "Layar 'Buyer Shipment (Internal)' menampilkan 0 shipment dan tombol 'Buat Buyer Shipment', tetapi backend selalu menolak (butuh source_receipt_ids dari cmt_receipts) dan tab 'Kekurangan Kirim' kosong karena /buyer-dispatch-outstanding tidak melihat produksi internal. Jalur UI ini dead-end untuk portal Produksi Internal.",
+        "affected_selectors": ["Buat Buyer Shipment", "tab Kekurangan Kirim"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "prod-control-tower / prod-monitoring / prod-work-orders / prod-pos-internal / wh-material-issue / prod-shipments-buyer / po-closure / production-dashboard",
+        "issues": ["Tidak ada error konsol maupun layar blank pada 8 modul yang diuji; kontras & spacing kartu KPI baik. Tidak ditemukan masalah desain baru."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter102_prod_audit.py",
+    "/app/test_reports/pytest/iter102_results.xml",
+    "/app/scripts/_iter102_probe.py",
+    "/app/scripts/_iter102_make_overdue.py"
+  ],
+  "action_items": [
+    "CRITICAL: buka jalur pengiriman buyer untuk PO INTERNAL — POST /api/buyer-shipments harus menerima sumber 'produksi internal' (mis. produced_qty job internal / FG stock) sebagai pengganti source_receipt_ids cmt_receipts; sertakan core/dispatch_capacity.outstanding + by_po_items agar item PO internal yang sudah diproduksi muncul sebagai 'sisa bisa kirim'.",
+    "Selaraskan fulfillment/close-short dengan produksi internal: total_received/qty_short untuk PO internal harus memakai produced (atau accepted) qty, bukan penerimaan CMT — sekarang PO dengan 10 pcs jadi dilaporkan 100% short.",
+    "Pusat Kendali: render juga WO aktif on_track/unknown (mis. tab 'Semua WO' memakai GET /api/prod/control-tower/wo-list yang sudah ada tapi tak terpakai) dan tampilkan KPI unknown_deadline agar Active WOs bisa direkonsiliasi.",
+    "quantity-summary: isi available_qty/received_qty untuk PO internal dari production_job_items.available_qty (sekarang 0).",
+    "seed-sample: kembalikan pesan eksplisit saat PO Internal demo sudah ada (mis. messages: ['PO Internal demo sudah ada: PO-INT-DEMO-...']) supaya tombol di dashboard memberi umpan balik.",
+    "stage-summary: beri nama tahap sesuai process_type (jangan patok processes[0]=cutting, processes[-1]=sewing) atau kembalikan breakdown per proses."
+  ],
+  "critical_code_review_comments": [
+    "buyer_shipment.py:770-784 — gerbang source_receipt_ids diterapkan untuk SEMUA dispatch DA→buyer tanpa memeriksa po.business_type; untuk PO 'internal' gerbang ini secara struktural tidak mungkin dipenuhi. Tambahkan cabang business_type=='internal'.",
+    "core/dispatch_capacity (by_po_items/outstanding) hanya mengenal good_from_cmt/reworked_ok — tidak ada sumber qty untuk produksi internal, jadi shippable selalu 0.",
+    "production_stage_tracking.py masih mengambil rahaza_work_orders (koleksi tanpa penulis) sebagai sumber pertama; sekarang aman karena job juga dibaca, tapi kode mati itu sebaiknya dibersihkan agar wo_count/total_wo_qty punya satu sumber.",
+    "production_pos.py:1531 & buyer_shipment.py:1520 > 700 baris — kandidat pemecahan modul sesuai pedoman.",
+    "ProductionControlTowerModule.jsx: /api/prod/control-tower/wo-list & /alerts tidak dipakai → logika risiko duplikat (backend & frontend) tanpa konsumen."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter102_prod_audit.py",
+    "/app/scripts/_iter102_probe.py",
+    "/app/scripts/_iter102_make_overdue.py"
+  ],
+  "success_rate": {"backend": "92% (11/12 test; 1 gagal = blocker buyer shipment PO internal)", "frontend": "100% modul dirender tanpa error; 3 temuan UI non-blocking"},
+  "seed_data_creation": "Data produksi internal baru (DIBIARKAN, tidak dihapus): PO-INT-202609-9023 (Closed Short, job 10 pcs), PO-INT-202609-9248 (Closed Short, job 10 pcs), PO-INT-202609-9250 (Closed Short, job 10 pcs), PO-INT-202609-9919 (In Production, job overdue deadline 2026-08-20, 15 pcs, untuk uji baris WO Pusat Kendali). MI MI-20260903-002..004 berstatus issued + stok material di-top-up lewat /api/rahaza/material-receive (mempengaruhi jurnal inventory). Progress 3×10 pcs + 3 WIP event 'complete'. Data finance/settlement lama tidak disentuh.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "admin@garment.com / Admin@123 (superadmin)",
+  "context_for_next_testing_agent": "Jalankan `cd /app/backend && python -m pytest tests/test_iter102_prod_audit.py -n 0 -s` (setiap run membuat PO internal baru dengan nomor acak PO-INT-{YYYYMM}-{9000-9899}; penomoran PO Internal MANUAL, pola PO-INT-{YYYY}{MM}-{SEQ:4}). test_11_buyer_shipment SENGAJA gagal sampai jalur dispatch PO internal dibuka — itu satu-satunya kegagalan. Aturan penting: job internal butuh MI berstatus 'issued' sebelum progress (GDG-2); MI issued dicapai lewat PUT items(+location_id) → /submit → /approve (approve = issue, /confirm hanya jalur legacy draft→issued). Untuk melihat baris WO di UI Pusat Kendali, WO harus overdue/at_risk (gunakan /app/scripts/_iter102_make_overdue.py). Frontend adalah bundle statis — jangan jalankan dev server.",
+  "rca_of_the_issue": "Root cause blocker: seluruh rantai 'kirim ke buyer' dibangun untuk model MAKLON/CMT — kapasitas kirim dihitung dari cmt_receipts (core/dispatch_capacity: good_from_cmt + reworked_ok − dispatched) dan POST /buyer-shipments mewajibkan source_receipt_ids yang menunjuk cmt_receipts 'Approved' (Phase B enforcement). Produksi INTERNAL tidak melewati CMT sama sekali (job dibuat langsung dari PO, output dicatat production_progress → produced_qty + FG pending inbound), sehingga tidak ada cmt_receipts yang bisa dirujuk. Akibat berantai: outstanding kosong → shippable 0 → tidak ada surat jalan → fulfillment total_received/total_shipped 0 → PO internal tidak pernah 'Completed' dan hanya bisa ditutup via close-short yang melaporkan 100% short. Reproduksi: buat PO internal → Confirmed → job → MI issued → POST /api/production-progress 10 pcs → POST /api/buyer-shipments {po_id, items:[{po_item_id, qty_shipped:10}]} → 400. Mitigasi: kenali business_type=='internal' di _resolve_receiver_type/gerbang source_receipt_ids dan tambahkan sumber kapasitas 'internal produced' di core/dispatch_capacity."
+}

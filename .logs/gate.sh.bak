@@ -1,0 +1,508 @@
+#!/usr/bin/env bash
+###############################################################################
+# gate.sh — SATU perintah verifikasi. CV. Dewi Aditya ERP.
+#
+#   bash scripts/gate.sh          # cepat (statik + runtime inti)   ~60 detik
+#   bash scripts/gate.sh --full    # + alur produk HR (absen/cuti/payslip)
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# FASE 21 — KENAPA GATE INI JAUH LEBIH KECIL DARIPADA SEBELUMNYA
+# ─────────────────────────────────────────────────────────────────────────────
+# Sebelumnya: 12 gate + 54 skrip alat (~16.000 baris). Akibat nyatanya:
+#   · run_all_verifications.sh butuh >20 menit (12 skrip + jeda 25 detik/skrip)
+#   · penjaganya sendiri jadi sumber bug: `_seg_match` simetris menyembunyikan
+#     48 temuan · `fe_calls()` membaca komentar → merah palsu ·
+#     `audit_duplication.py` membaca DOCSTRING sebagai penulis DB ·
+#     `verify_phase_g_acc_opname.py` membocorkan stok + jurnal GL yatim ·
+#     `cleanup_*_qa.py` mencocokkan teks penanda ⇒ selalu satu alat di belakang
+#   · ada penjaga yang menjaga penjaga (`INV-META-01`) dan polisi "kualitas AI"
+#     (`INV-QUALITY-01`) — nol nilainya bagi pengguna aplikasi
+#
+# 52 skrip (13.327 baris) DIHAPUS. Kriteria yang dipakai — hanya SATU pertanyaan:
+#   "Kalau pemeriksaan ini hilang, apakah UANG, DATA, KEAMANAN, atau ALUR
+#    PRODUK bisa rusak tanpa ada yang tahu?"
+# Kalau tidak → dibuang. Pemeriksaan gaya kode, meta, dan audit duplikat tidak
+# lolos kriteria itu.
+###############################################################################
+set -uo pipefail
+CYAN='\033[96m'; GREEN='\033[92m'; RED='\033[91m'; YEL='\033[93m'; BOLD='\033[1m'; RST='\033[0m'
+cd "$(dirname "$0")/.." || exit 1
+RECEIPT="memory/GATE_RECEIPT.md"
+TS="$(date '+%Y-%m-%d %H:%M:%S')"
+FULL=0
+for a in "$@"; do [ "$a" = "--full" ] && FULL=1; done
+declare -a NAMES RESULTS
+OVERALL=0
+START=$(date +%s)
+
+run_gate () {  # $1=label  $2=perintah
+  local label="$1"; shift
+  local t0=$(date +%s)
+  echo -e "\n${CYAN}${BOLD}▶ ${label}${RST}"
+  bash -c "$*"
+  local rc=$? t1=$(date +%s)
+  if [ $rc -eq 0 ]; then
+    echo -e "  ${GREEN}✓ ${label} PASS ($((t1-t0))s)${RST}"; NAMES+=("$label"); RESULTS+=("PASS")
+  else
+    echo -e "  ${RED}✗ ${label} FAIL (rc=$rc, $((t1-t0))s)${RST}"; NAMES+=("$label"); RESULTS+=("FAIL"); OVERALL=1
+  fi
+}
+skip_gate () { echo -e "\n${YEL}▶ $1 — SKIP ($2)${RST}"; NAMES+=("$1"); RESULTS+=("SKIP"); }
+
+echo -e "${CYAN}${BOLD}\n=============================================================="
+echo "  GATE — CV. Dewi Aditya — $TS$([ $FULL -eq 1 ] && echo '  (--full)')"
+echo -e "==============================================================${RST}"
+
+# --- deteksi kesiapan backend + auth --------------------------------------
+BACKEND_UP=0; AUTH_READY=0
+if curl -s -o /dev/null -w "%{http_code}" http://localhost:8001/api/health 2>/dev/null | grep -qE "^[2-4]"; then
+  BACKEND_UP=1; echo -e "${GREEN}  Backend RUNNING${RST}"
+  ACODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8001/api/auth/login \
+          -H "Content-Type: application/json" \
+          -d '{"email":"admin@garment.com","password":"Admin@123"}' 2>/dev/null)
+  [ "$ACODE" = "200" ] && { AUTH_READY=1; echo -e "${GREEN}  Admin login OK${RST}"; } \
+                       || echo -e "${YEL}  Admin login HTTP $ACODE — gate runtime di-SKIP${RST}"
+else
+  echo -e "${YEL}  Backend down — gate runtime di-SKIP${RST}"
+fi
+
+# ══ 1. UANG & DATA (yang paling mahal kalau salah) ═══════════════════════════
+run_gate "UANG/DATA — invarian GL, stok, AR/AP (verify_data_integrity)" \
+         "python3 scripts/verify_data_integrity.py"
+run_gate "UANG — baseline valuasi aksesoris (SSOT acc_baseline)" \
+         "python3 scripts/lib/acc_baseline.py >/dev/null"
+
+if [ $AUTH_READY -eq 1 ]; then
+  run_gate "UANG — state machine jurnal (draft→posted→voided)" \
+           "python3 scripts/verify_state_machine.py"
+  run_gate "UANG — nomor dokumen tak boleh kembar saat balapan (RC-5)" \
+           "python3 scripts/verify_concurrency.py"
+  run_gate "UANG — batas nilai AR/AP/maklon (round6)" \
+           "python3 scripts/round6_verify.py"
+  # ══ 2. KEAMANAN ═══════════════════════════════════════════════════════════
+  run_gate "KEAMANAN — akses lintas-role & tanpa token (RBAC/IDOR)" \
+           "python3 scripts/guardrails/verify_rbac_idor.py"
+  run_gate "KETAHANAN — input jahat harus 4xx, bukan 500" \
+           "python3 scripts/guardrails/verify_adversarial_5xx.py"
+  # ══ 3. BISA DIPAKAI ═══════════════════════════════════════════════════════
+  run_gate "BISA DIPAKAI — endpoint kritis terjangkau" \
+           "python3 scripts/health_check.py"
+  # ══ ALUR PRODUK: PRODUKSI · MAKLON · CMT (audit 2026-07-31) ════════════════
+  # Menjaga 12 invarian yang cacatnya TERBUKTI merusak angka lintas portal:
+  # reject hilang, produced berkurang karena reject, stok FG di luar SSOT,
+  # permak tidak berefek, SJ gabungan tak bisa dibaca. Lihat
+  # docs/AUDIT_PRODUKSI_MAKLON_CMT.md — jangan hapus gate ini.
+  run_gate "ALUR — produksi/maklon/CMT: reject, rework, stok FG, SJ gabungan" \
+           "python3 scripts/verify_produksi_maklon_invariants.py"
+  # ══ R&D (2026-08-07): DATA spesifikasi ukuran + UANG HPP hybrid ════════════
+  # Cacat yang dijaga terbukti nyata sebelum perbaikan ini:
+  #   · `measurements.values` dikunci NAMA kolom ⇒ ganti nama kolom membuat
+  #     seluruh nilai ukuran YATIM tanpa peringatan (spesifikasi jahit lenyap).
+  #   · SKU R&D `{STYLE}-{SIZE}-{COLOR}` terbalik dari SSOT ⇒ tak pernah cocok SKU FG.
+  #   · Baris BOM tanpa tautan master tidak punya harga & konversi satuan ⇒ HPP
+  #     salah DIAM-DIAM (keluhan asli owner).
+  #   · HPP hybrid: total harus = Σ SEMUA baris, dan dokumen HPP lama tidak boleh bergeser.
+  # Lihat memory/PROPOSAL_RND_WARNA_UKURAN_TECHPACK_HPP.md — jangan hapus gate ini.
+  run_gate "DATA/UANG — R&D: ukuran tech pack, SKU SSOT, HPP hybrid (INV-RND)" \
+           "python3 scripts/verify_rnd_invariants.py"
+  # ══ R&D (2026-08-08): SSOT WARNA — palet master tidak boleh tercemar ════════
+  # Bug NYATA yang membuat gate INV-RND-4 MERAH di DB hasil bootstrap bersih:
+  # `rahaza_colors` di-seed lazy HANYA bila kosong, dan dulu penyemaian itu hanya
+  # dipasang di endpoint DAFTAR. `utils.variant_ssot.ensure_color()` (dipakai
+  # importir Excel + promosi varian R&D → master) tidak menyemai, sehingga
+  # pemanggil pertama membuat warna SAMPAH ('NVY'/'NVY'/#CCCCCC) dan palet 15
+  # warna asli TIDAK PERNAH ter-seed lagi ⇒ dropdown warna R&D kosong-makna dan
+  # satu warna pecah dua kode ('NVY' + 'NAV') ⇒ SKU R&D tak cocok SKU FG.
+  # Berjalan di DB SEMENTARA, tidak menyentuh data aplikasi.
+  run_gate "DATA — SSOT warna: palet master bebas warna sampah (INV-COLOR)" \
+           "python3 scripts/verify_color_palette_seed.py"
+  # ══ R&D (2026-08-08): Padankan Ukuran + peringatan harga master basi ════════
+  # Menjaga dua alat yang menutup konsekuensi kebijakan B1 & D1:
+  #   · ukuran R&D "belum dipadankan" MEMBLOKIR PO produksi internal
+  #     (`production_internal_adapter.py` mewajibkan `size_id` sah) — layar
+  #     Padankan Ukuran harus benar-benar membuat `matched:true`, dan TIDAK
+  #     boleh mengubah `size_list` style (ukuran tetap teks bebas).
+  #   · daftar HPP harus menandai baris yang harga masternya sudah berubah
+  #     TANPA menggeser satu rupiah pun angka tersimpan.
+  run_gate "DATA/UANG — R&D: padankan ukuran + harga master basi (INV-RND2)" \
+           "python3 scripts/verify_rnd_size_mapping_stale.py"
+  # ══ CMT (2026-08-08): PORTAL CMT OVERRIDE — staf DA mengisi atas nama vendor ═
+  # Fitur ini membolehkan staf DA MENULIS dokumen produksi atas nama vendor CMT
+  # yang tidak memakai sistem — termasuk PROGRESS PRODUKSI, dasar tagihan CMT.
+  # Tiga kelas kerusakan yang dijaga (semuanya pernah nyata saat dibangun):
+  #   · KEWENANGAN — header `X-CMT-Override-Vendor` hanya boleh dihormati untuk
+  #     role di core/cmt_override.OVERRIDE_ROLES, dan role lain harus DITOLAK 403
+  #     (bukan "diabaikan diam-diam", karena kesalahan itu tak akan pernah terlihat);
+  #     akun vendor pun tidak boleh memakainya (mustahil menyamar jadi vendor lain).
+  #   · SCOPING — baca & tulis wajib terkurung ke vendor yang diwakili. Salah
+  #     vendor = salah tagihan = uang keluar ke pihak yang salah.
+  #   · JEJAK — setiap dokumen hasil override WAJIB berstempel `entered_by_staff`
+  #     + `on_behalf_of_vendor` (keputusan owner 3a), dan layar monitoring/invoice
+  #     harus MENERIMA bahan badge "diinput staf DA" (tanpa itu badge mustahil).
+  # Ikut menjaga 2 bug pre-existing yang ditutup bersamaan: riwayat progress portal
+  # vendor pernah SELALU KOSONG (filter `garment_id` yang tak pernah ditulis) dan
+  # inbox reminder pernah BOCOR ke semua vendor (scoping role `vendor` saja).
+  run_gate "KEAMANAN/UANG — Portal CMT Override: kewenangan, scoping, jejak (INV-CMTOV)" \
+           "python3 scripts/verify_cmt_override.py"
+  # ── INV-REKAP (2026-08-08) — Rekap Harian CMT ────────────────────────────────
+  # Layar "vendor mana yang belum diisi hari ini" dipakai staf tiap pagi untuk
+  # memutuskan siapa yang dikejar. Yang dijaga:
+  #   · UANG — vendor yang belum setor progress tidak boleh tampak beres (progress
+  #     = dasar tagihan CMT); dan vendor yang sudah setor tidak boleh tampak merah,
+  #     karena sekali staf ditegur salah, alatnya ditinggalkan.
+  #   · BATAS HARI WIB — jam container UTC; kalau batasnya bukan WIB maka selama
+  #     07 jam tiap hari (00:00–07:00 WIB, persis jam produksi mulai) rekap "hari
+  #     ini" menampilkan hari kemarin dan SEMUA vendor tampak belum mengisi.
+  #   · SATU ANGKA — layar, Excel/PDF, dan sasaran tombol reminder wajib sama.
+  #   · TIPE `received_at` — dulu hanya ditulis BROWSER sebagai STRING sehingga
+  #     query rentang hari tidak pernah cocok (kolom "Terima" abadi ✗).
+  #   · ANTI-SPAM — reminder idempoten per vendor per tanggal, dan reminder yang
+  #     dilahirkannya sendiri tidak boleh membuat vendor abadi-merah.
+  run_gate "UANG/PRODUK — Rekap Harian + Mingguan CMT: batas WIB, definisi terisi, SSOT export (INV-REKAP)" \
+           "python3 scripts/verify_rekap_harian.py"
+  # ── INV-PRODUK + INV-KATALOG (2026-08-10) — master produk ↔ katalog ↔ order ──
+  # Semua yang dijaga di sini SUDAH pernah terbukti rusak di repo ini:
+  #   · KODE PRODUK KEMBAR (T1) — form manual menulis `active`, promosi R&D hanya
+  #     `status`, sementara index unik `code` memakai partialFilterExpression
+  #     {active:true} ⇒ produk promosi di LUAR index ⇒ POST kode sama balas 200.
+  #     Dua master untuk satu barang = stok/BOM/laporan pecah tanpa ada yang tahu.
+  #   · KATEGORI BASI (P2b) & TEKS BEBAS (P3) — kategori dipakai filter/grouping
+  #     katalog marketing; kalau tidak divalidasi & tidak dipropagasi, laporan
+  #     per-kategori berbohong dengan sopan.
+  #   · HPP 0 UNTUK PRODUK MANUAL (P1) & BERAT FG 0 (P4) — margin katalog mustahil
+  #     dihitung dan biaya kirim salah.
+  #   · OVERSELLING (M3) — `sync-from-wms` dulu mengabaikan `reserved_quantity` dan
+  #     menaikkan stok katalog di atas yang tersedia (terbukti 5000 vs 4999).
+  #   · ITEM LAHIR STOK 0 (M2) — "lokasi default" salah pilih ⇒ produk baru tampak
+  #     habis ⇒ kehilangan penjualan TANPA pesan error.
+  #   · ORDER TANPA TAUTAN (M9) — fulfillment mencocokkan order→barang dengan tangan
+  #     setiap pesanan; salah pilih = stok salah turun.
+  run_gate "UANG/DATA — Master Produk: kode kembar, kategori, HPP, berat, SKU (INV-PRODUK)" \
+           "python3 scripts/verify_master_produk.py"
+  run_gate "UANG — Katalog: satu rumus stok jual, anti-overselling, tautan order (INV-KATALOG)" \
+           "python3 scripts/verify_katalog_stok.py"
+  # ── INV-MKTSCOPE (2026-08-11) — lingkup toko marketing + mesin impor ─────────
+  # Semua yang dijaga di sini TERBUKTI rusak sebelum F14 (audit terukur, bukan
+  # dugaan — lihat memory/AUDIT_MARKETING_PORTAL_2026-08-11.md):
+  #   · LINGKUP TOKO — 60/60 order, 25/25 iklan, 18/18 sesi live, 35/35 sample,
+  #     30/30 konten, 10/10 diskon, 8/8 peluncuran TANPA `account_id`. Layar yang
+  #     difilter per toko mengembalikan KOSONG dan laporan per akun Rp 0, tanpa
+  #     satu pun error. Angka nol yang salah tetap ikut ke rapat.
+  #   · TUJUAN IMPOR — mesin impor lama menulis kampanye diskon ke
+  #     `marketing_discount_campaigns` dan sample ke `marketing_sample_shipments`,
+  #     dua koleksi yang TIDAK PERNAH dibaca layar mana pun: impor "berhasil",
+  #     datanya hilang.
+  #   · ANGKA — "Rp 1.250.000" yang terbaca 1.25 salah dengan sopan.
+  #   · TANPA AI — pemetaan kolom wajib jalan tanpa layanan luar; kalau tidak,
+  #     impor harian staf mati begitu kuota AI habis.
+  #   · KEWENANGAN — host/kreator yang belum di-assign ke toko harus DITOLAK,
+  #     kalau tidak jam kerja & komisi bisa dibebankan ke toko yang salah.
+  # Gate ini menguji dirinya sendiri dengan pelanggaran sintetis (MKS-22).
+  run_gate "DATA/UANG — Marketing: lingkup toko + impor tanpa AI (INV-MKTSCOPE)" \
+           "python3 scripts/verify_marketing_scope.py"
+  # ── INV-MKTCYCLE (2026-08-13, F5) — siklus target · anggaran · omzet ─────────
+  # Yang dijaga di sini juga TERBUKTI rusak sebelum F5 (bukan dugaan):
+  #   · TIGA PULAU ANGKA — layar Target, layar Anggaran, dan Laporan menghitung
+  #     sendiri-sendiri, jadi satu bulan bisa punya tiga kesimpulan. Gate menuntut
+  #     `cycle/summary` = `budget/summary` = Σ baris `cycle/overview`.
+  #   · DISKON SELALU Rp 0 — realisasi diskon hanya bisa masuk lewat entri manual
+  #     yang tidak pernah diisi, padahal satu bulan memuat Rp 48 juta diskon
+  #     penjual. Anggaran yang selalu "aman" membuat keputusan diskon diambil
+  #     tanpa tahu biayanya. Gate memastikan angka otomatis TIDAK ditulis sebagai
+  #     entri belanja (kalau ditulis, biaya yang sama dihitung dua kali).
+  #   · TIDAK ADA KUNCI PERIODE — angka bulan yang sudah dirapatkan masih bisa
+  #     berubah seminggu kemudian. Gate menutup periode sintetis lalu MENUNTUT 423
+  #     (kunci yang tidak menolak tulisan sama dengan tidak ada kunci).
+  #   · MARJIN TANPA CAKUPAN HPP — marjin 57% pernah tampil padahal HPP hanya
+  #     diketahui untuk 0% unit terjual.
+  run_gate "UANG/ARAH — Marketing: siklus target·anggaran·omzet + kunci periode (INV-MKTCYCLE)" \
+           "python3 scripts/verify_marketing_cycle.py"
+  # ── INV-KPIIMPOR (2026-08-13, F7.2/F6.4/F7.4) — impor KPI Seller Center ──────
+  # Yang dijaga di sini adalah kerusakan yang PASTI terjadi tanpa gate ini:
+  #   · BERKAS KPI TERBACA 0 KOLOM — seluruh ekspor KPI Shopee menaruh judul grup
+  #     kolom di baris 0 (Live/Video), 6 baris metadata (laporan iklan), atau
+  #     tanggal berbentuk RENTANG (statistik toko). Mesin impor generik mengambil
+  #     baris pertama sebagai header ⇒ tidak satu pun kolom terpetakan.
+  #   · GMV KPI DIJUMLAH DENGAN OMZET — angka "Penjualan" ekspor Shopee memakai
+  #     definisi platform (pesanan dibuat/siap dikirim/dibayar). Kalau ia masuk ke
+  #     `marketing_sales_data`, satu penjualan dihitung dua kali dan omzet turunan
+  #     (F2) rusak. Gate menuntut koleksi terpisah + penanda `is_platform_kpi`.
+  #   · BIAYA IKLAN DOBEL — laporan iklan dipilih per RENTANG; mengunggah "1–31
+  #     Agu" setelah "7–13 Agu" menaikkan realisasi anggaran tanpa satu pun galat.
+  #     Gate menuntut 409 untuk periode beririsan dan menuntut realisasi F5 = Σ biaya.
+  #   · KPI KONTEN MENIMPA RENCANA STAF — impor memakai `published_url` sebagai
+  #     kunci; kalau dokumen ditimpa utuh, judul & rencana konten staf hilang.
+  #   · ASSIGN TOKO TIDAK ADA JALANNYA — F6 menjaga visibilitas per toko, tetapi
+  #     `assigned_staff` sebelumnya hanya bisa diubah lewat skrip seed: aturan benar
+  #     di kode, tidak bisa dipakai di lapangan. Gate menuntut assign/unassign
+  #     berjejak dan efek 403 yang langsung.
+  run_gate "DATA/UANG — Marketing: impor KPI Seller Center + assign toko + scorecard (INV-KPIIMPOR)" \
+           "python3 test_core_f7_kpi_impor.py"
+  # ── INV-MKTFULFILL (2026-08-14, F3) — impor Ekspor B/C + "Batalkan impor" ────
+  # Tiga kerusakan yang TERBUKTI mahal dan hanya gate ini yang menahannya
+  # (rinciannya di kepala test_core_f3_fulfillment.py):
+  #   · PESANAN HANTU — berkas "Dikirim/Selesai" yang boleh membuat baris baru
+  #     melahirkan pesanan tanpa item, tanpa uang, tanpa kreator: jumlah pesanan
+  #     bulan itu naik tanpa satu pun penjualan.
+  #   · STATUS MUNDUR — ekspor yang sama diunduh berkali-kali dan urutan barisnya
+  #     tidak dijamin; baris kemarin menimpa hari ini ⇒ pesanan yang sudah sampai
+  #     muncul lagi di daftar "belum dikirim", dan gudang mengirim dua kali.
+  #   · "BATALKAN IMPOR" YANG TIDAK MENEPATI JANJI — impor ini tidak MEMBUAT
+  #     baris, jadi rollback gaya lama melaporkan "0 baris dihapus" sambil
+  #     membiarkan SELURUH perubahan status di tempatnya.
+  # Plus dua kejujuran yang wajib dipertahankan: pesanan yang sudah batal/retur
+  # TIDAK dihidupkan lagi oleh undo (stoknya sudah dilepas — menjanjikan barang
+  # yang sama ke dua pembeli), dan usulan pemetaan kolom tidak boleh HILANG saat
+  # staf memperbaiki satu kolom.
+  run_gate "DATA/UANG — Marketing: status pengiriman (Ekspor B/C) + pemulihan impor (INV-MKTFULFILL)" \
+           "python3 test_core_f3_fulfillment.py"
+  # ── INV-MKTOPS (2026-08-14, F8) — Assign Toko · Ingat Pemetaan · Scorecard ───
+  # Tiga janji layar yang sebelumnya tidak dijaga apa pun:
+  #   · ALASAN WAJIB — kepala berkas `marketing_account_assign.py` menulis "setiap
+  #     simpan wajib membawa alasan", padahal `reason` opsional. Jejak lengkap tanpa
+  #     sebab tetap tidak menjawab "kenapa akses toko saya dicabut?".
+  #   · GATE YANG MEMUSNAHKAN BUKTI — pembersihan gate F7.2 dulu menghapus SELURUH
+  #     riwayat pemegang toko NYATA (`delete_many` per `account_id`). Satu kali
+  #     `gate.sh` = riwayat toko hilang. Gate ini menjaganya secara statik.
+  #   · INGATAN PEMETAAN YANG SENYAP & PERMANEN — pemetaan tersimpan dipakai ulang
+  #     tanpa memberitahu siapa pun dan tidak bisa dilupakan, sehingga satu
+  #     kesalahan yang pernah di-commit terpasang otomatis setiap hari. Ditambah
+  #     pemetaan BASI (field sudah tidak ada di skema) yang dulu diterima apa adanya
+  #     ⇒ kolomnya hilang dari hasil tanpa satu pun galat.
+  #   · SCORECARD YANG TIDAK BISA DITELUSURI — total rincian WAJIB sama persis
+  #     dengan baris scorecard, tiga sumber uang tidak boleh dijumlah, pesanan yang
+  #     dikecualikan tetap tampil beserta sebabnya, kreator tanpa target ditandai
+  #     "belum ada target" (bukan 0%).
+  run_gate "DATA/KEWENANGAN — Marketing: assign toko · ingat pemetaan · scorecard kreator (INV-MKTOPS)" \
+           "python3 test_core_f8_assign_ingat_scorecard.py"
+  # ── INV-RETUR (2026-08-14, sesi #9) — OMZET BRUTO vs OMZET SETELAH RETUR ─────
+  # Keputusan pemilik: tampilkan DUA angka, JANGAN geser angka lama. Yang dijaga
+  # justru cara paling mudah melanggarnya tanpa satu pun galat:
+  #   · memasukkan `returned` ke `EXCLUDED_FOR_REVENUE` "supaya lebih benar" ⇒
+  #     SELURUH angka historis (target, capaian, pace, ROAS, lampiran rapat yang
+  #     sudah beredar) berubah arti dalam senyap;
+  #   · mengurangi "order amount retur" dari "omzet produk" ⇒ net terlalu kecil,
+  #     dan tidak ada yang tahu karena keduanya "angka retur";
+  #   · rumus retur kedua: dua pembaca lama memakai `revenue_product or revenue`
+  #     yang memberi Rp 0 untuk pesanan yang diinput staf lewat layar;
+  #   · hari yang rekapnya DIIMPOR/DIKETIK tidak tahu soal retur — melaporkannya
+  #     sebagai "0 retur" adalah kebohongan yang paling mudah dipercaya;
+  #   · angka yang hanya ada di JSON: gate memeriksa layar Siklus · Scorecard ·
+  #     Rapat Mingguan (termasuk CSV/Excel/PDF) benar-benar memuatnya;
+  #   · retur harus TETAP melepas reservasi stok & TERMINAL (anti-overselling).
+  run_gate "UANG/ARAH — Marketing: omzet bruto vs setelah retur (INV-RETUR)" \
+           "python3 test_core_returns_visibility.py"
+  # ── INV-F6RBAC (2026-08-14, sesi #9) — LINGKUP TOKO PER PEMAKAI + JEJAK ──────
+  # Aturan "siapa boleh melihat toko yang mana" sudah ada sejak F6, tetapi hanya
+  # 7 dari 54 berkas route marketing memanggilnya. Diukur dengan dua token (staf
+  # pemegang SATU toko vs admin), 14 endpoint memberi jawaban yang PERSIS SAMA:
+  # omzet, biaya iklan, komplain, ulasan, sesi live, peringkat kreator, dan
+  # RIWAYAT IMPOR (dari sana ada tombol "Batalkan & pulihkan" ⇒ jalan pintas
+  # mengubah data toko orang lain). Yang dijaga gate ini:
+  #   · jaring pengaman middleware: menukar `account_id` di path/query/body ⇒ 403,
+  #     admin tidak terpengaruh, dan toko yang tidak ada TIDAK dibelokkan jadi 403;
+  #   · endpoint DAFTAR/RINGKAS wajib menyaring sendiri — dibuktikan dengan
+  #     membandingkan jawaban staf vs admin (identik pada data tak kosong = bocor);
+  #   · layar "siapa mengubah apa": `total` jujur (bukan len(rows)), filter
+  #     toko/aksi/pelaku/tanggal/teks, nilai LAMA→BARU per field, id user
+  #     diterjemahkan jadi NAMA, dan jejak TIDAK punya endpoint tulis.
+  run_gate "KEAMANAN/DATA — Marketing: lingkup toko per pemakai + jejak perubahan (INV-F6RBAC)" \
+           "python3 test_core_f6_rbac_scope.py"
+
+  # ── INV-F10 (2026-08-14, sesi #10) — LAYAR DAFTAR YANG BISA DIPAKAI ──────────
+  # Audit 25 pintu Portal Marketing: hanya 2 yang bisa DIUNDUH. Angka yang benar
+  # di layar tetapi tidak bisa dibawa ke rapat berakhir diketik ulang dengan
+  # tangan (sumber salah-ketik paling umum). Juga ditemukan: Laporan Harian
+  # MENYEMBUNYIKAN `sales_status.entered_live` yang sudah dikirim backend ⇒ toko
+  # yang belum mengisi omzet LIVE tampak "sudah beres". Yang dijaga gate ini:
+  #   · setiap pintu DAFTAR punya tabel nyata + cara menyempitkan + tombol unduh
+  #     (dan pintu yang bukan daftar terdaftar BESERTA alasannya);
+  #   · SATU pembuat CSV (`lib/csv.js`: escaping + BOM Excel) dan yang diunduh =
+  #     baris yang TERLIHAT (bukan kueri ulang yang bisa berbeda dari layar);
+  #   · tidak ada field respons yang tidak punya rumah di layar Laporan Harian.
+  run_gate "BISA DIPAKAI — Marketing: layar daftar (tabel · cari · unduh) + field tak disembunyikan (INV-F10)" \
+           "python3 test_core_f10_layar_daftar.py"
+
+  # ── INV-F11 (2026-08-14, sesi #11) — PRATINJAU IMPOR **PER BARIS** ──────────
+  # Mode "Perbarui yang lama" bisa mengubah STATUS pesanan (`paid → cancelled`).
+  # Perubahan itu MELEPAS reservasi stok dan menurunkan omzet bulan yang mungkin
+  # sudah dirapatkan. Sebelum Fase 4 satu-satunya cara melihat akibatnya adalah
+  # "commit dulu, kalau salah tekan Batalkan impor" — memakai data sungguhan
+  # sebagai kelinci percobaan. Yang dijaga gate ini justru cara paling mudah
+  # merusaknya TANPA satu pun galat:
+  #   · PRATINJAU YANG MENULIS — satu `update_one` menyelinap ke jalur pratinjau
+  #     ⇒ membuka layar = mengubah data (penjaga statik atas 10 fungsi + pas
+  #     runtime yang menghitung `marketing_orders` sebelum/sesudah pratinjau);
+  #   · PRATINJAU YANG BERBEDA DARI KENYATAAN — lebih berbahaya daripada tidak
+  #     punya pratinjau: keempat angka (baru/diperbarui+sebagian/dilewati/ditolak)
+  #     dibandingkan dengan hasil commit SUNGGUHAN pada 6 keadaan berbeda;
+  #   · PENGHALANG YANG DISALIN — pesan "periode sudah DITUTUP" ditulis dua kali
+  #     ⇒ pratinjau & commit bercerita beda; di sini wajib SATU sumber, dan
+  #     pesan di pratinjau harus SAMA PERSIS dengan penolakan 423 commit;
+  #   · JANJI LAYAR YANG HILANG SAAT "DIRAPIKAN" — tabel baris, chip saring 5
+  #     akibat (termasuk `ditolak`), pencarian, halaman, dan unduhan CSV; plus
+  #     `total` halaman WAJIB dari server (bukan panjang satu halaman — cacat
+  #     "Halaman 1 dari 1" untuk berkas 5.000 baris);
+  #   · CSV RENCANA YANG KOSONG BERJUDUL BENAR — kolom "Nilai lama/Nilai baru"
+  #     ada tetapi tanpa satu pun nilai; dan laporan HASIL tidak boleh bisa
+  #     diunduh SEBELUM commit (laporan yang mengarang hasil).
+  # Uji ini membuat sesi impor DEMO dan MEMBATALKANNYA SENDIRI lewat rollback
+  # resmi (aturan: gate hanya boleh menghapus dokumen bertanda gate).
+  run_gate "DATA/UANG — Marketing: pratinjau impor per baris = kenyataan (INV-F11)" \
+           "python3 test_core_f11_pratinjau_impor.py"
+
+  # ── INV-F12 (2026-08-14, sesi #11) — BERKAS YANG DIUNGGAH KE TOKO SALAH ─────
+  # Sebelum ini hanya ada dua penjaga toko, dan KEDUANYA cuma pada satu jenis data
+  # (`marketplace_orders`): `platform_guard` ("berkas Shopee masuk toko TikTok")
+  # dan `shop_guard` (gudang platform di berkas bukan gudang toko tujuan). Yang
+  # masih terbuka justru kesalahan harian: memilih toko yang salah dari 12 toko
+  # yang namanya mirip (Shopee Daluna vs TikTok Daluna vs Shopee Moen vs TikTok
+  # Style by Moen). Yang dijaga gate ini:
+  #   · EKSPOR B/C TANPA SIDIK APA PUN — berkas toko A yang diunggah ke toko B
+  #     dulu hanya menjawab "3 baris ditolak: belum pernah diimpor". Kalimat itu
+  #     BENAR tetapi menyembunyikan sebabnya ⇒ staf mengira berkasnya rusak, atau
+  #     (lebih mahal) memilih jenis "Pesanan Marketplace" supaya "mau masuk" ⇒
+  #     pesanan HANTU tanpa item & tanpa omzet;
+  #   · BUKTI, BUKAN DUGAAN — tanda pengenal GLOBAL (`SourceType.identity`: nomor
+  #     pesanan / nomor komplain / URL konten) yang sudah tercatat pada toko LAIN.
+  #     Jenis yang isinya memang tanpa penanda toko (mis. statistik toko Shopee =
+  #     tanggal + kanal saja) WAJIB terdaftar di `NO_IDENTITY_REASON` beserta
+  #     alasannya — kalau tidak, penjaganya sendiri yang akan MENUDUH SALAH;
+  #   · AMBANG YANG TIDAK BOLEH DIBALIK — mayoritas baris milik toko lain ⇒
+  #     PENGHALANG (commit 409); minoritas ⇒ PERINGATAN yang tetap boleh disimpan
+  #     (berkas gabungan & staf yang sedang memperbaiki keadaan tidak boleh
+  #     terkunci di luar). Peringatan TIDAK boleh mematikan tombol Simpan;
+  #   · SATU SUMBER — pesan di pratinjau harus SAMA PERSIS dengan penolakan commit,
+  #     dan jalur pratinjau TIDAK boleh menulis apa pun (versi pertama sempat
+  #     menulis cache sidik isi berkas ke sesi milik toko LAIN).
+  run_gate "DATA/UANG — Marketing: berkas ekspor tidak boleh masuk toko yang salah (INV-F12)" \
+           "python3 test_core_f12_sidik_toko.py"
+else
+  for g in "state machine jurnal" "nomor dokumen kembar" "batas nilai AR/AP" \
+           "RBAC/IDOR" "input jahat 4xx" "endpoint kritis" \
+           "alur produksi/maklon/CMT" "R&D ukuran/SKU/HPP (INV-RND)" \
+           "SSOT warna (INV-COLOR)" "R&D padankan ukuran + harga basi (INV-RND2)" \
+           "Portal CMT Override (INV-CMTOV)" "Rekap Harian CMT (INV-REKAP)" \
+           "Master Produk (INV-PRODUK)" "Katalog stok jual (INV-KATALOG)" \
+           "Marketing lingkup toko + impor (INV-MKTSCOPE)" \
+           "Marketing siklus + kunci periode (INV-MKTCYCLE)" \
+           "Marketing impor KPI + assign toko + scorecard (INV-KPIIMPOR)" \
+           "Marketing status pengiriman + pemulihan impor (INV-MKTFULFILL)" \
+           "Marketing assign toko + ingat pemetaan + scorecard (INV-MKTOPS)" \
+           "Marketing omzet bruto vs setelah retur (INV-RETUR)" \
+           "Marketing lingkup toko per pemakai + jejak (INV-F6RBAC)" \
+           "Marketing layar daftar bisa dipakai (INV-F10)" \
+           "Marketing pratinjau impor per baris (INV-F11)" \
+           "Marketing berkas masuk toko yang salah (INV-F12)"; do
+    skip_gate "$g" "backend/auth belum siap"
+  done
+fi
+
+# ══ 4. FITUR MATI DIAM-DIAM (statik, murah, terbukti menemukan bug produk) ═══
+# Dua ini DIPERTAHANKAN karena rekam jejaknya nyata: `unreachable_code`
+# menemukan handler export CSV payroll yang kehilangan dekorator (fitur mati),
+# dan `fe_be_contract` menemukan 8 panggilan FE yang 404 senyap.
+run_gate "FITUR MATI — handler tergabung / kode setelah return" \
+         "python3 scripts/guardrails/verify_unreachable_code.py"
+run_gate "FITUR MATI — panggilan FE ke endpoint yang tak ada" \
+         "python3 scripts/preflight/verify_fe_be_contract.py --report-only"
+run_gate "NAVIGASI — menu hantu / duplikat / kedalaman" \
+         "python3 scripts/guardrails/check_nav_map.py"
+
+# ══ 5. SESI BISA DISERAHKAN (gate lint platform harus hidup) ═════════════════
+run_gate "SERAH-TERIMA — mesin lint platform hidup (import validation + oxlint)" \
+         "python3 scripts/guardrails/verify_platform_lint_engine.py --quiet"
+
+# ══ 6. ALUR PRODUK HR (hanya dengan --full; butuh backend) ═══════════════════
+if [ $FULL -eq 1 ]; then
+  if [ $AUTH_READY -eq 1 ]; then
+    run_gate "PRODUK — absen (selfie+geofence wajib)" "python3 scripts/verify_fase16_absen.py"
+    sleep 10
+    run_gate "PRODUK — cuti" "python3 scripts/verify_fase17_cuti.py"
+    sleep 10
+    run_gate "PRODUK — payslip karyawan" "python3 scripts/verify_fase18_payslip.py"
+    sleep 10
+    run_gate "PRODUK — alur lembur live (HRIS)" "python3 scripts/bughunt_hris_flow.py"
+  else
+    skip_gate "alur produk HR" "backend/auth belum siap"
+  fi
+fi
+
+# ══ RECEIPT ══════════════════════════════════════════════════════════════════
+ELAPSED=$(( $(date +%s) - START ))
+{
+  echo "# 🧾 GATE RECEIPT — CV. Dewi Aditya ERP"
+  echo
+  echo "> Dihasilkan \`scripts/gate.sh\`. JANGAN edit manual."
+  echo "> \"Selesai\" hanya sah bila receipt HIJAU untuk cakupan yang TIDAK di-skip."
+  echo
+  echo "- **Waktu:** $TS  ·  **Durasi:** ${ELAPSED}s  ·  **Mode:** $([ $FULL -eq 1 ] && echo 'full' || echo 'cepat')"
+  echo "- **Backend:** $([ $BACKEND_UP -eq 1 ] && echo RUNNING || echo DOWN) · **Auth:** $([ $AUTH_READY -eq 1 ] && echo READY || echo 'NOT READY')"
+  echo
+  echo "| Gate | Hasil |"
+  echo "|------|-------|"
+  for i in "${!NAMES[@]}"; do echo "| ${NAMES[$i]} | ${RESULTS[$i]} |"; done
+  echo
+  if [ $OVERALL -eq 0 ]; then
+    echo "## ✅ VERDICT: HIJAU — boleh lanjut / klaim selesai (untuk cakupan non-skip)."
+  else
+    echo "## ❌ VERDICT: MERAH — ada gate gagal. JANGAN klaim selesai."
+  fi
+  echo
+  echo "_SKIP bukan PASS. Jalankan ulang saat backend + auth hidup._"
+} > "$RECEIPT"
+
+echo -e "\n${CYAN}${BOLD}==============================================================${RST}"
+for i in "${!NAMES[@]}"; do
+  case "${RESULTS[$i]}" in
+    PASS) echo -e "  ${GREEN}PASS${RST}  ${NAMES[$i]}" ;;
+    FAIL) echo -e "  ${RED}FAIL${RST}  ${NAMES[$i]}" ;;
+    *)    echo -e "  ${YEL}SKIP${RST}  ${NAMES[$i]}" ;;
+  esac
+done
+echo -e "  ${BOLD}durasi ${ELAPSED}s · receipt: $RECEIPT${RST}"
+[ $OVERALL -eq 0 ] && echo -e "  ${GREEN}${BOLD}VERDICT: HIJAU${RST}" || echo -e "  ${RED}${BOLD}VERDICT: MERAH${RST}"
+exit $OVERALL
+ODUK — payslip karyawan" "python3 scripts/verify_fase18_payslip.py"
+    sleep 10
+    run_gate "PRODUK — alur lembur live (HRIS)" "python3 scripts/bughunt_hris_flow.py"
+  else
+    skip_gate "alur produk HR" "backend/auth belum siap"
+  fi
+fi
+
+# ══ RECEIPT ══════════════════════════════════════════════════════════════════
+ELAPSED=$(( $(date +%s) - START ))
+{
+  echo "# 🧾 GATE RECEIPT — CV. Dewi Aditya ERP"
+  echo
+  echo "> Dihasilkan \`scripts/gate.sh\`. JANGAN edit manual."
+  echo "> \"Selesai\" hanya sah bila receipt HIJAU untuk cakupan yang TIDAK di-skip."
+  echo
+  echo "- **Waktu:** $TS  ·  **Durasi:** ${ELAPSED}s  ·  **Mode:** $([ $FULL -eq 1 ] && echo 'full' || echo 'cepat')"
+  echo "- **Backend:** $([ $BACKEND_UP -eq 1 ] && echo RUNNING || echo DOWN) · **Auth:** $([ $AUTH_READY -eq 1 ] && echo READY || echo 'NOT READY')"
+  echo
+  echo "| Gate | Hasil |"
+  echo "|------|-------|"
+  for i in "${!NAMES[@]}"; do echo "| ${NAMES[$i]} | ${RESULTS[$i]} |"; done
+  echo
+  if [ $OVERALL -eq 0 ]; then
+    echo "## ✅ VERDICT: HIJAU — boleh lanjut / klaim selesai (untuk cakupan non-skip)."
+  else
+    echo "## ❌ VERDICT: MERAH — ada gate gagal. JANGAN klaim selesai."
+  fi
+  echo
+  echo "_SKIP bukan PASS. Jalankan ulang saat backend + auth hidup._"
+} > "$RECEIPT"
+
+echo -e "\n${CYAN}${BOLD}==============================================================${RST}"
+for i in "${!NAMES[@]}"; do
+  case "${RESULTS[$i]}" in
+    PASS) echo -e "  ${GREEN}PASS${RST}  ${NAMES[$i]}" ;;
+    FAIL) echo -e "  ${RED}FAIL${RST}  ${NAMES[$i]}" ;;
+    *)    echo -e "  ${YEL}SKIP${RST}  ${NAMES[$i]}" ;;
+  esac
+done
+echo -e "  ${BOLD}durasi ${ELAPSED}s · receipt: $RECEIPT${RST}"
+[ $OVERALL -eq 0 ] && echo -e "  ${GREEN}${BOLD}VERDICT: HIJAU${RST}" || echo -e "  ${RED}${BOLD}VERDICT: MERAH${RST}"
+exit $OVERALL

@@ -1,0 +1,2729 @@
+# ⛔ RETIRED — Session #12 P2: Split into dewi_kpi_{shared,config,perform,results,gamification,analytics,export}.py
+# DO NOT add new code here. This file is kept for git history only.
+# ruff: noqa
+"""
+CV. Dewi Aditya — Sistem KPI Karyawan (DA KPI System)
+
+Formula:
+  KPI Akhir = (Perform × 60%) + (Attitude × 20%) + (Absensi × 20%)
+
+Attitude (360°):
+  = (Self × 20%) + (Peer × 20%) + (Supervisor→Staff × 35%) + (Staff→Supervisor × 25%)
+  Konversi: rata_rata(1-5) × 20 = skor 0-100
+
+Absensi:
+  = (1 - hari_tidak_hadir/hari_kerja) × 100
+  Terlambat = -0.25 hari, Pulang Awal = -0.5 hari, Izin/Sakit/Alfa/Cuti = -1 hari
+
+Grading:
+  A (91-100) → Naik Gaji 10%
+  B (80-90)  → Save / Perpanjang Kontrak (7%)
+  C (75-79)  → Mediasi/Evaluasi
+  D (50-69)  → Cut Off
+  E (0-49)   → Cut Off
+
+Collections:
+  da_kpi_periods       — periode KPI (konfigurasi HR)
+  da_kpi_questions     — bank soal (dapat dikonfigurasi HR)
+  da_kpi_submissions   — pengisian form per karyawan
+  da_kpi_perform       — nilai Perform per karyawan per periode
+  da_kpi_results       — hasil KPI final
+"""
+# ruff: noqa: F401
+
+import uuid
+from datetime import datetime, timezone
+from typing import Optional
+from fastapi import APIRouter, Request, HTTPException, Query
+from database import get_db
+from auth import require_auth
+from routes.shared import get_pagination_params, paginated_response
+
+router = APIRouter(prefix="/api/dewi/kpi", tags=["dewi-kpi"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HELPERS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _uid():
+    return str(uuid.uuid4())
+
+def _now():
+    return datetime.now(timezone.utc)
+
+def _s(doc):
+    if doc is None:
+        return None
+    doc = dict(doc)
+    doc.pop("_id", None)
+    for k, v in doc.items():
+        if isinstance(v, datetime):
+            doc[k] = v.isoformat()
+    return doc
+
+def _grade(score: float):
+    if score >= 91:
+        return {"grade": "A", "label": "Sangat Baik", "status": "Berhak Naik Gaji", "raise_pct": 10}
+    elif score >= 80:
+        return {"grade": "B", "label": "Baik", "status": "Save / Perpanjang Kontrak", "raise_pct": 7}
+    elif score >= 75:
+        return {"grade": "C", "label": "Cukup", "status": "Mediasi / Evaluasi", "raise_pct": 0}
+    elif score >= 50:
+        return {"grade": "D", "label": "Kurang", "status": "Cut Off", "raise_pct": 0}
+    else:
+        return {"grade": "E", "label": "Sangat Kurang", "status": "Cut Off", "raise_pct": 0}
+
+async def _require_hr(request: Request):
+    user = await require_auth(request)
+    role = (user.get("role") or "").lower()
+    if role in ("superadmin", "admin", "owner", "hr", "manager", "supervisor"):
+        return user
+    raise HTTPException(403, "Akses ditolak: butuh role HR/Manager/Supervisor.")
+
+async def _get_linked_employee(db, user: dict):
+    """
+    Ambil employee record dari user yang login.
+    Cek urutan:
+      1. user.employee_id dari JWT (jika sudah disync)
+      2. rahaza_employees.user_id == user.id (link baru)
+      3. rahaza_employees.email == user.email (fallback email)
+    """
+    # 1. JWT employee_id
+    emp_id = user.get("employee_id")
+    if emp_id:
+        emp = await db.rahaza_employees.find_one({"id": emp_id, "active": True}, {"_id": 0})
+        if emp:
+            return emp
+
+    # 2. rahaza_employees.user_id
+    uid = user.get("id")
+    if uid:
+        emp = await db.rahaza_employees.find_one({"user_id": uid, "active": True}, {"_id": 0})
+        if emp:
+            return emp
+
+    # 3. Email fallback
+    email = (user.get("email") or "").lower()
+    if email:
+        emp = await db.rahaza_employees.find_one({"email": email, "active": True}, {"_id": 0})
+        if emp:
+            return emp
+
+    return None
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEFAULT QUESTIONS (SEED)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+DEFAULT_QUESTIONS = [
+    # ── SELF ASSESSMENT (20%) — 10 kategori × 2 pertanyaan ──────────────────
+    {"eval_type": "self", "category": "Tanggung Jawab Kerja", "category_weight": 0.10, "order": 1,
+     "question_text": "Saya menyelesaikan tugas yang diberikan sesuai dengan target dan tenggat waktu."},
+    {"eval_type": "self", "category": "Tanggung Jawab Kerja", "category_weight": 0.10, "order": 2,
+     "question_text": "Saya bertanggung jawab atas hasil kerja saya dan tidak melempar kesalahan pada orang lain."},
+    {"eval_type": "self", "category": "Kepatuhan terhadap SOP & Arahan Atasan", "category_weight": 0.10, "order": 3,
+     "question_text": "Saya mengikuti SOP dan prosedur kerja yang telah ditetapkan perusahaan."},
+    {"eval_type": "self", "category": "Kepatuhan terhadap SOP & Arahan Atasan", "category_weight": 0.10, "order": 4,
+     "question_text": "Saya melaksanakan arahan atasan dengan baik dan tepat waktu."},
+    {"eval_type": "self", "category": "Sikap terhadap Atasan", "category_weight": 0.10, "order": 5,
+     "question_text": "Saya menghormati dan bersikap sopan kepada atasan."},
+    {"eval_type": "self", "category": "Sikap terhadap Atasan", "category_weight": 0.10, "order": 6,
+     "question_text": "Saya mengkomunikasikan masalah pekerjaan kepada atasan dengan cara yang tepat."},
+    {"eval_type": "self", "category": "Kerja Sama Tim", "category_weight": 0.10, "order": 7,
+     "question_text": "Saya aktif berkontribusi dalam kerja tim dan membantu rekan yang membutuhkan."},
+    {"eval_type": "self", "category": "Kerja Sama Tim", "category_weight": 0.10, "order": 8,
+     "question_text": "Saya menempatkan kepentingan tim di atas kepentingan pribadi."},
+    {"eval_type": "self", "category": "Sikap terhadap Rekan Kerja", "category_weight": 0.10, "order": 9,
+     "question_text": "Saya bersikap respectful dan menghargai rekan kerja saya."},
+    {"eval_type": "self", "category": "Sikap terhadap Rekan Kerja", "category_weight": 0.10, "order": 10,
+     "question_text": "Saya tidak terlibat dalam gosip atau konflik yang mengganggu suasana kerja."},
+    {"eval_type": "self", "category": "Etika & Perilaku Profesional", "category_weight": 0.10, "order": 11,
+     "question_text": "Saya berpakaian dan bersikap sesuai dengan standar profesional perusahaan."},
+    {"eval_type": "self", "category": "Etika & Perilaku Profesional", "category_weight": 0.10, "order": 12,
+     "question_text": "Saya menjaga rahasia perusahaan dan tidak membocorkan informasi internal."},
+    {"eval_type": "self", "category": "Loyalitas & Komitmen", "category_weight": 0.10, "order": 13,
+     "question_text": "Saya berkomitmen untuk memberikan yang terbaik bagi perusahaan."},
+    {"eval_type": "self", "category": "Loyalitas & Komitmen", "category_weight": 0.10, "order": 14,
+     "question_text": "Saya tidak mudah menyerah ketika menghadapi tantangan dalam pekerjaan."},
+    {"eval_type": "self", "category": "Inisiatif & Kepedulian", "category_weight": 0.10, "order": 15,
+     "question_text": "Saya mengambil inisiatif untuk memperbaiki proses kerja tanpa harus selalu diperintah."},
+    {"eval_type": "self", "category": "Inisiatif & Kepedulian", "category_weight": 0.10, "order": 16,
+     "question_text": "Saya peduli terhadap kebersihan dan ketertiban lingkungan kerja."},
+    {"eval_type": "self", "category": "Kematangan Emosi & Sikap Positif", "category_weight": 0.10, "order": 17,
+     "question_text": "Saya mengelola emosi dengan baik dan tidak mudah marah di lingkungan kerja."},
+    {"eval_type": "self", "category": "Kematangan Emosi & Sikap Positif", "category_weight": 0.10, "order": 18,
+     "question_text": "Saya bersikap positif dan menjadi energi yang baik bagi tim."},
+    {"eval_type": "self", "category": "Integritas & Kejujuran", "category_weight": 0.10, "order": 19,
+     "question_text": "Saya selalu jujur dalam melaporkan hasil kerja dan kondisi aktual."},
+    {"eval_type": "self", "category": "Integritas & Kejujuran", "category_weight": 0.10, "order": 20,
+     "question_text": "Saya tidak melakukan tindakan yang merugikan perusahaan atau rekan kerja."},
+
+    # ── PEER ASSESSMENT (20%) — 3 kategori ───────────────────────────────────
+    {"eval_type": "peer", "category": "Teamwork", "category_weight": 0.40, "order": 1,
+     "question_text": "Rekan ini aktif berkontribusi dalam pekerjaan tim dan dapat diandalkan."},
+    {"eval_type": "peer", "category": "Teamwork", "category_weight": 0.40, "order": 2,
+     "question_text": "Rekan ini membantu anggota tim lain yang kesulitan tanpa diminta."},
+    {"eval_type": "peer", "category": "Sikap", "category_weight": 0.30, "order": 3,
+     "question_text": "Rekan ini bersikap respectful dan menjaga suasana positif di tempat kerja."},
+    {"eval_type": "peer", "category": "Sikap", "category_weight": 0.30, "order": 4,
+     "question_text": "Rekan ini tidak terlibat dalam gosip atau perselisihan yang tidak perlu."},
+    {"eval_type": "peer", "category": "Komunikasi", "category_weight": 0.30, "order": 5,
+     "question_text": "Rekan ini berkomunikasi dengan jelas dan terbuka dalam pekerjaan."},
+    {"eval_type": "peer", "category": "Komunikasi", "category_weight": 0.30, "order": 6,
+     "question_text": "Rekan ini mendengarkan pendapat orang lain dengan baik."},
+
+    # ── SUPERVISOR TO STAFF (35%) — 6 kategori ───────────────────────────────
+    {"eval_type": "supervisor_to_staff", "category": "Tanggung Jawab", "category_weight": 0.20, "order": 1,
+     "question_text": "Karyawan menyelesaikan tugas sesuai target dan deadline yang ditetapkan."},
+    {"eval_type": "supervisor_to_staff", "category": "Tanggung Jawab", "category_weight": 0.20, "order": 2,
+     "question_text": "Karyawan bertanggung jawab penuh atas hasil pekerjaannya."},
+    {"eval_type": "supervisor_to_staff", "category": "Kepatuhan terhadap SOP", "category_weight": 0.15, "order": 3,
+     "question_text": "Karyawan mengikuti SOP dan prosedur kerja yang berlaku."},
+    {"eval_type": "supervisor_to_staff", "category": "Kepatuhan terhadap SOP", "category_weight": 0.15, "order": 4,
+     "question_text": "Karyawan melaksanakan arahan dengan baik dan tepat."},
+    {"eval_type": "supervisor_to_staff", "category": "Hasil Kerja", "category_weight": 0.20, "order": 5,
+     "question_text": "Kualitas hasil kerja karyawan memenuhi standar yang ditetapkan."},
+    {"eval_type": "supervisor_to_staff", "category": "Hasil Kerja", "category_weight": 0.20, "order": 6,
+     "question_text": "Kuantitas output kerja karyawan sesuai atau melebihi ekspektasi."},
+    {"eval_type": "supervisor_to_staff", "category": "Integritas", "category_weight": 0.15, "order": 7,
+     "question_text": "Karyawan jujur dan transparan dalam melaporkan pekerjaan."},
+    {"eval_type": "supervisor_to_staff", "category": "Integritas", "category_weight": 0.15, "order": 8,
+     "question_text": "Karyawan dapat dipercaya dan tidak melakukan tindakan yang merugikan."},
+    {"eval_type": "supervisor_to_staff", "category": "Etika & Perilaku Profesional", "category_weight": 0.15, "order": 9,
+     "question_text": "Karyawan bersikap profesional dan menjaga nama baik perusahaan."},
+    {"eval_type": "supervisor_to_staff", "category": "Etika & Perilaku Profesional", "category_weight": 0.15, "order": 10,
+     "question_text": "Karyawan berinteraksi dengan rekan dan atasan secara sopan dan positif."},
+    {"eval_type": "supervisor_to_staff", "category": "Inisiatif", "category_weight": 0.15, "order": 11,
+     "question_text": "Karyawan menunjukkan inisiatif dan kreativitas dalam menyelesaikan masalah."},
+    {"eval_type": "supervisor_to_staff", "category": "Inisiatif", "category_weight": 0.15, "order": 12,
+     "question_text": "Karyawan aktif memberikan masukan untuk perbaikan proses kerja."},
+
+    # ── STAFF TO SUPERVISOR (25%) — 2 kategori, ANONIM ───────────────────────
+    {"eval_type": "staff_to_supervisor", "category": "Gaya Kepemimpinan", "category_weight": 0.60, "order": 1,
+     "question_text": "Atasan saya memberikan arahan yang jelas dan terstruktur kepada tim."},
+    {"eval_type": "staff_to_supervisor", "category": "Gaya Kepemimpinan", "category_weight": 0.60, "order": 2,
+     "question_text": "Atasan saya adil dalam memberikan penilaian dan perlakuan kepada anggota tim."},
+    {"eval_type": "staff_to_supervisor", "category": "Gaya Kepemimpinan", "category_weight": 0.60, "order": 3,
+     "question_text": "Atasan saya mendukung pengembangan kemampuan dan karir anggota timnya."},
+    {"eval_type": "staff_to_supervisor", "category": "Komunikasi", "category_weight": 0.40, "order": 4,
+     "question_text": "Atasan saya berkomunikasi dengan jelas dan terbuka kepada tim."},
+    {"eval_type": "staff_to_supervisor", "category": "Komunikasi", "category_weight": 0.40, "order": 5,
+     "question_text": "Atasan saya mendengarkan masukan dan keluhan anggota tim dengan serius."},
+    {"eval_type": "staff_to_supervisor", "category": "Komunikasi", "category_weight": 0.40, "order": 6,
+     "question_text": "Atasan saya memberikan feedback yang konstruktif dan membangun."},
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CALCULATION HELPERS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _calc_section_score(answers: list, questions: list) -> dict:
+    """
+    Hitung skor section dari jawaban + data pertanyaan.
+    Returns: {section_score (0-100), category_breakdown, answered_count, total_count}
+    """
+    # Build question map
+    {q["question_id"]: q for q in questions}
+    ans_map = {a["question_id"]: a["score"] for a in answers}
+
+    # Group by category
+    categories = {}
+    for q in questions:
+        cat = q["category"]
+        if cat not in categories:
+            categories[cat] = {"weight": q["category_weight"], "scores": []}
+        if q["question_id"] in ans_map:
+            categories[cat]["scores"].append(ans_map[q["question_id"]])
+
+    category_breakdown = []
+    section_score = 0.0
+    total_weight_with_answers = 0.0
+
+    for cat, data in categories.items():
+        if data["scores"]:
+            cat_avg_raw = sum(data["scores"]) / len(data["scores"])  # 1-5 scale
+            cat_score_100 = min(100.0, cat_avg_raw * 20)  # convert to 0-100
+            section_score += cat_score_100 * data["weight"]
+            total_weight_with_answers += data["weight"]
+        else:
+            cat_score_100 = 0.0
+        category_breakdown.append({
+            "category": cat,
+            "weight": data["weight"],
+            "avg_raw": round(sum(data["scores"]) / len(data["scores"]), 2) if data["scores"] else None,
+            "score_100": round(cat_score_100, 2),
+            "answered": len(data["scores"]),
+        })
+
+    # Normalize if not all categories answered
+    if total_weight_with_answers > 0 and total_weight_with_answers < 1.0:
+        section_score = section_score / total_weight_with_answers
+
+    answered_count = sum(1 for a in answers if a.get("score") is not None)
+    total_count = len(questions)
+
+    return {
+        "section_score": round(min(100.0, max(0.0, section_score)), 2),
+        "category_breakdown": category_breakdown,
+        "answered_count": answered_count,
+        "total_count": total_count,
+    }
+
+
+async def _calc_attitude_score(db, period_id: str, employee_id: str) -> dict:
+    """
+    Hitung attitude score karyawan dari semua submission yang terkait.
+    """
+    # Get all questions
+    all_q = await db.da_kpi_questions.find({"is_active": True}, {"_id": 0}).to_list(500)
+    q_by_type = {}
+    for q in all_q:
+        et = q["eval_type"]
+        if et not in q_by_type:
+            q_by_type[et] = []
+        q_by_type[et].append(q)
+
+    scores = {}
+    breakdowns = {}
+    status_detail = {}
+
+    # Self (evaluator = evaluatee = employee)
+    self_sub = await db.da_kpi_submissions.find_one(
+        {"period_id": period_id, "evaluatee_id": employee_id, "eval_type": "self", "status": "submitted"},
+        {"_id": 0}
+    )
+    if self_sub:
+        calc = _calc_section_score(self_sub.get("answers", []), q_by_type.get("self", []))
+        scores["self"] = calc["section_score"]
+        breakdowns["self"] = calc["category_breakdown"]
+        status_detail["self"] = "submitted"
+    else:
+        scores["self"] = None
+        status_detail["self"] = "pending"
+
+    # Peer (multiple submissions → average)
+    peer_subs = await db.da_kpi_submissions.find(
+        {"period_id": period_id, "evaluatee_id": employee_id, "eval_type": "peer", "status": "submitted"},
+        {"_id": 0}
+    ).to_list(500)
+    if peer_subs:
+        peer_scores_list = []
+        for ps in peer_subs:
+            calc = _calc_section_score(ps.get("answers", []), q_by_type.get("peer", []))
+            peer_scores_list.append(calc["section_score"])
+        scores["peer"] = round(sum(peer_scores_list) / len(peer_scores_list), 2)
+        status_detail["peer"] = f"submitted ({len(peer_subs)} penilai)"
+    else:
+        scores["peer"] = None
+        status_detail["peer"] = "pending"
+
+    # Supervisor to Staff (multiple supervisors possible → average)
+    sup_subs = await db.da_kpi_submissions.find(
+        {"period_id": period_id, "evaluatee_id": employee_id, "eval_type": "supervisor_to_staff", "status": "submitted"},
+        {"_id": 0}
+    ).to_list(500)
+    if sup_subs:
+        sup_scores_list = []
+        for ss in sup_subs:
+            calc = _calc_section_score(ss.get("answers", []), q_by_type.get("supervisor_to_staff", []))
+            sup_scores_list.append(calc["section_score"])
+        scores["supervisor_to_staff"] = round(sum(sup_scores_list) / len(sup_scores_list), 2)
+        status_detail["supervisor_to_staff"] = f"submitted ({len(sup_subs)} supervisor)"
+    else:
+        scores["supervisor_to_staff"] = None
+        status_detail["supervisor_to_staff"] = "pending"
+
+    # Staff to Supervisor (evaluatee = supervisor, but we look by period & employee)
+    # Find period to get supervisor assignment
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    sup_assignments = period.get("supervisor_assignments", []) if period else []
+    # Find which supervisor this employee is assigned to
+    my_supervisor_id = None
+    for sa in sup_assignments:
+        if employee_id in sa.get("employee_ids", []):
+            my_supervisor_id = sa.get("supervisor_employee_id")
+            break
+
+    staff_sub = None
+    if my_supervisor_id:
+        staff_sub = await db.da_kpi_submissions.find_one(
+            {"period_id": period_id, "evaluator_id": employee_id,
+             "evaluatee_id": my_supervisor_id, "eval_type": "staff_to_supervisor", "status": "submitted"},
+            {"_id": 0}
+        )
+    if staff_sub:
+        calc = _calc_section_score(staff_sub.get("answers", []), q_by_type.get("staff_to_supervisor", []))
+        scores["staff_to_supervisor"] = calc["section_score"]
+        breakdowns["staff_to_supervisor"] = calc["category_breakdown"]
+        status_detail["staff_to_supervisor"] = "submitted"
+    else:
+        scores["staff_to_supervisor"] = None
+        status_detail["staff_to_supervisor"] = "pending" if my_supervisor_id else "no_supervisor_assigned"
+
+    # Compute weighted attitude score (use available scores, normalize weights)
+    weights = {"self": 0.20, "peer": 0.20, "supervisor_to_staff": 0.35, "staff_to_supervisor": 0.25}
+    filled_weight = sum(weights[k] for k, v in scores.items() if v is not None)
+    attitude_score = None
+    if filled_weight > 0:
+        weighted_sum = sum(scores[k] * weights[k] for k in scores if scores[k] is not None)
+        attitude_score = round(weighted_sum / filled_weight, 2)
+
+    return {
+        "attitude_score": attitude_score,
+        "component_scores": scores,
+        "weights": weights,
+        "breakdowns": breakdowns,
+        "status_detail": status_detail,
+        "is_complete": all(v is not None for v in scores.values()),
+    }
+
+
+async def _calc_absensi_score(db, period_id: str, employee_id: str) -> dict:
+    """
+    Hitung absensi score dari data attendance.
+    """
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        return {"absensi_score": None, "detail": {}}
+
+    period_from = period.get("period_from")
+    period_to = period.get("period_to")
+    working_days = int(period.get("working_days") or 26)
+
+    if not period_from or not period_to:
+        return {"absensi_score": None, "detail": {"error": "Tanggal periode belum diatur"}}
+
+    # Query attendance
+    att_records = await db.rahaza_attendance_events.find(
+        {"employee_id": employee_id, "date": {"$gte": period_from, "$lte": period_to}},
+        {"_id": 0, "status": 1, "date": 1}
+    ).to_list(500)
+
+    absent_days = 0.0
+    breakdown = {"izin": 0, "sakit": 0, "alfa": 0, "cuti": 0, "terlambat": 0, "pulang_awal": 0}
+
+    for r in att_records:
+        s = (r.get("status") or "hadir").lower()
+        if s in ("izin",):
+            absent_days += 1.0
+            breakdown["izin"] += 1
+        elif s in ("sakit",):
+            absent_days += 1.0
+            breakdown["sakit"] += 1
+        elif s in ("alfa", "alpha", "alpa"):
+            absent_days += 1.0
+            breakdown["alfa"] += 1
+        elif s in ("cuti",):
+            absent_days += 1.0
+            breakdown["cuti"] += 1
+        elif s in ("terlambat",):
+            absent_days += 0.25
+            breakdown["terlambat"] += 1
+        elif s in ("pulang_awal",):
+            absent_days += 0.5
+            breakdown["pulang_awal"] += 1
+
+    score = max(0.0, min(100.0, (1 - absent_days / working_days) * 100))
+
+    return {
+        "absensi_score": round(score, 2),
+        "absent_days": round(absent_days, 2),
+        "working_days": working_days,
+        "attendance_record_count": len(att_records),
+        "breakdown": breakdown,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERIOD MANAGEMENT (HR ADMIN)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/periods")
+async def list_periods(request: Request):
+    await require_auth(request)
+    db = get_db()
+    sp = request.query_params
+    # Dual-mode: paginated or full list
+    if sp.get("page") or sp.get("limit"):
+        page, limit, skip = get_pagination_params(request, default_limit=20)
+        total = await db.da_kpi_periods.count_documents({})
+        docs = await db.da_kpi_periods.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        result = []
+        for d in docs:
+            d = _s(d)
+            d["participant_count"] = len(d.get("participant_employee_ids", []))
+            result.append(d)
+        return paginated_response(result, total, page, limit)
+    docs = await db.da_kpi_periods.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    # Enrich with participant count
+    result = []
+    for d in docs:
+        d = _s(d)
+        d["participant_count"] = len(d.get("participant_employee_ids", []))
+        result.append(d)
+    return {"ok": True, "periods": result}
+
+
+@router.post("/periods")
+async def create_period(request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    body = await request.json()
+
+    name = (body.get("name") or "").strip()
+    if not name:
+        raise HTTPException(400, "Nama periode wajib diisi.")
+
+    doc = {
+        "period_id": _uid(),
+        "name": name,
+        "period_from": body.get("period_from") or "",
+        "period_to": body.get("period_to") or "",
+        "working_days": int(body.get("working_days") or 26),
+        "status": "draft",
+        "participant_employee_ids": body.get("participant_employee_ids") or [],
+        "supervisor_assignments": body.get("supervisor_assignments") or [],
+        "notes": body.get("notes") or "",
+        "created_by": user["id"],
+        "created_by_name": user.get("name", ""),
+        "created_at": _now(),
+        "updated_at": _now(),
+    }
+    await db.da_kpi_periods.insert_one(doc)
+    return {"ok": True, "period": _s(doc)}
+
+
+@router.put("/periods/{period_id}")
+async def update_period(period_id: str, request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    body = await request.json()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    # Only allow certain status transitions
+    new_status = body.get("status")
+    if new_status:
+        valid_transitions = {
+            "draft": ["open", "draft"],
+            "open": ["closed", "open"],
+            "closed": ["finalized", "closed"],
+            "finalized": ["finalized"],
+        }
+        current = period.get("status", "draft")
+        if new_status not in valid_transitions.get(current, []):
+            raise HTTPException(400, f"Tidak bisa ubah status dari '{current}' ke '{new_status}'.")
+
+    allowed = ["name", "period_from", "period_to", "working_days", "status",
+               "participant_employee_ids", "supervisor_assignments", "notes"]
+    upd = {k: body[k] for k in allowed if k in body}
+    upd["updated_at"] = _now()
+    upd["updated_by"] = user["id"]
+
+    # Auto-generate peer assignments when opening
+    if new_status == "open" and "participant_employee_ids" in upd:
+        upd["peer_assignments"] = await _auto_generate_peer_assignments(
+            db, upd["participant_employee_ids"]
+        )
+    elif new_status == "open" and period.get("participant_employee_ids"):
+        upd["peer_assignments"] = await _auto_generate_peer_assignments(
+            db, period["participant_employee_ids"]
+        )
+
+    await db.da_kpi_periods.update_one({"period_id": period_id}, {"$set": upd})
+    doc = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    return {"ok": True, "period": _s(doc)}
+
+
+async def _auto_generate_peer_assignments(db, emp_ids: list) -> list:
+    """
+    Buat peer assignment: karyawan satu lokasi/departemen saling menilai.
+    Returns list of {reviewer_id, evaluatee_id}
+    """
+    if not emp_ids:
+        return []
+
+    emps = await db.rahaza_employees.find(
+        {"id": {"$in": emp_ids}},
+        {"_id": 0, "id": 1, "location_id": 1, "department": 1}
+    ).to_list(500)
+
+    # Group by location_id or department
+    groups = {}
+    for e in emps:
+        key = e.get("location_id") or e.get("department") or "default"
+        groups.setdefault(key, []).append(e["id"])
+
+    assignments = []
+    for group_key, members in groups.items():
+        if len(members) < 2:
+            continue
+        for reviewer in members:
+            for evaluatee in members:
+                if reviewer != evaluatee:
+                    assignments.append({"reviewer_id": reviewer, "evaluatee_id": evaluatee})
+
+    return assignments
+
+
+@router.delete("/periods/{period_id}")
+async def delete_period(period_id: str, request: Request):
+    await _require_hr(request)
+    db = get_db()
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+    if period.get("status") not in ("draft",):
+        raise HTTPException(400, "Hanya periode berstatus 'draft' yang bisa dihapus.")
+    await db.da_kpi_periods.delete_one({"period_id": period_id})
+    return {"ok": True, "message": "Periode dihapus."}
+
+
+@router.get("/periods/{period_id}")
+async def get_period(period_id: str, request: Request):
+    await require_auth(request)
+    db = get_db()
+    doc = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+    return {"ok": True, "period": _s(doc)}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUESTION BANK (HR ADMIN)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/questions")
+async def list_questions(
+    request: Request,
+    eval_type: Optional[str] = None,
+):
+    await require_auth(request)
+    db = get_db()
+    filt = {"is_active": True}
+    if eval_type:
+        filt["eval_type"] = eval_type
+    sp = request.query_params
+    # Dual-mode: paginated or full list
+    if sp.get("page") or sp.get("limit"):
+        page, limit, skip = get_pagination_params(request, default_limit=50)
+        total = await db.da_kpi_questions.count_documents(filt)
+        docs = await db.da_kpi_questions.find(filt, {"_id": 0}).sort([("eval_type", 1), ("order", 1)]).skip(skip).limit(limit).to_list(limit)
+        return paginated_response([_s(d) for d in docs], total, page, limit)
+    docs = await db.da_kpi_questions.find(filt, {"_id": 0}).sort([("eval_type", 1), ("order", 1)]).to_list(500)
+    return {"ok": True, "questions": [_s(d) for d in docs]}
+
+
+@router.post("/questions")
+async def create_question(request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    body = await request.json()
+
+    eval_type = body.get("eval_type")
+    valid_types = ["self", "peer", "supervisor_to_staff", "staff_to_supervisor"]
+    if eval_type not in valid_types:
+        raise HTTPException(400, f"eval_type harus salah satu: {valid_types}")
+
+    doc = {
+        "question_id": _uid(),
+        "eval_type": eval_type,
+        "category": (body.get("category") or "").strip(),
+        "category_weight": float(body.get("category_weight") or 0.10),
+        "question_text": (body.get("question_text") or "").strip(),
+        "order": int(body.get("order") or 99),
+        "is_active": True,
+        "created_by": user["id"],
+        "created_at": _now(),
+        "updated_at": _now(),
+    }
+    if not doc["question_text"] or not doc["category"]:
+        raise HTTPException(400, "question_text dan category wajib diisi.")
+
+    await db.da_kpi_questions.insert_one(doc)
+    return {"ok": True, "question": _s(doc)}
+
+
+@router.put("/questions/{question_id}")
+async def update_question(question_id: str, request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    body = await request.json()
+
+    allowed = ["category", "category_weight", "question_text", "order", "is_active"]
+    upd = {k: body[k] for k in allowed if k in body}
+    upd["updated_at"] = _now()
+    upd["updated_by"] = user["id"]
+
+    res = await db.da_kpi_questions.update_one({"question_id": question_id}, {"$set": upd})
+    if res.matched_count == 0:
+        raise HTTPException(404, "Pertanyaan tidak ditemukan.")
+    doc = await db.da_kpi_questions.find_one({"question_id": question_id}, {"_id": 0})
+    return {"ok": True, "question": _s(doc)}
+
+
+@router.delete("/questions/{question_id}")
+async def delete_question(question_id: str, request: Request):
+    await _require_hr(request)
+    db = get_db()
+    await db.da_kpi_questions.update_one(
+        {"question_id": question_id},
+        {"$set": {"is_active": False, "updated_at": _now()}}
+    )
+    return {"ok": True}
+
+
+@router.post("/questions/seed-defaults")
+async def seed_default_questions(request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    existing = await db.da_kpi_questions.count_documents({})
+    if existing > 0:
+        return {"ok": True, "message": f"Bank soal sudah terisi ({existing} soal). Tidak di-seed ulang."}
+
+    docs = []
+    for q in DEFAULT_QUESTIONS:
+        docs.append({
+            "question_id": _uid(),
+            **q,
+            "is_active": True,
+            "created_by": user["id"],
+            "created_at": _now(),
+            "updated_at": _now(),
+        })
+    await db.da_kpi_questions.insert_many(docs)
+    return {"ok": True, "seeded": len(docs), "message": "Bank soal default DA berhasil di-seed."}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORM SCORES (HR / SUPERVISOR)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/perform/{period_id}")
+async def list_perform_scores(period_id: str, request: Request):
+    await _require_hr(request)
+    db = get_db()
+    sp = request.query_params
+    q = {"period_id": period_id}
+    # Dual-mode: paginated or full list
+    if sp.get("page") or sp.get("limit"):
+        page, limit, skip = get_pagination_params(request, default_limit=50)
+        total = await db.da_kpi_perform.count_documents(q)
+        docs = await db.da_kpi_perform.find(q, {"_id": 0}).skip(skip).limit(limit).to_list(limit)
+        emp_ids = [d["employee_id"] for d in docs if d.get("employee_id")]
+        emps = await db.rahaza_employees.find({"id": {"$in": emp_ids}}, {"_id": 0, "id": 1, "name": 1, "employee_code": 1}).to_list(500) if emp_ids else []
+        emp_map = {e["id"]: e for e in emps}
+        result = []
+        for d in docs:
+            d = _s(d)
+            emp = emp_map.get(d.get("employee_id"), {})
+            d["employee_name"] = emp.get("name", "-")
+            d["employee_code"] = emp.get("employee_code", "-")
+            result.append(d)
+        return paginated_response(result, total, page, limit)
+    docs = await db.da_kpi_perform.find({"period_id": period_id}, {"_id": 0}).to_list(500)
+
+    # Enrich with employee name
+    emp_ids = [d["employee_id"] for d in docs if d.get("employee_id")]
+    emps = await db.rahaza_employees.find(
+        {"id": {"$in": emp_ids}}, {"_id": 0, "id": 1, "name": 1, "employee_code": 1}
+    ).to_list(500) if emp_ids else []
+    emp_map = {e["id"]: e for e in emps}
+
+    result = []
+    for d in docs:
+        d = _s(d)
+        emp = emp_map.get(d.get("employee_id"), {})
+        d["employee_name"] = emp.get("name", "-")
+        d["employee_code"] = emp.get("employee_code", "-")
+        result.append(d)
+
+    return {"ok": True, "perform_scores": result}
+
+
+@router.get("/perform/{period_id}/{employee_id}")
+async def get_perform_score(period_id: str, employee_id: str, request: Request):
+    await require_auth(request)
+    db = get_db()
+    doc = await db.da_kpi_perform.find_one(
+        {"period_id": period_id, "employee_id": employee_id}, {"_id": 0}
+    )
+    return {"ok": True, "perform": _s(doc)}
+
+
+@router.put("/perform/{period_id}/{employee_id}")
+async def upsert_perform_score(period_id: str, employee_id: str, request: Request):
+    user = await _require_hr(request)
+    db = get_db()
+    body = await request.json()
+
+    # Validate period exists and is open
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    items = body.get("items") or []
+    # Calculate perform score from items
+    if items:
+        total_weight = sum(float(item.get("weight") or 1) for item in items)
+        if total_weight > 0:
+            weighted_sum = sum(
+                float(item.get("score") or 0) * float(item.get("weight") or 1)
+                for item in items
+            )
+            perform_score = round(min(100.0, max(0.0, weighted_sum / total_weight)), 2)
+        else:
+            perform_score = 0.0
+    else:
+        # Direct score input
+        perform_score = round(min(100.0, max(0.0, float(body.get("perform_score") or 0))), 2)
+
+    doc = {
+        "period_id": period_id,
+        "employee_id": employee_id,
+        "perform_score": perform_score,
+        "items": items,
+        "notes": body.get("notes") or "",
+        "input_by": user["id"],
+        "input_by_name": user.get("name", ""),
+        "updated_at": _now(),
+    }
+
+    existing = await db.da_kpi_perform.find_one({"period_id": period_id, "employee_id": employee_id})
+    if existing:
+        await db.da_kpi_perform.update_one(
+            {"period_id": period_id, "employee_id": employee_id},
+            {"$set": doc}
+        )
+    else:
+        doc["item_id"] = _uid()
+        doc["created_at"] = _now()
+        await db.da_kpi_perform.insert_one(doc)
+
+    out = await db.da_kpi_perform.find_one({"period_id": period_id, "employee_id": employee_id}, {"_id": 0})
+    return {"ok": True, "perform": _s(out)}
+
+
+@router.post("/perform/{period_id}/bulk")
+async def bulk_upsert_perform_scores(period_id: str, request: Request):
+    """
+    Bulk simpan nilai perform untuk banyak karyawan sekaligus.
+    Body: { "scores": [{ "employee_id": "...", "perform_score": 85.0, "notes": "..." }, ...] }
+    Menghitung atau update langsung perform_score (simple mode, tanpa items breakdown).
+    """
+    user = await _require_hr(request)
+    db = get_db()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    body = await request.json()
+    scores = body.get("scores", [])
+    if not scores:
+        raise HTTPException(400, "List 'scores' tidak boleh kosong.")
+
+    # Validate employee IDs
+    emp_ids = [s["employee_id"] for s in scores if s.get("employee_id")]
+    emps = await db.rahaza_employees.find({"id": {"$in": emp_ids}}, {"_id": 0, "id": 1, "name": 1, "employee_code": 1}).to_list(500)
+    emp_map = {e["id"]: e for e in emps}
+
+    saved = 0
+    skipped = 0
+    for s in scores:
+        emp_id = s.get("employee_id")
+        if not emp_id or emp_id not in emp_map:
+            skipped += 1
+            continue
+        raw_score = s.get("perform_score")
+        if raw_score is None:
+            skipped += 1
+            continue
+
+        perform_score = round(min(100.0, max(0.0, float(raw_score))), 2)
+        emp = emp_map[emp_id]
+
+        doc_patch = {
+            "period_id": period_id,
+            "employee_id": emp_id,
+            "employee_name": emp.get("name", "-"),
+            "employee_code": emp.get("employee_code", "-"),
+            "perform_score": perform_score,
+            "notes": s.get("notes", ""),
+            "updated_at": _now(),
+            "updated_by": user.get("id", ""),
+        }
+
+        existing = await db.da_kpi_perform.find_one({"period_id": period_id, "employee_id": emp_id})
+        if existing:
+            await db.da_kpi_perform.update_one(
+                {"period_id": period_id, "employee_id": emp_id},
+                {"$set": doc_patch}
+            )
+        else:
+            doc_patch["created_at"] = _now()
+            await db.da_kpi_perform.insert_one(doc_patch)
+        saved += 1
+
+    return {"ok": True, "saved": saved, "skipped": skipped}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FORM SUBMISSIONS (EMPLOYEE + SUPERVISOR)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/my/forms/{period_id}")
+async def get_my_forms(period_id: str, request: Request):
+    """
+    Ambil daftar form yang perlu diisi oleh karyawan yang login.
+    Termasuk: self-assessment, peer review assignments, staff→supervisor.
+    """
+    user = await require_auth(request)
+    db = get_db()
+    emp = await _get_linked_employee(db, user)
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    if period.get("status") not in ("open", "closed"):
+        raise HTTPException(400, "Form belum tersedia (periode belum dibuka).")
+
+    if not emp:
+        raise HTTPException(409, "Akun Anda belum terhubung ke data karyawan. Hubungi HR.")
+
+    emp_id = emp["id"]
+    peer_assignments = period.get("peer_assignments", [])
+    sup_assignments = period.get("supervisor_assignments", [])
+
+    # Find all forms this user needs to fill
+    forms_to_fill = []
+
+    # 1. Self-assessment
+    self_sub = await db.da_kpi_submissions.find_one(
+        {"period_id": period_id, "evaluator_id": emp_id, "eval_type": "self"},
+        {"_id": 0}
+    )
+    forms_to_fill.append({
+        "form_type": "self",
+        "eval_type": "self",
+        "evaluatee_id": emp_id,
+        "evaluatee_name": emp.get("name", "Saya"),
+        "status": self_sub.get("status", "draft") if self_sub else "not_started",
+        "submission_id": self_sub.get("submission_id") if self_sub else None,
+        "is_anonymous": False,
+    })
+
+    # 2. Peer review (from peer_assignments where reviewer = this employee)
+    my_peer_tasks = [a for a in peer_assignments if a["reviewer_id"] == emp_id]
+    for pa in my_peer_tasks:
+        evaluatee_emp = await db.rahaza_employees.find_one({"id": pa["evaluatee_id"]}, {"_id": 0})
+        existing_sub = await db.da_kpi_submissions.find_one(
+            {"period_id": period_id, "evaluator_id": emp_id,
+             "evaluatee_id": pa["evaluatee_id"], "eval_type": "peer"},
+            {"_id": 0}
+        )
+        forms_to_fill.append({
+            "form_type": "peer",
+            "eval_type": "peer",
+            "evaluatee_id": pa["evaluatee_id"],
+            "evaluatee_name": evaluatee_emp.get("name", "?") if evaluatee_emp else "?",
+            "status": existing_sub.get("status", "draft") if existing_sub else "not_started",
+            "submission_id": existing_sub.get("submission_id") if existing_sub else None,
+            "is_anonymous": True,
+        })
+
+    # 3. Staff to Supervisor (if employee has a supervisor assigned)
+    my_supervisor_id = None
+    for sa in sup_assignments:
+        if emp_id in sa.get("employee_ids", []):
+            my_supervisor_id = sa.get("supervisor_employee_id")
+            break
+
+    if my_supervisor_id:
+        await db.rahaza_employees.find_one({"id": my_supervisor_id}, {"_id": 0})
+        existing_staff_sub = await db.da_kpi_submissions.find_one(
+            {"period_id": period_id, "evaluator_id": emp_id,
+             "evaluatee_id": my_supervisor_id, "eval_type": "staff_to_supervisor"},
+            {"_id": 0}
+        )
+        forms_to_fill.append({
+            "form_type": "staff_to_supervisor",
+            "eval_type": "staff_to_supervisor",
+            "evaluatee_id": my_supervisor_id,
+            "evaluatee_name": "Atasan Saya",  # always anonymous
+            "status": existing_staff_sub.get("status", "draft") if existing_staff_sub else "not_started",
+            "submission_id": existing_staff_sub.get("submission_id") if existing_staff_sub else None,
+            "is_anonymous": True,
+        })
+
+    # 4. Supervisor fills forms for subordinates
+    is_supervisor = any(sa.get("supervisor_employee_id") == emp_id for sa in sup_assignments)
+    supervisor_forms = []
+    if is_supervisor:
+        for sa in sup_assignments:
+            if sa.get("supervisor_employee_id") == emp_id:
+                for sub_emp_id in sa.get("employee_ids", []):
+                    sub_emp = await db.rahaza_employees.find_one({"id": sub_emp_id}, {"_id": 0})
+                    existing_sup_sub = await db.da_kpi_submissions.find_one(
+                        {"period_id": period_id, "evaluator_id": emp_id,
+                         "evaluatee_id": sub_emp_id, "eval_type": "supervisor_to_staff"},
+                        {"_id": 0}
+                    )
+                    supervisor_forms.append({
+                        "form_type": "supervisor_to_staff",
+                        "eval_type": "supervisor_to_staff",
+                        "evaluatee_id": sub_emp_id,
+                        "evaluatee_name": sub_emp.get("name", "?") if sub_emp else "?",
+                        "status": existing_sup_sub.get("status", "draft") if existing_sup_sub else "not_started",
+                        "submission_id": existing_sup_sub.get("submission_id") if existing_sup_sub else None,
+                        "is_anonymous": False,
+                    })
+
+    # Get questions by type
+    all_q = await db.da_kpi_questions.find({"is_active": True}, {"_id": 0}).sort("order", 1).to_list(500)
+    q_by_type = {}
+    for q in all_q:
+        et = q["eval_type"]
+        if et not in q_by_type:
+            q_by_type[et] = []
+        q_by_type[et].append(q)
+
+    return {
+        "ok": True,
+        "period": _s(period),
+        "employee": _s(emp),
+        "forms_to_fill": forms_to_fill,
+        "supervisor_forms": supervisor_forms,
+        "questions_by_type": q_by_type,
+        "total_forms": len(forms_to_fill) + len(supervisor_forms),
+        "completed_forms": sum(1 for f in forms_to_fill + supervisor_forms if f["status"] == "submitted"),
+    }
+
+
+@router.post("/submissions")
+async def submit_form(request: Request):
+    """Submit atau update (save draft) form KPI."""
+    user = await require_auth(request)
+    db = get_db()
+    body = await request.json()
+
+    period_id = body.get("period_id")
+    eval_type = body.get("eval_type")
+    evaluatee_id = body.get("evaluatee_id")
+    answers = body.get("answers") or []
+    is_submit = body.get("submit", False)  # False = simpan draft, True = submit final
+
+    if not period_id or not eval_type or not evaluatee_id:
+        raise HTTPException(400, "period_id, eval_type, evaluatee_id wajib diisi.")
+
+    emp = await _get_linked_employee(db, user)
+    if not emp:
+        raise HTTPException(409, "Akun belum terhubung ke data karyawan. Hubungi HR.")
+    evaluator_id = emp["id"]
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+    if period.get("status") not in ("open",):
+        raise HTTPException(400, "Periode tidak dalam status open. Tidak bisa mengisi form.")
+
+    # Validate answers (score 1-5)
+    for ans in answers:
+        score = ans.get("score")
+        if score is not None and (not isinstance(score, (int, float)) or not (1 <= score <= 5)):
+            raise HTTPException(400, f"Skor harus antara 1-5. Ditemukan: {score}")
+
+    # Calculate section score
+    all_q = await db.da_kpi_questions.find(
+        {"eval_type": eval_type, "is_active": True}, {"_id": 0}
+    ).to_list(500)
+    calc = _calc_section_score(answers, all_q)
+
+    new_status = "submitted" if is_submit else "draft"
+
+    existing = await db.da_kpi_submissions.find_one(
+        {"period_id": period_id, "evaluator_id": evaluator_id,
+         "evaluatee_id": evaluatee_id, "eval_type": eval_type},
+        {"_id": 0}
+    )
+
+    if existing and existing.get("status") == "submitted":
+        raise HTTPException(400, "Form sudah disubmit dan tidak bisa diubah.")
+
+    doc_upd = {
+        "period_id": period_id,
+        "eval_type": eval_type,
+        "evaluator_id": evaluator_id,
+        "evaluatee_id": evaluatee_id,
+        "answers": answers,
+        "section_score": calc["section_score"],
+        "category_breakdown": calc["category_breakdown"],
+        "status": new_status,
+        "is_anonymous": eval_type in ("peer", "staff_to_supervisor"),
+        "updated_at": _now(),
+    }
+    if is_submit:
+        doc_upd["submitted_at"] = _now()
+
+    if existing:
+        await db.da_kpi_submissions.update_one(
+            {"submission_id": existing["submission_id"]},
+            {"$set": doc_upd}
+        )
+        out = await db.da_kpi_submissions.find_one(
+            {"submission_id": existing["submission_id"]}, {"_id": 0}
+        )
+    else:
+        doc_upd["submission_id"] = _uid()
+        doc_upd["created_at"] = _now()
+        await db.da_kpi_submissions.insert_one(doc_upd)
+        out = doc_upd
+
+    return {"ok": True, "submission": _s(out)}
+
+
+@router.get("/submissions/{period_id}/{employee_id}")
+async def get_submission(period_id: str, employee_id: str, request: Request):
+    await require_auth(request)
+    db = get_db()
+    eval_type = request.query_params.get("eval_type")
+    filt = {"period_id": period_id, "evaluator_id": employee_id}
+    if eval_type:
+        filt["eval_type"] = eval_type
+    docs = await db.da_kpi_submissions.find(filt, {"_id": 0}).to_list(500)
+    return {"ok": True, "submissions": [_s(d) for d in docs]}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RESULTS — CALCULATE & PUBLISH (HR ADMIN)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.post("/results/{period_id}/calculate")
+async def calculate_results(period_id: str, request: Request):
+    """Hitung KPI untuk semua karyawan dalam periode."""
+    user = await _require_hr(request)
+    db = get_db()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    emp_ids = period.get("participant_employee_ids", [])
+    if not emp_ids:
+        raise HTTPException(400, "Tidak ada karyawan dalam periode ini.")
+
+    emps = await db.rahaza_employees.find(
+        {"id": {"$in": emp_ids}}, {"_id": 0}
+    ).to_list(500)
+    emp_map = {e["id"]: e for e in emps}
+
+    results = []
+    for emp_id in emp_ids:
+        emp = emp_map.get(emp_id)
+        if not emp:
+            continue
+
+        # Attitude
+        att_data = await _calc_attitude_score(db, period_id, emp_id)
+        # Absensi
+        abs_data = await _calc_absensi_score(db, period_id, emp_id)
+        # Perform
+        perf_doc = await db.da_kpi_perform.find_one({"period_id": period_id, "employee_id": emp_id}, {"_id": 0})
+        perform_score = perf_doc.get("perform_score") if perf_doc else None
+
+        # Final KPI
+        kpi_final = None
+        if perform_score is not None and att_data["attitude_score"] is not None and abs_data["absensi_score"] is not None:
+            kpi_final = round(
+                perform_score * 0.60 +
+                att_data["attitude_score"] * 0.20 +
+                abs_data["absensi_score"] * 0.20,
+                2
+            )
+
+        grade_info = _grade(kpi_final) if kpi_final is not None else None
+
+        result_doc = {
+            "period_id": period_id,
+            "employee_id": emp_id,
+            "employee_name": emp.get("name", "-"),
+            "employee_code": emp.get("employee_code", "-"),
+            "department": emp.get("department") or emp.get("location_id") or "-",
+            "perform_score": perform_score,
+            "attitude_score": att_data["attitude_score"],
+            "attitude_detail": att_data,
+            "absensi_score": abs_data["absensi_score"],
+            "absensi_detail": abs_data,
+            "kpi_final": kpi_final,
+            "grade": grade_info.get("grade") if grade_info else None,
+            "grade_label": grade_info.get("label") if grade_info else None,
+            "status_kpi": grade_info.get("status") if grade_info else None,
+            "raise_pct": grade_info.get("raise_pct") if grade_info else None,
+            "publish_status": "draft",
+            "calculated_at": _now().isoformat(),
+            "calculated_by": user["id"],
+        }
+
+        # Upsert result
+        existing = await db.da_kpi_results.find_one(
+            {"period_id": period_id, "employee_id": emp_id}, {"_id": 0}
+        )
+        if existing:
+            await db.da_kpi_results.update_one(
+                {"period_id": period_id, "employee_id": emp_id},
+                {"$set": result_doc}
+            )
+        else:
+            result_doc["result_id"] = _uid()
+            result_doc["created_at"] = _now()
+            await db.da_kpi_results.insert_one(result_doc)
+
+        results.append(result_doc)
+
+    return {"ok": True, "calculated": len(results), "results": [_s(r) for r in results]}
+
+
+@router.get("/results/{period_id}")
+async def get_period_results(period_id: str, request: Request):
+    await _require_hr(request)
+    db = get_db()
+    sp = request.query_params
+    q = {"period_id": period_id}
+    # Dual-mode: paginated or full list
+    if sp.get("page") or sp.get("limit"):
+        page, limit, skip = get_pagination_params(request, default_limit=50)
+        total = await db.da_kpi_results.count_documents(q)
+        docs = await db.da_kpi_results.find(q, {"_id": 0}).sort("employee_name", 1).skip(skip).limit(limit).to_list(limit)
+        return paginated_response([_s(d) for d in docs], total, page, limit)
+    docs = await db.da_kpi_results.find({"period_id": period_id}, {"_id": 0}).sort("employee_name", 1).to_list(500)
+    return {"ok": True, "results": [_s(d) for d in docs]}
+
+
+async def _auto_create_raise_proposals(db, period_id: str, period_name: str, user: dict):
+    """
+    Auto-create salary raise proposals for Grade A (10%) / B (7%) after KPI publish.
+    Idempotent: skip if active proposal already exists for same employee+period.
+    Returns {created, skipped}.
+    """
+    results = await db.da_kpi_results.find(
+        {"period_id": period_id, "grade": {"$in": ["A", "B"]}, "kpi_final": {"$ne": None}},
+        {"_id": 0}
+    ).to_list(500)
+
+    if not results:
+        return {"created": 0, "skipped": 0}
+
+    emp_ids = [r["employee_id"] for r in results]
+    emps = await db.rahaza_employees.find({"id": {"$in": emp_ids}}, {"_id": 0}).to_list(500)
+    emp_map = {e["id"]: e for e in emps}
+
+    profiles = await db.rahaza_payroll_profiles.find(
+        {"employee_id": {"$in": emp_ids}, "active": True}, {"_id": 0}
+    ).to_list(500)
+    profile_map = {p["employee_id"]: p for p in profiles}
+
+    created = 0
+    skipped = 0
+
+    for r in results:
+        emp_id = r["employee_id"]
+        grade = r.get("grade", "")
+        raise_pct = r.get("raise_pct") or 0
+
+        if raise_pct <= 0:
+            skipped += 1
+            continue
+
+        # Idempotency: skip if active kpi_raise proposal already exists for this period
+        existing = await db.rahaza_salary_adjustments.find_one({
+            "employee_id": emp_id,
+            "kpi_period_id": period_id,
+            "adjustment_type": "kpi_raise",
+            "status": {"$nin": ["rejected", "cancelled"]},
+        })
+        if existing:
+            skipped += 1
+            continue
+
+        emp = emp_map.get(emp_id, {})
+        profile = profile_map.get(emp_id)
+        current_base = float(profile.get("base_rate", 0)) if profile else 0
+        if current_base <= 0:
+            skipped += 1
+            continue
+
+        raise_amount = round(current_base * (raise_pct / 100))
+        proposed_base = current_base + raise_amount
+        manager_id = emp.get("manager_id") or None
+
+        doc = {
+            "id": _uid(),
+            "employee_id": emp_id,
+            "employee_name": emp.get("name") or r.get("employee_name", "-"),
+            "employee_code": emp.get("employee_code") or r.get("employee_code", "-"),
+            "manager_id": manager_id,
+            "manager_name": emp.get("manager_name", ""),
+            "adjustment_type": "kpi_raise",
+            "kpi_period_id": period_id,
+            "kpi_period_name": period_name,
+            "kpi_grade": grade,
+            "kpi_final_score": r.get("kpi_final"),
+            "current_base": current_base,
+            "proposed_base": float(proposed_base),
+            "raise_amount": float(raise_amount),
+            "raise_pct": raise_pct,
+            "reason": f"KPI Grade {grade} ({r.get('grade_label', '')}) — Periode: {period_name}",
+            "status": "pending_manager" if manager_id else "pending_hr",
+            "created_at": _now(),
+            "created_by": user.get("id", ""),
+            "notes": "",
+            "approval_notes": "",
+        }
+        await db.rahaza_salary_adjustments.insert_one(doc)
+        created += 1
+
+    return {"created": created, "skipped": skipped}
+
+
+@router.post("/results/{period_id}/publish")
+async def publish_results(period_id: str, request: Request):
+    """
+    Publish hasil KPI — karyawan bisa melihat hasilnya.
+    + Validasi completion rate (warn jika <80%).
+    + Auto-create raise proposals untuk Grade A/B.
+
+    Body: { "force": true } untuk bypass peringatan <80%.
+    """
+    user = await _require_hr(request)
+    db = get_db()
+
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    force = bool(body.get("force", False))
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    # ── Completion rate check ──────────────────────────────────────────────
+    total_participants = len(period.get("participant_employee_ids", []))
+    finalized_count = await db.da_kpi_results.count_documents(
+        {"period_id": period_id, "kpi_final": {"$ne": None}}
+    )
+    completion_pct = round((finalized_count / total_participants * 100), 1) if total_participants > 0 else 0
+
+    if completion_pct < 80 and not force:
+        return {
+            "ok": False,
+            "warning": True,
+            "message": (
+                f"Baru {completion_pct}% karyawan memiliki KPI final terhitung "
+                f"({finalized_count}/{total_participants}). "
+                f"Kirim dengan force=true untuk tetap lanjutkan."
+            ),
+            "completion_pct": completion_pct,
+            "finalized_count": finalized_count,
+            "total_participants": total_participants,
+        }
+
+    # ── Publish ────────────────────────────────────────────────────────────
+    await db.da_kpi_results.update_many(
+        {"period_id": period_id, "kpi_final": {"$ne": None}},
+        {"$set": {"publish_status": "published", "published_at": _now(), "published_by": user["id"]}}
+    )
+    await db.da_kpi_periods.update_one(
+        {"period_id": period_id},
+        {"$set": {"status": "finalized", "finalized_at": _now(), "finalized_by": user["id"]}}
+    )
+    count = await db.da_kpi_results.count_documents({"period_id": period_id, "publish_status": "published"})
+
+    # ── Auto Raise Proposals (Grade A/B) ───────────────────────────────────
+    raise_result = await _auto_create_raise_proposals(db, period_id, period.get("name", ""), user)
+
+    return {
+        "ok": True,
+        "published": count,
+        "completion_pct": completion_pct,
+        "raise_proposals": raise_result,
+        "badges_awarded": await _calculate_and_award_badges(db, period_id),
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GAMIFICATION — P3 (Leaderboard, Badge, Achievement)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Badge type definitions
+BADGE_DEFS = {
+    "gold_medal":     {"label": "Juara 1",          "emoji": "🥇", "color": "#F59E0B", "desc": "Ranking #1 pada periode KPI"},
+    "silver_medal":   {"label": "Juara 2",          "emoji": "🥈", "color": "#9CA3AF", "desc": "Ranking #2 pada periode KPI"},
+    "bronze_medal":   {"label": "Juara 3",          "emoji": "🥉", "color": "#B45309", "desc": "Ranking #3 pada periode KPI"},
+    "perfect_score":  {"label": "Nilai Sempurna",   "emoji": "⭐", "color": "#7C3AED", "desc": "KPI Final ≥ 95"},
+    "grade_a":        {"label": "Grade A",          "emoji": "💎", "color": "#0EA5E9", "desc": "KPI Grade A (91–100)"},
+    "most_improved":  {"label": "Paling Meningkat", "emoji": "📈", "color": "#10B981", "desc": "Peningkatan skor terbesar dari periode sebelumnya"},
+    "consistent_top": {"label": "Konsisten Terbaik","emoji": "🔥", "color": "#EF4444", "desc": "Masuk Top 3 pada 3+ periode berturut-turut"},
+    "goal_crusher":   {"label": "Goal Achiever",    "emoji": "🎯", "color": "#8B5CF6", "desc": "Semua target KPI tercapai dalam periode"},
+    "top_performer":  {"label": "Top Performer",    "emoji": "💪", "color": "#F97316", "desc": "KPI Final ≥ 90"},
+}
+
+
+async def _calculate_and_award_badges(db, period_id: str) -> dict:
+    """
+    Hitung dan berikan badge setelah KPI dipublish.
+    Idempotent — hapus badge lama untuk period ini, lalu recalculate.
+    """
+    results = await db.da_kpi_results.find(
+        {"period_id": period_id, "kpi_final": {"$ne": None}},
+        {"_id": 0}
+    ).to_list(500)
+
+    if not results:
+        return {"awarded": 0}
+
+    # Hapus badge lama untuk period ini (idempotent)
+    await db.da_kpi_badges.delete_many({"period_id": period_id})
+
+    # Sort by kpi_final desc
+    sorted_results = sorted(results, key=lambda r: float(r.get("kpi_final") or 0), reverse=True)
+
+    badges_to_insert = []
+    now = datetime.now(timezone.utc)
+
+    # Rank badges
+    rank_badges = {0: "gold_medal", 1: "silver_medal", 2: "bronze_medal"}
+    for i, r in enumerate(sorted_results[:3]):
+        if float(r.get("kpi_final") or 0) > 0:
+            btype = rank_badges[i]
+            badges_to_insert.append({
+                "id": str(uuid.uuid4()),
+                "employee_id": r["employee_id"],
+                "employee_name": r.get("employee_name", ""),
+                "employee_code": r.get("employee_code", ""),
+                "period_id": period_id,
+                "badge_type": btype,
+                "badge_label": BADGE_DEFS[btype]["label"],
+                "badge_emoji": BADGE_DEFS[btype]["emoji"],
+                "rank": i + 1,
+                "score": float(r.get("kpi_final") or 0),
+                "earned_at": now,
+            })
+
+    # Score-based badges
+    for r in results:
+        score = float(r.get("kpi_final") or 0)
+        emp_id = r["employee_id"]
+        emp_name = r.get("employee_name", "")
+        emp_code = r.get("employee_code", "")
+
+        if score >= 95:
+            badges_to_insert.append({
+                "id": str(uuid.uuid4()),
+                "employee_id": emp_id, "employee_name": emp_name, "employee_code": emp_code,
+                "period_id": period_id, "badge_type": "perfect_score",
+                "badge_label": BADGE_DEFS["perfect_score"]["label"],
+                "badge_emoji": BADGE_DEFS["perfect_score"]["emoji"],
+                "rank": None, "score": score, "earned_at": now,
+            })
+        if score >= 90:
+            badges_to_insert.append({
+                "id": str(uuid.uuid4()),
+                "employee_id": emp_id, "employee_name": emp_name, "employee_code": emp_code,
+                "period_id": period_id, "badge_type": "top_performer",
+                "badge_label": BADGE_DEFS["top_performer"]["label"],
+                "badge_emoji": BADGE_DEFS["top_performer"]["emoji"],
+                "rank": None, "score": score, "earned_at": now,
+            })
+        if r.get("grade") == "A":
+            badges_to_insert.append({
+                "id": str(uuid.uuid4()),
+                "employee_id": emp_id, "employee_name": emp_name, "employee_code": emp_code,
+                "period_id": period_id, "badge_type": "grade_a",
+                "badge_label": BADGE_DEFS["grade_a"]["label"],
+                "badge_emoji": BADGE_DEFS["grade_a"]["emoji"],
+                "rank": None, "score": score, "earned_at": now,
+            })
+
+    # Most improved — compare with previous period
+    prev_results = await db.da_kpi_results.find(
+        {"period_id": {"$ne": period_id}, "kpi_final": {"$ne": None}},
+        {"_id": 0, "employee_id": 1, "kpi_final": 1, "period_id": 1}
+    ).sort("earned_at", -1).to_list(500)
+
+    prev_map: dict = {}
+    for pr in prev_results:
+        eid = pr["employee_id"]
+        if eid not in prev_map:
+            prev_map[eid] = float(pr.get("kpi_final") or 0)
+
+    best_improvement = 0
+    best_emp = None
+    for r in results:
+        eid = r["employee_id"]
+        curr = float(r.get("kpi_final") or 0)
+        prev = prev_map.get(eid)
+        if prev is not None:
+            improvement = curr - prev
+            if improvement > best_improvement:
+                best_improvement = improvement
+                best_emp = r
+
+    if best_emp and best_improvement > 0:
+        badges_to_insert.append({
+            "id": str(uuid.uuid4()),
+            "employee_id": best_emp["employee_id"],
+            "employee_name": best_emp.get("employee_name", ""),
+            "employee_code": best_emp.get("employee_code", ""),
+            "period_id": period_id, "badge_type": "most_improved",
+            "badge_label": BADGE_DEFS["most_improved"]["label"],
+            "badge_emoji": BADGE_DEFS["most_improved"]["emoji"],
+            "rank": None, "score": float(best_emp.get("kpi_final") or 0),
+            "score_improvement": round(best_improvement, 1), "earned_at": now,
+        })
+
+    # Consistent top — count periods where employee was top 3
+    all_periods_results = await db.da_kpi_results.find(
+        {"kpi_final": {"$ne": None}}, {"_id": 0}
+    ).to_list(500)
+
+    from collections import defaultdict
+    periods_per_emp: dict = defaultdict(list)
+    for r in all_periods_results:
+        periods_per_emp[r["employee_id"]].append(r)
+
+    for emp_id, emp_results in periods_per_emp.items():
+        top3_periods = 0
+        for per_id in set(r["period_id"] for r in emp_results):
+            per_res = [r for r in all_periods_results if r["period_id"] == per_id]
+            per_sorted = sorted(per_res, key=lambda x: float(x.get("kpi_final") or 0), reverse=True)
+            top3_ids = [r["employee_id"] for r in per_sorted[:3]]
+            if emp_id in top3_ids:
+                top3_periods += 1
+        if top3_periods >= 3:
+            emp_r = next((r for r in emp_results if r["period_id"] == period_id), None)
+            if emp_r:
+                badges_to_insert.append({
+                    "id": str(uuid.uuid4()),
+                    "employee_id": emp_id,
+                    "employee_name": emp_r.get("employee_name", ""),
+                    "employee_code": emp_r.get("employee_code", ""),
+                    "period_id": period_id, "badge_type": "consistent_top",
+                    "badge_label": BADGE_DEFS["consistent_top"]["label"],
+                    "badge_emoji": BADGE_DEFS["consistent_top"]["emoji"],
+                    "rank": None, "score": float(emp_r.get("kpi_final") or 0),
+                    "top3_count": top3_periods, "earned_at": now,
+                })
+
+    if badges_to_insert:
+        await db.da_kpi_badges.insert_many(badges_to_insert)
+
+    # Create indexes
+    try:
+        await db.da_kpi_badges.create_index([("employee_id", 1), ("earned_at", -1)])
+        await db.da_kpi_badges.create_index([("period_id", 1), ("badge_type", 1)])
+        await db.da_kpi_badges.create_index("badge_type")
+    except Exception:
+        pass
+
+    return {"awarded": len(badges_to_insert)}
+
+
+@router.get("/leaderboard/{period_id}")
+async def get_leaderboard(period_id: str, request: Request, limit: int = Query(default=20)):
+    """Leaderboard KPI untuk satu periode — sorted by kpi_final DESC."""
+    await require_auth(request)
+    db = get_db()
+
+    results = await db.da_kpi_results.find(
+        {"period_id": period_id, "kpi_final": {"$ne": None}},
+        {"_id": 0}
+    ).to_list(500)
+
+    if not results:
+        return {"ok": True, "leaderboard": [], "period_id": period_id}
+
+    sorted_res = sorted(results, key=lambda r: float(r.get("kpi_final") or 0), reverse=True)
+
+    # Get prev period scores for delta
+    prev_results = await db.da_kpi_results.find(
+        {"period_id": {"$ne": period_id}, "kpi_final": {"$ne": None}},
+        {"_id": 0, "employee_id": 1, "kpi_final": 1}
+    ).to_list(500)
+    prev_map = {}
+    for pr in prev_results:
+        eid = pr["employee_id"]
+        if eid not in prev_map:
+            prev_map[eid] = float(pr.get("kpi_final") or 0)
+
+    # Get badges for this period
+    badges_docs = await db.da_kpi_badges.find({"period_id": period_id}, {"_id": 0}).to_list(500)
+    badges_map: dict = {}
+    for b in badges_docs:
+        eid = b["employee_id"]
+        if eid not in badges_map:
+            badges_map[eid] = []
+        badges_map[eid].append({
+            "badge_type": b["badge_type"],
+            "badge_emoji": b.get("badge_emoji", ""),
+            "badge_label": b.get("badge_label", ""),
+        })
+
+    leaderboard = []
+    for rank_idx, r in enumerate(sorted_res[:limit]):
+        emp_id = r["employee_id"]
+        score = float(r.get("kpi_final") or 0)
+        prev_score = prev_map.get(emp_id)
+        delta = round(score - prev_score, 1) if prev_score is not None else None
+
+        leaderboard.append({
+            "rank": rank_idx + 1,
+            "employee_id": emp_id,
+            "employee_name": r.get("employee_name", ""),
+            "employee_code": r.get("employee_code", ""),
+            "department": r.get("department", ""),
+            "score": round(score, 1),
+            "grade": r.get("grade"),
+            "grade_label": r.get("grade_label", ""),
+            "prev_score": round(prev_score, 1) if prev_score is not None else None,
+            "delta": delta,
+            "badges": badges_map.get(emp_id, []),
+        })
+
+    return {
+        "ok": True,
+        "period_id": period_id,
+        "total": len(sorted_res),
+        "leaderboard": leaderboard,
+    }
+
+
+@router.get("/leaderboard")
+async def get_overall_leaderboard(request: Request, limit: int = Query(default=20)):
+    """All-time leaderboard — rata-rata score semua periode per karyawan."""
+    await require_auth(request)
+    db = get_db()
+
+    results = await db.da_kpi_results.find(
+        {"kpi_final": {"$ne": None}}, {"_id": 0}
+    ).to_list(500)
+
+    if not results:
+        return {"ok": True, "leaderboard": []}
+
+    from collections import defaultdict
+    emp_scores: dict = defaultdict(list)
+    emp_info: dict = {}
+    for r in results:
+        eid = r["employee_id"]
+        emp_scores[eid].append(float(r.get("kpi_final") or 0))
+        emp_info[eid] = {
+            "employee_name": r.get("employee_name", ""),
+            "employee_code": r.get("employee_code", ""),
+            "department": r.get("department", ""),
+        }
+
+    leaderboard = []
+    for eid, scores in emp_scores.items():
+        avg = round(sum(scores) / len(scores), 1)
+        leaderboard.append({
+            "employee_id": eid,
+            "employee_name": emp_info[eid]["employee_name"],
+            "employee_code": emp_info[eid]["employee_code"],
+            "department": emp_info[eid]["department"],
+            "avg_score": avg,
+            "period_count": len(scores),
+            "best_score": round(max(scores), 1),
+            "total_badges": await db.da_kpi_badges.count_documents({"employee_id": eid}),
+        })
+
+    leaderboard.sort(key=lambda x: x["avg_score"], reverse=True)
+    for i, entry in enumerate(leaderboard):
+        entry["rank"] = i + 1
+
+    return {"ok": True, "leaderboard": leaderboard[:limit]}
+
+
+@router.get("/achievements/{employee_id}")
+async def get_employee_achievements(employee_id: str, request: Request):
+    """Semua badge milik satu karyawan, dikelompokkan per tipe."""
+    await require_auth(request)
+    db = get_db()
+
+    badges = await db.da_kpi_badges.find(
+        {"employee_id": employee_id}, {"_id": 0}
+    ).sort("earned_at", -1).to_list(500)
+
+    # Enrich with badge def info
+    enriched = []
+    for b in badges:
+        btype = b.get("badge_type", "")
+        bdef = BADGE_DEFS.get(btype, {})
+        enriched.append({
+            **_s(b),
+            "badge_color": bdef.get("color", "#888"),
+            "badge_desc": bdef.get("desc", ""),
+        })
+
+    # Summary by badge type
+    from collections import Counter
+    type_counts = Counter(b["badge_type"] for b in badges)
+    summary = [
+        {
+            "badge_type": btype,
+            "count": cnt,
+            "badge_emoji": BADGE_DEFS.get(btype, {}).get("emoji", ""),
+            "badge_label": BADGE_DEFS.get(btype, {}).get("label", btype),
+            "badge_color": BADGE_DEFS.get(btype, {}).get("color", "#888"),
+        }
+        for btype, cnt in type_counts.most_common()
+    ]
+
+    return {"ok": True, "employee_id": employee_id, "badges": enriched, "summary": summary, "total": len(badges)}
+
+
+@router.get("/my/achievements")
+async def my_achievements(request: Request):
+    """Badge milik karyawan yang sedang login."""
+    user = await require_auth(request)
+    db = get_db()
+    emp = await _get_linked_employee(db, user)
+    if not emp:
+        return {"ok": True, "badges": [], "summary": [], "total": 0}
+    return await get_employee_achievements(emp["id"], request)
+
+
+@router.get("/gamification/summary")
+async def gamification_summary(request: Request):
+    """Ringkasan gamification untuk HR dashboard."""
+    await require_auth(request)
+    db = get_db()
+
+    total_badges = await db.da_kpi_badges.count_documents({})
+    badge_dist_cursor = db.da_kpi_badges.aggregate([
+        {"$group": {"_id": "$badge_type", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}}
+    ])
+    badge_dist = [doc async for doc in badge_dist_cursor]
+    badge_dist_enriched = [
+        {
+            "badge_type": d["_id"],
+            "count": d["count"],
+            "badge_emoji": BADGE_DEFS.get(d["_id"], {}).get("emoji", ""),
+            "badge_label": BADGE_DEFS.get(d["_id"], {}).get("label", d["_id"]),
+            "badge_color": BADGE_DEFS.get(d["_id"], {}).get("color", "#888"),
+        }
+        for d in badge_dist
+    ]
+
+    # Top badge earners
+    top_earner_cursor = db.da_kpi_badges.aggregate([
+        {"$group": {"_id": "$employee_id", "count": {"$sum": 1},
+                    "name": {"$first": "$employee_name"},
+                    "code": {"$first": "$employee_code"}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ])
+    top_earners = [
+        {"employee_id": d["_id"], "employee_name": d["name"],
+         "employee_code": d["code"], "badge_count": d["count"]}
+        async for d in top_earner_cursor
+    ]
+
+    # Recent badges (last 10)
+    recent = await db.da_kpi_badges.find({}, {"_id": 0}).sort("earned_at", -1).to_list(10)
+    recent_enriched = []
+    for b in recent:
+        btype = b.get("badge_type", "")
+        bdef = BADGE_DEFS.get(btype, {})
+        recent_enriched.append({
+            **_s(b),
+            "badge_color": bdef.get("color", "#888"),
+            "badge_desc": bdef.get("desc", ""),
+        })
+
+    return {
+        "ok": True,
+        "total_badges_awarded": total_badges,
+        "badge_distribution": badge_dist_enriched,
+        "top_earners": top_earners,
+        "recent_badges": recent_enriched,
+        "badge_types_available": len(BADGE_DEFS),
+    }
+
+
+@router.get("/badges")
+async def get_badge_catalog(request: Request):
+    """Daftar semua tipe badge yang tersedia."""
+    await require_auth(request)
+    return {
+        "ok": True,
+        "badges": [
+            {"badge_type": k, **v}
+            for k, v in BADGE_DEFS.items()
+        ]
+    }
+
+
+@router.post("/gamification/seed-demo")
+async def seed_demo_gamification(request: Request):
+    """
+    Seed demo KPI periods + results + badges untuk testing gamification.
+    Hanya bisa dijalankan jika belum ada data periods (idempotent).
+    """
+    user = await require_auth(request)
+    db = get_db()
+
+    existing = await db.da_kpi_periods.count_documents({})
+    if existing > 0:
+        # Recalculate badges from existing data
+        periods = await db.da_kpi_periods.find(
+            {"status": {"$in": ["finalized", "closed"]}}, {"_id": 0, "id": 1, "period_id": 1}
+        ).to_list(500)
+        total_badges = 0
+        for p in periods:
+            pid = p.get("period_id") or p.get("id")
+            res = await _calculate_and_award_badges(db, pid)
+            total_badges += res.get("awarded", 0)
+        return {"ok": True, "message": f"Badges recalculated ({total_badges} awarded). Data sudah ada.", "seeded": False}
+
+    # Get employees
+    emps = await db.rahaza_employees.find({}, {"_id": 0, "id": 1, "name": 1, "employee_code": 1, "department": 1}).to_list(500)
+    if not emps:
+        raise HTTPException(400, "Seed karyawan dulu (endpoint: /api/rahaza/hr-seed/run)")
+
+    now = datetime.now(timezone.utc)
+    created_periods = []
+    created_results = []
+
+    # Create 3 demo periods
+    periods_data = [
+        {"title": "KPI Q1 2025", "month": "2025-03"},
+        {"title": "KPI Q2 2025", "month": "2025-06"},
+        {"title": "KPI Q3 2025", "month": "2025-09"},
+    ]
+
+    import random
+    random.seed(42)
+
+    grade_map = [
+        (91, 100, "A", "Sangat Baik"),
+        (80, 90,  "B", "Baik"),
+        (75, 79,  "C", "Cukup"),
+        (50, 74,  "D", "Perlu Perbaikan"),
+    ]
+
+    def _assign_grade(score):
+        for low, high, grade, label in grade_map:
+            if low <= score <= high:
+                return grade, label
+        return "E", "Di Bawah Standar"
+
+    for p_idx, pd in enumerate(periods_data):
+        period_id = str(uuid.uuid4())
+        period_doc = {
+            "id": period_id,
+            "period_id": period_id,
+            "title": pd["title"],
+            "name": pd["title"],
+            "type": "quarterly",
+            "month": pd["month"],
+            "status": "finalized",
+            "participant_employee_ids": [e["id"] for e in emps],
+            "created_at": now,
+            "created_by": user.get("id", "system"),
+        }
+        await db.da_kpi_periods.insert_one(period_doc)
+        created_periods.append(period_id)
+
+        # Create results for each employee with varied scores
+        for e_idx, emp in enumerate(emps):
+            # Give varied scores — some employees consistently high
+            base_scores = [92, 85, 78, 88, 72, 95, 83, 76]
+            base = base_scores[e_idx % len(base_scores)]
+            # Slight variation per period
+            variation = random.randint(-3, 5) + p_idx * 2
+            score = min(100, max(50, base + variation))
+            grade, grade_label = _assign_grade(score)
+
+            result_doc = {
+                "id": str(uuid.uuid4()),
+                "result_id": str(uuid.uuid4()),      # unique index required
+                "period_id": period_id,
+                "employee_id": emp["id"],
+                "employee_name": emp.get("name", ""),
+                "employee_code": emp.get("employee_code", ""),
+                "department": emp.get("department", ""),
+                "kpi_final": float(score),
+                "grade": grade,
+                "grade_label": grade_label,
+                "raise_pct": 10 if grade == "A" else (7 if grade == "B" else 0),
+                "publish_status": "published",
+                "published_at": now,
+                "created_at": now,
+            }
+            await db.da_kpi_results.insert_one(result_doc)
+            created_results.append(result_doc["id"])
+
+        # Award badges for this period
+        await _calculate_and_award_badges(db, period_id)
+
+    total_badges = await db.da_kpi_badges.count_documents({})
+    return {
+        "ok": True,
+        "message": f"Demo seed berhasil: {len(created_periods)} periode, {len(created_results)} hasil, {total_badges} badge",
+        "periods_created": len(created_periods),
+        "results_created": len(created_results),
+        "badges_awarded": total_badges,
+        "seeded": True,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EMPLOYEE PORTAL — MY KPI
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/my/periods")
+async def my_periods(request: Request):
+    """Daftar periode aktif yang melibatkan karyawan ini."""
+    user = await require_auth(request)
+    db = get_db()
+    emp = await _get_linked_employee(db, user)
+    if not emp:
+        return {"ok": True, "periods": [], "message": "Akun belum terhubung ke data karyawan."}
+
+    emp_id = emp["id"]
+    # Find periods where this employee is a participant
+    docs = await db.da_kpi_periods.find(
+        {"participant_employee_ids": emp_id, "status": {"$in": ["open", "closed", "finalized"]}},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+
+    result = []
+    for d in docs:
+        d = _s(d)
+        # Check progress for this employee
+        my_result = await db.da_kpi_results.find_one(
+            {"period_id": d["period_id"], "employee_id": emp_id},
+            {"_id": 0, "kpi_final": 1, "grade": 1, "publish_status": 1}
+        )
+        d["my_result"] = _s(my_result)
+
+        # Count my form completions
+        submitted_count = await db.da_kpi_submissions.count_documents(
+            {"period_id": d["period_id"], "evaluator_id": emp_id, "status": "submitted"}
+        )
+        d["my_submitted_forms"] = submitted_count
+        result.append(d)
+
+    return {"ok": True, "periods": result}
+
+
+@router.get("/my/result/{period_id}")
+async def my_result(period_id: str, request: Request):
+    """Hasil KPI saya untuk periode tertentu (hanya jika sudah dipublish)."""
+    user = await require_auth(request)
+    db = get_db()
+    emp = await _get_linked_employee(db, user)
+    if not emp:
+        raise HTTPException(409, "Akun belum terhubung ke data karyawan.")
+
+    result = await db.da_kpi_results.find_one(
+        {"period_id": period_id, "employee_id": emp["id"]},
+        {"_id": 0}
+    )
+    if not result:
+        raise HTTPException(404, "Hasil KPI belum tersedia.")
+
+    if result.get("publish_status") != "published":
+        # Return partial info only
+        return {
+            "ok": True,
+            "published": False,
+            "message": "Hasil KPI sedang dalam proses finalisasi oleh HR.",
+        }
+
+    return {"ok": True, "published": True, "result": _s(result)}
+
+
+@router.get("/my/results")
+async def my_results_history(request: Request):
+    """Riwayat semua hasil KPI karyawan yang login."""
+    user = await require_auth(request)
+    db = get_db()
+    emp = await _get_linked_employee(db, user)
+    if not emp:
+        return {"ok": True, "results": []}
+
+    docs = await db.da_kpi_results.find(
+        {"employee_id": emp["id"], "publish_status": "published"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(24)
+
+    # Enrich with period name
+    period_ids = [d["period_id"] for d in docs]
+    periods = await db.da_kpi_periods.find(
+        {"period_id": {"$in": period_ids}}, {"_id": 0, "period_id": 1, "name": 1}
+    ).to_list(500) if period_ids else []
+    period_map = {p["period_id"]: p["name"] for p in periods}
+
+    result = []
+    for d in docs:
+        d = _s(d)
+        d["period_name"] = period_map.get(d["period_id"], "-")
+        result.append(d)
+
+    return {"ok": True, "results": result}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROGRESS MONITOR (HR ADMIN)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/monitor/{period_id}")
+async def monitor_progress(period_id: str, request: Request):
+    await _require_hr(request)
+    db = get_db()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    emp_ids = period.get("participant_employee_ids", [])
+    emps = await db.rahaza_employees.find(
+        {"id": {"$in": emp_ids}}, {"_id": 0, "id": 1, "name": 1, "employee_code": 1, "department": 1}
+    ).to_list(500) if emp_ids else []
+
+    result = []
+    for emp in emps:
+        emp_id = emp["id"]
+
+        # Check submissions
+        self_done = await db.da_kpi_submissions.count_documents(
+            {"period_id": period_id, "evaluator_id": emp_id, "eval_type": "self", "status": "submitted"}
+        ) > 0
+        peer_total = sum(1 for a in period.get("peer_assignments", []) if a["reviewer_id"] == emp_id)
+        peer_done = await db.da_kpi_submissions.count_documents(
+            {"period_id": period_id, "evaluator_id": emp_id, "eval_type": "peer", "status": "submitted"}
+        )
+        staff_sup_done = await db.da_kpi_submissions.count_documents(
+            {"period_id": period_id, "evaluator_id": emp_id, "eval_type": "staff_to_supervisor", "status": "submitted"}
+        ) > 0
+
+        # Check supervisor forms for this employee
+        sup_reviewed = await db.da_kpi_submissions.count_documents(
+            {"period_id": period_id, "evaluatee_id": emp_id, "eval_type": "supervisor_to_staff", "status": "submitted"}
+        ) > 0
+
+        # Check perform score
+        perf_doc = await db.da_kpi_perform.find_one({"period_id": period_id, "employee_id": emp_id}, {"_id": 0})
+
+        result.append({
+            "employee_id": emp_id,
+            "employee_name": emp.get("name", "-"),
+            "employee_code": emp.get("employee_code", "-"),
+            "department": emp.get("department") or "-",
+            "self_done": self_done,
+            "peer_done": peer_done,
+            "peer_total": peer_total,
+            "staff_to_sup_done": staff_sup_done,
+            "supervisor_reviewed": sup_reviewed,
+            "perform_input": perf_doc is not None,
+            "perform_score": perf_doc.get("perform_score") if perf_doc else None,
+        })
+
+    return {"ok": True, "period": _s(period), "progress": result}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REPORT / SUMMARY (HR & SUPERVISOR)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/reports/summary/{period_id}")
+async def report_summary(period_id: str, request: Request):
+    """Laporan ringkasan KPI per periode (untuk HR & Supervisor)."""
+    await _require_hr(request)
+    db = get_db()
+
+    results = await db.da_kpi_results.find(
+        {"period_id": period_id}, {"_id": 0}
+    ).sort("employee_name", 1).to_list(500)
+
+    if not results:
+        return {"ok": True, "period_id": period_id, "summary": {}, "details": []}
+
+    # Summary statistics
+    finalized = [r for r in results if r.get("kpi_final") is not None]
+    if finalized:
+        avg_kpi = round(sum(r["kpi_final"] for r in finalized) / len(finalized), 2)
+        avg_perform = round(sum(r["perform_score"] or 0 for r in finalized) / len(finalized), 2)
+        avg_attitude = round(sum(r["attitude_score"] or 0 for r in finalized) / len(finalized), 2)
+        avg_absensi = round(sum(r["absensi_score"] or 0 for r in finalized) / len(finalized), 2)
+        grade_dist = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
+        for r in finalized:
+            g = r.get("grade")
+            if g in grade_dist:
+                grade_dist[g] += 1
+    else:
+        avg_kpi = avg_perform = avg_attitude = avg_absensi = 0
+        grade_dist = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
+
+    return {
+        "ok": True,
+        "period_id": period_id,
+        "total_employees": len(results),
+        "finalized_count": len(finalized),
+        "summary": {
+            "avg_kpi": avg_kpi,
+            "avg_perform": avg_perform,
+            "avg_attitude": avg_attitude,
+            "avg_absensi": avg_absensi,
+            "grade_distribution": grade_dist,
+        },
+        "details": [_s(r) for r in results],
+    }
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TREND — Historical KPI per Karyawan (last N finalized periods)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/trend/{employee_id}")
+async def employee_kpi_trend(employee_id: str, request: Request, limit: int = 6):
+    """
+    Tren KPI historis untuk satu karyawan (default: 6 periode terakhir yang sudah finalized).
+    Returns daftar periode + skor untuk chart visualisasi.
+    """
+    await require_auth(request)
+    db = get_db()
+
+    # Get finalized periods
+    all_periods = await db.da_kpi_periods.find(
+        {"status": "finalized", "participant_employee_ids": employee_id},
+        {"_id": 0, "period_id": 1, "name": 1, "month": 1, "year": 1, "finalized_at": 1}
+    ).sort("year", -1).sort("month", -1).to_list(500)
+
+    # Pick last `limit` periods
+    target_periods = all_periods[:limit]
+    target_periods.reverse()  # chronological order
+
+    period_ids = [p["period_id"] for p in target_periods]
+    {p["period_id"]: p for p in target_periods}
+
+    results = await db.da_kpi_results.find(
+        {"period_id": {"$in": period_ids}, "employee_id": employee_id},
+        {"_id": 0}
+    ).to_list(500)
+    result_map = {r["period_id"]: r for r in results}
+
+    # Also get dept avg per period
+    dept_avgs = {}
+    emp = await db.rahaza_employees.find_one({"id": employee_id}, {"_id": 0, "department": 1})
+    emp_dept = (emp or {}).get("department")
+
+    if emp_dept:
+        for pid in period_ids:
+            dept_emps = await db.rahaza_employees.distinct("id", {"department": emp_dept})
+            dept_results = await db.da_kpi_results.find(
+                {"period_id": pid, "employee_id": {"$in": dept_emps}, "kpi_final": {"$ne": None}},
+                {"_id": 0, "kpi_final": 1}
+            ).to_list(500)
+            if dept_results:
+                dept_avgs[pid] = round(sum(r["kpi_final"] for r in dept_results) / len(dept_results), 2)
+
+    trend = []
+    for p in target_periods:
+        pid = p["period_id"]
+        r = result_map.get(pid, {})
+        trend.append({
+            "period_id": pid,
+            "period_name": p.get("name", f"M{p.get('month')}/{p.get('year')}"),
+            "month": p.get("month"),
+            "year": p.get("year"),
+            "kpi_final": r.get("kpi_final"),
+            "perform_score": r.get("perform_score"),
+            "attitude_score": r.get("attitude_score"),
+            "absensi_score": r.get("absensi_score"),
+            "grade": r.get("grade"),
+            "dept_avg": dept_avgs.get(pid),
+        })
+
+    return {
+        "ok": True,
+        "employee_id": employee_id,
+        "department": emp_dept,
+        "trend": trend,
+    }
+
+
+@router.get("/trend")
+async def all_employees_trend(request: Request, period_count: int = 6):
+    """Rata-rata KPI tren untuk semua karyawan (departemen & perusahaan)."""
+    await _require_hr(request)
+    db = get_db()
+
+    periods = await db.da_kpi_periods.find(
+        {"status": "finalized"},
+        {"_id": 0, "period_id": 1, "name": 1, "month": 1, "year": 1}
+    ).sort([("year", -1), ("month", -1)]).to_list(period_count)
+    periods.reverse()
+
+    trend = []
+    for p in periods:
+        pid = p["period_id"]
+        results = await db.da_kpi_results.find(
+            {"period_id": pid, "kpi_final": {"$ne": None}},
+            {"_id": 0, "kpi_final": 1, "grade": 1}
+        ).to_list(500)
+        if results:
+            avg = round(sum(r["kpi_final"] for r in results) / len(results), 2)
+            grade_dist = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
+            for r in results:
+                if r.get("grade") in grade_dist:
+                    grade_dist[r["grade"]] += 1
+        else:
+            avg = None
+            grade_dist = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
+
+        trend.append({
+            "period_id": pid,
+            "period_name": p.get("name", f"M{p.get('month')}/{p.get('year')}"),
+            "month": p.get("month"),
+            "year": p.get("year"),
+            "company_avg": avg,
+            "total_employees": len(results),
+            "grade_distribution": grade_dist,
+        })
+
+    return {"ok": True, "trend": trend}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GOALS — Goal Setting & Progress Tracking per Karyawan per Periode
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _goal_status(progress_pct: float) -> str:
+    if progress_pct >= 100:
+        return "achieved"
+    elif progress_pct >= 70:
+        return "on_track"
+    elif progress_pct >= 40:
+        return "at_risk"
+    else:
+        return "missed"
+
+
+@router.get("/goals")
+async def list_goals(request: Request, period_id: str = None, employee_id: str = None):
+    """List goals per periode / per karyawan."""
+    user = await require_auth(request)
+    db = get_db()
+
+    q = {}
+    if period_id:
+        q["period_id"] = period_id
+    if employee_id:
+        q["employee_id"] = employee_id
+    # Non-HR only sees their own goals
+    role = (user.get("role") or "").lower()
+    if role not in ("superadmin", "admin", "owner", "hr", "manager"):
+        emp = await db.rahaza_employees.find_one({"user_id": user["id"]}, {"_id": 0, "id": 1})
+        if emp:
+            q["employee_id"] = emp["id"]
+
+    docs = await db.da_kpi_goals.find(q, {"_id": 0}).sort("created_at", 1).to_list(500)
+    return {"ok": True, "goals": [_s(d) for d in docs]}
+
+
+@router.post("/goals")
+async def create_goal(request: Request):
+    """Buat goal baru untuk karyawan di suatu periode."""
+    user = await _require_hr(request)
+    db = get_db()
+
+    body = await request.json()
+    period_id = body.get("period_id")
+    employee_id = body.get("employee_id")
+    if not period_id or not employee_id:
+        raise HTTPException(400, "period_id dan employee_id wajib diisi.")
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0, "name": 1})
+    emp = await db.rahaza_employees.find_one({"id": employee_id}, {"_id": 0, "name": 1, "employee_code": 1})
+
+    target_value = float(body.get("target_value") or 0)
+    actual_value = float(body.get("actual_value") or 0)
+    progress_pct = round((actual_value / target_value * 100), 1) if target_value > 0 else 0
+
+    doc = {
+        "goal_id": _uid(),
+        "period_id": period_id,
+        "period_name": (period or {}).get("name", period_id),
+        "employee_id": employee_id,
+        "employee_name": (emp or {}).get("name", "-"),
+        "employee_code": (emp or {}).get("employee_code", "-"),
+        "title": body.get("title", ""),
+        "description": body.get("description", ""),
+        "target_value": target_value,
+        "unit": body.get("unit", ""),
+        "actual_value": actual_value,
+        "progress_pct": progress_pct,
+        "status": _goal_status(progress_pct),
+        "notes": body.get("notes", ""),
+        "created_at": _now(),
+        "updated_at": _now(),
+        "created_by": user.get("id", ""),
+    }
+    await db.da_kpi_goals.insert_one(doc)
+    return {"ok": True, "goal": _s(doc)}
+
+
+@router.put("/goals/{goal_id}")
+async def update_goal(goal_id: str, request: Request):
+    """Update goal (termasuk progress actual_value)."""
+    user = await require_auth(request)
+    db = get_db()
+
+    body = await request.json()
+    goal = await db.da_kpi_goals.find_one({"goal_id": goal_id}, {"_id": 0})
+    if not goal:
+        raise HTTPException(404, "Goal tidak ditemukan.")
+
+    updates = {}
+    for field in ("title", "description", "unit", "notes"):
+        if field in body:
+            updates[field] = body[field]
+    if "target_value" in body:
+        updates["target_value"] = float(body["target_value"] or 0)
+    if "actual_value" in body:
+        updates["actual_value"] = float(body["actual_value"] or 0)
+
+    tv = updates.get("target_value", goal.get("target_value", 0))
+    av = updates.get("actual_value", goal.get("actual_value", 0))
+    if tv and tv > 0:
+        updates["progress_pct"] = round((av / tv) * 100, 1)
+        updates["status"] = _goal_status(updates["progress_pct"])
+
+    updates["updated_at"] = _now()
+    updates["updated_by"] = user.get("id", "")
+
+    await db.da_kpi_goals.update_one({"goal_id": goal_id}, {"$set": updates})
+    updated = await db.da_kpi_goals.find_one({"goal_id": goal_id}, {"_id": 0})
+    return {"ok": True, "goal": _s(updated)}
+
+
+@router.delete("/goals/{goal_id}")
+async def delete_goal(goal_id: str, request: Request):
+    """Hapus goal."""
+    await _require_hr(request)
+    db = get_db()
+
+    res = await db.da_kpi_goals.delete_one({"goal_id": goal_id})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Goal tidak ditemukan.")
+    return {"ok": True, "message": "Goal dihapus"}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# KPI STATS — Dashboard overview
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/stats")
+async def kpi_stats(request: Request):
+    """Stats ringkasan KPI: aktif periode, distribusi grade, avg KPI terkini."""
+    await _require_hr(request)
+    db = get_db()
+
+    open_count = await db.da_kpi_periods.count_documents({"status": "open"})
+    draft_count = await db.da_kpi_periods.count_documents({"status": "draft"})
+    finalized_count = await db.da_kpi_periods.count_documents({"status": "finalized"})
+
+    # Rata-rata KPI dari periode finalized terakhir
+    last_period = await db.da_kpi_periods.find_one(
+        {"status": "finalized"}, {"_id": 0, "period_id": 1, "name": 1},
+        sort=[("year", -1), ("month", -1)]
+    )
+    last_avg = None
+    last_grade_dist = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0}
+    if last_period:
+        results = await db.da_kpi_results.find(
+            {"period_id": last_period["period_id"], "kpi_final": {"$ne": None}},
+            {"_id": 0, "kpi_final": 1, "grade": 1}
+        ).to_list(500)
+        if results:
+            last_avg = round(sum(r["kpi_final"] for r in results) / len(results), 2)
+            for r in results:
+                if r.get("grade") in last_grade_dist:
+                    last_grade_dist[r["grade"]] += 1
+
+    # Pending raise proposals from KPI
+    pending_raises = await db.rahaza_salary_adjustments.count_documents(
+        {"adjustment_type": "kpi_raise", "status": {"$in": ["pending_manager", "pending_hr"]}}
+    )
+
+    return {
+        "ok": True,
+        "periods": {
+            "open": open_count,
+            "draft": draft_count,
+            "finalized": finalized_count,
+        },
+        "last_period": _s(last_period) if last_period else None,
+        "last_period_avg": last_avg,
+        "last_period_grade_dist": last_grade_dist,
+        "pending_raise_proposals": pending_raises,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PDF EXPORT — Laporan KPI per Karyawan
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/results/{period_id}/{employee_id}/pdf")
+async def export_employee_kpi_pdf(period_id: str, employee_id: str, request: Request, token: str = None):
+    """Generate PDF laporan KPI untuk satu karyawan dalam satu periode."""
+    from fastapi.responses import Response
+    import io
+    from auth import JWT_SECRET
+    import jwt as _jwt
+
+    # Support token via query param (for browser window.open)
+    if token:
+        try:
+            _jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        except Exception:
+            from fastapi import HTTPException as _HTTPException
+            raise _HTTPException(401, "Token tidak valid")
+    else:
+        await require_auth(request)
+    db = get_db()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    result = await db.da_kpi_results.find_one(
+        {"period_id": period_id, "employee_id": employee_id}, {"_id": 0}
+    )
+    emp = await db.rahaza_employees.find_one({"id": employee_id}, {"_id": 0})
+    perform = await db.da_kpi_perform.find_one(
+        {"period_id": period_id, "employee_id": employee_id}, {"_id": 0}
+    )
+    goals = await db.da_kpi_goals.find(
+        {"period_id": period_id, "employee_id": employee_id}, {"_id": 0}
+    ).to_list(500)
+
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import cm
+        from reportlab.lib import colors
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT
+
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm,
+                                leftMargin=2*cm, rightMargin=2*cm)
+        styles = getSampleStyleSheet()
+        story = []
+
+        # Title
+        title_style = ParagraphStyle('title', parent=styles['Heading1'],
+                                     fontSize=16, textColor=colors.HexColor('#1e293b'),
+                                     alignment=TA_CENTER, spaceAfter=6)
+        subtitle_style = ParagraphStyle('subtitle', parent=styles['Normal'],
+                                        fontSize=10, textColor=colors.HexColor('#64748b'),
+                                        alignment=TA_CENTER, spaceAfter=12)
+        ParagraphStyle('label', parent=styles['Normal'],
+                                     fontSize=9, textColor=colors.HexColor('#475569'))
+        ParagraphStyle('value', parent=styles['Normal'],
+                                     fontSize=10, textColor=colors.HexColor('#0f172a'))
+
+        story.append(Paragraph("LAPORAN KPI KARYAWAN", title_style))
+        story.append(Paragraph(f"CV. Dewi Aditya — {period.get('name', period_id)}", subtitle_style))
+
+        grade_info = _grade(result.get("kpi_final", 0)) if result else {}
+        grade_str = grade_info.get("grade", "—") if grade_info else "—"
+        kpi_final = result.get("kpi_final") if result else None
+        raise_pct = grade_info.get("raise_pct", 0) if grade_info else 0
+
+        # Employee Info
+        emp_data = [
+            ["Nama Karyawan", emp.get("name", "-") if emp else "-",
+             "NIK / Kode", emp.get("employee_code", "-") if emp else "-"],
+            ["Departemen", emp.get("department", "-") if emp else "-",
+             "Jabatan", emp.get("position", "-") if emp else "-"],
+            ["Periode", period.get("name", period_id), "Tahun", str(period.get("year", ""))],
+        ]
+        emp_table = Table(emp_data, colWidths=[3.5*cm, 5.5*cm, 3.5*cm, 4.5*cm])
+        emp_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f8fafc')),
+            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#64748b')),
+            ('TEXTCOLOR', (2, 0), (2, -1), colors.HexColor('#64748b')),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
+            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.HexColor('#f8fafc'), colors.HexColor('#f1f5f9')]),
+            ('PADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.append(emp_table)
+        story.append(Spacer(1, 0.5*cm))
+
+        # Score Summary
+        story.append(Paragraph("<b>Ringkasan Nilai KPI</b>", styles['Heading3']))
+        score_data = [
+            ["Komponen", "Bobot", "Nilai", "Kontribusi"],
+            ["Perform Score", "60%",
+             f"{result.get('perform_score', 0):.1f}" if result else "—",
+             f"{(result.get('perform_score', 0) * 0.6):.1f}" if result else "—"],
+            ["Attitude Score (360°)", "20%",
+             f"{result.get('attitude_score', 0):.1f}" if result else "—",
+             f"{(result.get('attitude_score', 0) * 0.2):.1f}" if result else "—"],
+            ["Absensi Score", "20%",
+             f"{result.get('absensi_score', 0):.1f}" if result else "—",
+             f"{(result.get('absensi_score', 0) * 0.2):.1f}" if result else "—"],
+            ["KPI FINAL", "100%",
+             f"{kpi_final:.1f}" if kpi_final else "—",
+             f"Grade: {grade_str} | Raise: {raise_pct}%" if kpi_final else "—"],
+        ]
+        grade_color = {'A': '#10b981', 'B': '#3b82f6', 'C': '#f59e0b', 'D': '#f97316', 'E': '#ef4444'}.get(grade_str, '#64748b')
+        score_table = Table(score_data, colWidths=[7*cm, 2.5*cm, 2.5*cm, 5*cm])
+        score_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -2), [colors.white, colors.HexColor('#f8fafc')]),
+            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor(grade_color)),
+            ('TEXTCOLOR', (0, -1), (-1, -1), colors.white),
+            ('FONTSIZE', (0, -1), (-1, -1), 10),
+            ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+            ('PADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.append(score_table)
+        story.append(Spacer(1, 0.4*cm))
+
+        # Goals
+        if goals:
+            story.append(Paragraph("<b>Goals & Pencapaian</b>", styles['Heading3']))
+            goal_data = [["Goal", "Target", "Aktual", "Progress", "Status"]]
+            for g in goals:
+                status_label = {"achieved": "Tercapai", "on_track": "On Track",
+                                "at_risk": "At Risk", "missed": "Missed"}.get(g.get("status", ""), "-")
+                goal_data.append([
+                    g.get("title", "-"),
+                    f"{g.get('target_value', 0)} {g.get('unit', '')}".strip(),
+                    f"{g.get('actual_value', 0)} {g.get('unit', '')}".strip(),
+                    f"{g.get('progress_pct', 0):.1f}%",
+                    status_label,
+                ])
+            goal_table = Table(goal_data, colWidths=[5.5*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm])
+            goal_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#334155')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
+                ('PADDING', (0, 0), (-1, -1), 5),
+            ]))
+            story.append(goal_table)
+            story.append(Spacer(1, 0.4*cm))
+
+        # Perform items
+        if perform and perform.get("items"):
+            story.append(Paragraph("<b>Rincian Nilai Perform</b>", styles['Heading3']))
+            perf_data = [["KPI Item", "Target", "Aktual", "Nilai", "Bobot"]]
+            for it in perform["items"]:
+                perf_data.append([
+                    it.get("label", "-"),
+                    str(it.get("target", "-")),
+                    str(it.get("actual", "-")),
+                    f"{it.get('score', 0):.1f}",
+                    f"{it.get('weight', 1):.1f}",
+                ])
+            perf_table = Table(perf_data, colWidths=[6*cm, 2.5*cm, 2.5*cm, 2*cm, 2*cm])
+            perf_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#334155')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
+                ('PADDING', (0, 0), (-1, -1), 5),
+            ]))
+            story.append(perf_table)
+            story.append(Spacer(1, 0.4*cm))
+
+        # Footer
+        from datetime import datetime
+        footer_text = (
+            f"Dokumen ini dihasilkan otomatis oleh CV. Dewi Aditya pada "
+            f"{datetime.now().strftime('%d %B %Y %H:%M')} WIB. "
+            f"RAHASIA — Hanya untuk penggunaan internal."
+        )
+        story.append(Spacer(1, 0.5*cm))
+        story.append(Paragraph(footer_text, ParagraphStyle(
+            'footer', parent=styles['Normal'],
+            fontSize=7, textColor=colors.HexColor('#94a3b8'),
+            alignment=TA_CENTER
+        )))
+
+        doc.build(story)
+        buffer.seek(0)
+
+        safe_name = (emp.get("name", "karyawan") if emp else "karyawan").replace(" ", "_")
+        filename = f"KPI_{safe_name}_{period.get('name', period_id).replace(' ', '_')}.pdf"
+
+        return Response(
+            content=buffer.getvalue(),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+    except ImportError:
+        raise HTTPException(500, "Library reportlab tidak tersedia.")
+    except Exception as e:
+        raise HTTPException(500, f"Gagal generate PDF: {str(e)}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PEER REVIEW FAIRNESS CHECK
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/fairness/{period_id}")
+async def peer_review_fairness_check(period_id: str, request: Request):
+    """
+    P2.3: Peer Review Fairness Check untuk satu periode KPI.
+
+    Checks:
+    1. Karyawan dengan peer reviewer < 3 (terlalu sedikit reviewers)
+    2. Direct-report conflict: reviewer adalah bawahan langsung evaluatee
+    3. Rating variance antar peer reviewers > 2 poin (potential bias)
+
+    Returns severity: ok | warning | error per employee.
+    """
+    await _require_hr(request)
+    db = get_db()
+
+    period = await db.da_kpi_periods.find_one({"period_id": period_id}, {"_id": 0})
+    if not period:
+        raise HTTPException(404, "Periode tidak ditemukan.")
+
+    peer_assignments = period.get("peer_assignments", [])
+    participant_ids = period.get("participant_employee_ids", [])
+
+    # Enrich with employee data
+    all_ids = list(set(participant_ids + [a["reviewer_id"] for a in peer_assignments] + [a["evaluatee_id"] for a in peer_assignments]))
+    emps = await db.rahaza_employees.find(
+        {"id": {"$in": all_ids}},
+        {"_id": 0, "id": 1, "name": 1, "employee_code": 1, "manager_id": 1}
+    ).to_list(500)
+    emp_map = {e["id"]: e for e in emps}
+
+    # Build reviewer map: evaluatee_id → list of reviewer_ids
+    reviewer_map: dict[str, list] = {pid: [] for pid in participant_ids}
+    for a in peer_assignments:
+        ev_id = a.get("evaluatee_id")
+        rv_id = a.get("reviewer_id")
+        if ev_id in reviewer_map and rv_id:
+            reviewer_map[ev_id].append(rv_id)
+
+    # Get submitted peer scores for variance calculation
+    submitted = await db.da_kpi_submissions.find(
+        {"period_id": period_id, "eval_type": "peer"},
+        {"_id": 0, "evaluatee_id": 1, "evaluator_id": 1, "avg_score": 1}
+    ).to_list(500)
+    scores_map: dict[str, list] = {}
+    for s in submitted:
+        ev_id = s.get("evaluatee_id")
+        if ev_id:
+            scores_map.setdefault(ev_id, []).append(s.get("avg_score", 0) or 0)
+
+    issues = []
+    warnings_count = 0
+    errors_count = 0
+    ok_count = 0
+
+    for emp_id in participant_ids:
+        emp = emp_map.get(emp_id, {})
+        emp_name = emp.get("name", emp_id[:8])
+        emp_code = emp.get("employee_code", "")
+        reviewers = reviewer_map.get(emp_id, [])
+        reviewer_count = len(reviewers)
+        emp_issues = []
+        severity = "ok"
+
+        # Check 1: Not enough peer reviewers
+        if reviewer_count < 3:
+            msg = f"Hanya {reviewer_count} peer reviewer (minimum 3)"
+            emp_issues.append({"code": "low_reviewer_count", "severity": "warning", "message": msg})
+            severity = "warning"
+
+        # Check 2: Direct-report conflict (reviewer is a bawahan from employee)
+        conflicts = []
+        for rv_id in reviewers:
+            rv_emp = emp_map.get(rv_id, {})
+            if rv_emp.get("manager_id") == emp_id:
+                conflicts.append(rv_emp.get("name", rv_id[:8]))
+        if conflicts:
+            msg = f"Konflik langsung: {', '.join(conflicts)} adalah bawahan langsung"
+            emp_issues.append({"code": "direct_report_conflict", "severity": "error", "message": msg})
+            severity = "error"
+
+        # Check 3: Rating variance bias
+        peer_scores = scores_map.get(emp_id, [])
+        if len(peer_scores) >= 2:
+            avg = sum(peer_scores) / len(peer_scores)
+            variance = max(peer_scores) - min(peer_scores)
+            if variance > 2.0:
+                msg = f"Variance peer rating tinggi: {variance:.1f} poin (avg: {avg:.1f}) — potensi bias"
+                emp_issues.append({"code": "high_variance", "severity": "warning", "message": msg,
+                                   "variance": round(variance, 2), "avg_peer_score": round(avg, 2)})
+                if severity == "ok":
+                    severity = "warning"
+
+        if severity == "error":
+            errors_count += 1
+        elif severity == "warning":
+            warnings_count += 1
+        else:
+            ok_count += 1
+
+        if emp_issues:
+            issues.append({
+                "employee_id": emp_id,
+                "employee_name": emp_name,
+                "employee_code": emp_code,
+                "reviewer_count": reviewer_count,
+                "severity": severity,
+                "issues": emp_issues,
+            })
+
+    overall_severity = "ok"
+    if errors_count > 0:
+        overall_severity = "error"
+    elif warnings_count > 0:
+        overall_severity = "warning"
+
+    return {
+        "ok": True,
+        "period_id": period_id,
+        "period_name": period.get("name", ""),
+        "total_participants": len(participant_ids),
+        "issues_count": len(issues),
+        "errors_count": errors_count,
+        "warnings_count": warnings_count,
+        "ok_count": ok_count,
+        "overall_severity": overall_severity,
+        "issues": issues,
+        "summary": (
+            f"{len(participant_ids)} peserta diperiksa: "
+            f"{errors_count} error, {warnings_count} warning, {ok_count} aman."
+        ),
+    }
+

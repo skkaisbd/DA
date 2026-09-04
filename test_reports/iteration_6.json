@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 6 testing for Session 87 features. Backend: 26/26 pytest tests PASSED. Frontend: AI Chatbot Widget, Doc Numbering module, Backup Data → Koleksi Database tab, and Production Dashboard all verified via Playwright. No blocking issues found. Counter set to 9000 on wh_returns.return_code during test was reset back to 0 after testing.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_session_new_features.py",
+    "/app/test_reports/pytest/session_new.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "portal_assistant_routes.py:_try_ai handles LLMUnavailable gracefully — good pattern for optional AI keys.",
+    "doc_numbering.py PUT does upsert with $setOnInsert on id — correct idempotent behaviour.",
+    "ProductionDashboardOverview.jsx line 117 gates stage buttons behind 'pipeline has data' — empty state shows data-testid='prod-pipeline-empty'. Test expectations should acknowledge stage buttons only render when data exists. Not a bug, just a UX detail.",
+    "Backup Koleksi Database tab: client-side checkboxes for protected collections are NOT disabled (all 187 enabled). Protection is enforced server-side only (returns 400). Consider disabling checkbox client-side for protected items OR at least visually locking them. Currently lock icon is shown; that's acceptable.",
+    "gen_prefixed_number counter mutation via API accepts start_from=9000 without any warning about the impact on production doc numbering. Should perhaps warn when start_from is much larger than current or require additional confirmation. LOW priority."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_session_new_features.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (26/26)",
+    "frontend": "100% of targeted UI elements verified"
+  },
+  "test_credentials": "admin@garment.com / Admin@123",
+  "seed_data_creation": "None. Counter for wh_returns.return_code was temporarily set to 9000 during test; reset back to 0 via API afterwards.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "New pytest file /app/backend/tests/test_session_new_features.py exercises: (1) Portal Assistant context/ask/history/multi-turn/graceful AI fallback, (2) Doc numbering list/preview/save-reset/counter, (3) Advanced backup live-collections + clear-collections guardrails (no destructive calls), (4) Production dashboard internal+maklon+422, (5) Material template UOM columns, (6) UOM entry points regression (no 500 on invalid input_uom). To open production dashboard UI directly, URL param ?portal=production&module=prod-dashboard is unreliable; use portal-selector click flow. Session state seems required for URL routing.",
+  "verified_flows": {
+    "assistant_widget": "Toggle → panel title 'Asisten ERP CV. Dewi Aditya' — portal context line 'Konteks: Portal Gudang' — no 'Triyasa' anywhere on page — suggestions click yields bot msg with 'Panduan sistem' source badge — related links clickable (produce new response) — manual input + send works.",
+    "doc_numbering_module": "35 doc types listed; invalid format triggers docnum-error and disables Simpan; valid format live-updates docnum-sample; save shows success; reset button appears only when is_custom=true (verified via API PUT + DELETE cycle).",
+    "backup_collections_tab": "backup-tab-collections opens db-collections-panel with 187 collections, action-bar appears on checkbox selection, clear dialog opens with clear-confirm disabled by default, cancel closes dialog. Protected collections show 🔒 icon.",
+    "production_dashboard": "5 KPI cards present, pipeline card + 4 detail cards + aging card + 3 period buttons all render; no 'Sewing/Finishing' text anywhere; stage buttons only render when pipeline has data (empty state shown via prod-pipeline-empty since DB has no live PO — expected behaviour)."
+  }
+}

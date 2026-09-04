@@ -1,0 +1,59 @@
+{
+  "flow_id": "flow-marketing-kol",
+  "title": "Alur Marketing / KOL: Konten -> Campaign -> Review/Komplain",
+  "portal": "toko",
+  "strategy": "flow-centric v4",
+  "description": "Alur bisnis kritikal tim Marketing & KOL CV. Dewi Aditya (portal 'toko'/Marketing) yang menautkan empat modul lintas siklus konten-ke-after-sales dalam satu narasi: (1) KONTEN — tim marketing merencanakan konten multi-platform di Kalender Konten (termasuk jenis 'kolaborasi_kol' untuk endorse KOL/kreator), status draft -> scheduled -> posted -> cancelled; (2) CAMPAIGN — konten mendukung Peluncuran Produk (product launch) dengan timeline planning -> ready -> launched -> postponed/cancelled, dan saat 'launched' sistem auto-create master Finished Goods di rahaza_materials (type=fg); (3) REVIEW — setelah produk beredar, pelanggan memberi rating/ulasan yang dikelola di Rating & Ulasan; ulasan rating rendah (1-2) berstatus 'pending' lalu dibalas hingga 'reviewed'; (4) KOMPLAIN — keluhan yang masuk (dari import/webhook/seed) ditangani di modul Komplain dengan SLA 48 jam, status open -> in_progress -> resolved -> closed, disertai catatan penanganan (notes) dan pelacakan SLA (on_time/at_risk/overdue/resolved). Guardrail: transisi status invalid ditolak (400) di konten, campaign, dan komplain; balas ulasan tanpa teks ditolak (400).",
+  "modules_touched": ["marketing-content-calendar", "marketing-product-launches", "marketing-reviews", "marketing-complaints", "marketing-kol-hub"],
+  "critical_endpoints": [
+    "/api/marketing/content-calendar",
+    "/api/marketing/content-calendar/{id}/status",
+    "/api/marketing/product-launches",
+    "/api/marketing/product-launches/{id}/status",
+    "/api/marketing/reviews",
+    "/api/marketing/reviews/{id}/respond",
+    "/api/marketing/complaints",
+    "/api/marketing/complaints/{id}/status",
+    "/api/marketing/complaints/{id}/notes"
+  ],
+  "supporting_endpoints": [
+    "/api/marketing/content-calendar/types",
+    "/api/marketing/content-calendar/platforms",
+    "/api/marketing/content-calendar/summary",
+    "/api/marketing/content-calendar/monthly",
+    "/api/marketing/content-calendar/{id}",
+    "/api/marketing/content-calendar/{id}/ai-hook",
+    "/api/marketing/product-launches/summary",
+    "/api/marketing/product-launches/{id}",
+    "/api/marketing/reviews/summary",
+    "/api/marketing/reviews/categories",
+    "/api/marketing/reviews/platforms",
+    "/api/marketing/reviews/{id}",
+    "/api/marketing/reviews/{id}/ai-categorize",
+    "/api/marketing/complaints/summary",
+    "/api/marketing/complaints/{id}",
+    "/api/marketing/complaints/{id}/ai-classify"
+  ],
+  "test_script": "tests/flow_marketing_kol_test.py",
+  "doc": "docs/user-guide/marketing/flow-marketing-kol.md",
+  "db_collections": [
+    "marketing_content_calendar",
+    "marketing_product_launches",
+    "rahaza_materials",
+    "marketing_reviews",
+    "marketing_complaints"
+  ],
+  "happy_path_steps": [
+    "Buat konten (content_type kolaborasi_kol) -> status=draft di marketing_content_calendar",
+    "Jadwalkan lalu tayangkan konten -> scheduled -> posted (POST /status)",
+    "Buat product launch (planning) lalu ready lalu launched -> auto-create FG di rahaza_materials (type=fg)",
+    "Pelanggan memberi ulasan rating rendah -> status=pending di marketing_reviews",
+    "Balas ulasan (respond) -> status=reviewed (response_date terisi)",
+    "Komplain masuk (open) lalu diproses (in_progress) + catatan (notes) lalu selesai (resolved) dengan SLA resolved",
+    "Guardrail: status invalid ditolak (400); balas ulasan tanpa teks ditolak (400)"
+  ],
+  "qa": "docs/user-guide/_qa/flow-marketing-kol_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_marketing_kol_test.py: konten draft->scheduled->posted; launch planning->ready->launched + FG auto-create code=E2E-KOL-CAMP; review rating=2 pending->respond->reviewed; complaint open->in_progress(+note)->resolved sla_status=resolved; guard content/launch/complaint invalid status 400 + review respond kosong 400). Self-cleanup DB pristine (0 residu di marketing_content_calendar/marketing_product_launches/marketing_reviews/marketing_complaints/rahaza_materials). audit_testids.py 4 modul -> LULUS 0 FAIL (A1/A2/A3 PASS, A4 WARN by-design). E2E UI via testing_agent_v3 + verifikasi manual.",
+  "notes_qa": "Modul Komplain (marketing_complaints) TIDAK memiliki endpoint create manual — komplain berasal dari import/webhook/seed; POC menyisipkan fixture langsung lalu menguji transisi status + notes + SLA via API. Auditor A4 (WARN) menandai elemen interaktif tanpa data-testid (false-positive parsing arrow-function, konsisten dengan flow sebelumnya); seluruh dashboard modul memiliki root data-testid (content-calendar-dashboard, product-launch-dashboard, rating-review-module, complaints-dashboard)."
+}

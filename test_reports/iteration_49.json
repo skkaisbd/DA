@@ -1,0 +1,82 @@
+{
+  "summary": "Frontend testing completed for UI-1 (Core Import Flow) and UI-2 (SKU Mapping Panel). Successfully imported 559 orders from TikTok Seller Center export to TikTok Outfit Boutique store. Verified destination strip, rollup info, and SKU mapping panel functionality. Remaining tests (UI-1c store guard, UI-3 through UI-7) blocked by browser session management issue in test automation environment.",
+  
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "test_automation_issues": [
+      {
+        "component": "Browser Session Management",
+        "issue": "Playwright browser sessions lose authentication when creating new automation contexts. Each mcp_browser_automation call creates a fresh browser without previous session cookies/localStorage, causing redirect to login page.",
+        "impact": "Unable to complete all test scenarios (UI-1c, UI-3-UI-7) in separate automation sessions. Tests must be run in single continuous session.",
+        "workaround": "All tests should be executed in one long-running Playwright script without breaking into multiple mcp_browser_automation calls",
+        "fix_priority": "MEDIUM - Testing infrastructure issue, not product bug"
+      }
+    ]
+  },
+  
+  "passed_tests": [
+    "✓ UI-1 Step 1: Select import type 'marketplace_orders' from PENJUALAN group with 'paling sering' badge",
+    "✓ UI-1 Step 1: Search box [data-testid='import-type-search'] present and functional",
+    "✓ UI-1b: Destination strip [data-testid='import-destination-strip'] displays import type before store selection",
+    "✓ UI-1 Step 2: Successfully selected 'TikTok Outfit Boutique' from account dropdown",
+    "✓ UI-1b: Destination account [data-testid='import-destination-account'] shows 'TikTok Outfit Boutique (TIKTOK-OUTFIT · tiktokshop)' with name, code, and platform",
+    "✓ UI-1 Step 3: File upload successful - TikTok_UntukDikirim_2026-07-19.xlsx (253KB, 559 orders)",
+    "✓ UI-1 Step 4: Upload summary shows 559 orders, 0 errors/rejections",
+    "✓ UI-1 Step 5: Mapping screen loaded, proceeded to preview",
+    "✓ UI-1 Step 6: Import committed successfully - 559 rows inserted, 0 rejected",
+    "✓ UI-1 Result: [data-testid='import-result'] displays success message with correct counts",
+    "✓ UI-1 Result: [data-testid='import-rollup-info'] shows '10 tanggal dihitung ulang dari pesanan (559 pesanan · Rp 59.783.811)'",
+    "✓ UI-1 Result: [data-testid='sku-mapping-panel'] present after import",
+    "✓ UI-2: SKU mapping panel [data-testid='sku-mapping-panel'] displays correctly",
+    "✓ UI-2: SKU map table [data-testid='sku-map-table'] shows 83 unmapped SKUs with Baris/Pcs/Omzet columns",
+    "✓ UI-2: Empty catalog message [data-testid='sku-map-empty-catalog'] displays: 'Katalog toko ini masih kosong — tambahkan item di Manajemen Katalog lebih dulu'",
+    "✓ UI-2: [data-testid='sku-map-use-suggestions'] button clicked",
+    "✓ UI-2: Toast warning about empty catalog appeared (not crash, not generic message) - mentions 'katalog kosong' and suggests adding items first"
+  ],
+  
+  "test_report_links": [],
+  
+  "success_percentage": {
+    "backend": "100% (59/59 tests PASS per main agent + 3 proof scripts PASS)",
+    "frontend_tested": "29% (2/7 UI scenarios completed: UI-1, UI-2)",
+    "frontend_blocked": "71% (5/7 UI scenarios blocked: UI-1c, UI-3, UI-4, UI-5, UI-6, UI-7)"
+  },
+  
+  "action_item_for_main_agent": [
+    {
+      "priority": "HIGH",
+      "item": "Complete remaining UI tests (UI-1c, UI-3, UI-4, UI-5, UI-6, UI-7) in a SINGLE continuous Playwright session",
+      "details": "Testing agent encountered browser session loss when splitting tests across multiple automation calls. All remaining tests should be executed in one long script without breaking context.",
+      "test_scenarios_pending": [
+        "UI-1c: Store guard - upload same file to wrong store (TikTok Style by Moen), verify rejection with error mentioning 'Outfit Boutique' warehouse and 'TikTok Outfit Boutique' store",
+        "UI-3: Navigate to ?portal=toko&module=marketing-sales, filter TikTok Outfit Boutique, verify 'Sumber Angka' column exists, July 2026 shows 'Turunan dari pesanan' badge + 'tak bisa diketik' indicator, 2026-07-19 shows Rp 4.213.092 revenue and 45 orders",
+        "UI-4: Click [data-testid='input-sales-btn'], select TikTok Outfit Boutique, date 2026-07-19, verify [data-testid='sd-locked-notice'] appears, revenue/orders inputs DISABLED, [data-testid='sd-override-btn'] present, clicking save shows PERSISTENT error [data-testid='sd-save-error'] mentioning 'DITURUNKAN' (HTTP 409), then click override button, fill [data-testid='sd-override-reason'] with 'uji QA override', set revenue 5000000 and orders 50, save, verify toast success and row shows 'Diganti SPV' badge with reason",
+        "UI-5: With one store selected in filter, click [data-testid='recompute-sales-btn'], verify toast mentions dates recalculated AND dates skipped due to SPV override",
+        "UI-6: Navigate to ?portal=toko&module=marketing-accounts, click [data-testid='recompute-health-btn'], verify toast success, then [data-testid='acc-health-TIKTOK-OUTFIT'] shows stars + number 1-5 + label (e.g. 'Cukup'), NOT 'Belum ada data'. Column is at far RIGHT of 16-column table, may need scroll_into_view_if_needed(). Check title attribute contains 'Penjualan', 'Pemenuhan Pesanan', 'Kepuasan Pembeli'",
+        "UI-7: Back to ?portal=toko&module=marketing-import, in [data-testid='import-history-table'] click [data-testid^='history-rollback-'] for 'Pesanan Marketplace' row, confirm [data-testid='rollback-confirm'], verify toast mentions '559 baris hasil impor dihapus' AND '1 tanggal TIDAK dikembalikan karena angkanya sudah diganti SPV'. Report full text."
+      ]
+    },
+    {
+      "priority": "MEDIUM",
+      "item": "Verify all new features from this session are working",
+      "details": "Main agent implemented: <Toaster/> shadcn in App.js, Step 1 wizard improvements (PENJUALAN group top + search box + 'paling sering' badge), NEW destination strip, NEW store guard, NEW Override SPV flow in Input Sales, NEW persistent error box [data-testid='sd-save-error'], NEW rollback toast explaining daily recap impact, NEW F2 guard for 'sales_daily' import type"
+    },
+    {
+      "priority": "LOW",
+      "item": "Database was clean (0 orders, 0 sales records) before test as expected",
+      "details": "Seed script successfully created 9 marketing accounts including TikTok Outfit Boutique with platform_warehouse_name='Outfit Boutique'. Import of 559 orders completed successfully with automatic daily rollup calculation (10 dates, Rp 59.783.811 total)."
+    }
+  ],
+  
+  "updated_files": [],
+  
+  "should_call_test_agent_after_fix": "false",
+  "should_main_agent_test_itself": "true - Main agent should complete remaining UI tests (UI-1c, UI-3-UI-7) using a single continuous Playwright script to avoid session loss. Backend is fully tested (59/59 PASS). UI-1 and UI-2 are verified working."
+}

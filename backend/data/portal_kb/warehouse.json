@@ -1,0 +1,117 @@
+{
+  "portal": "warehouse",
+  "label": "Portal Gudang",
+  "ringkasan": "Portal Gudang mengurus SELURUH barang fisik CV. Dewi Aditya: kain, aksesoris, dan barang jadi. Semua pergerakan stok — masuk, pindah, keluar — hanya boleh lewat modul di portal ini supaya angka stok di seluruh sistem tetap satu kebenaran.",
+  "prinsip": [
+    "Stok disimpan per (barang × lokasi) dan SELALU dalam satuan dasar.",
+    "Setiap mutasi tercatat di buku besar stok (ledger) — tidak ada perubahan diam-diam.",
+    "Barang belum bisa dipakai produksi sebelum lolos Karantina QC."
+  ],
+  "alur": [
+    {
+      "judul": "Penerimaan barang dari supplier",
+      "kata_kunci": ["terima barang", "penerimaan", "grn", "inbound", "barang datang", "supplier kirim", "po datang"],
+      "modul": ["wh-purchase-orders", "wh-receiving", "wh-quarantine", "wh-putaway"],
+      "langkah": [
+        "Purchase Order dibuat/di-approve di 'Purchase Order'.",
+        "Barang datang → buka 'Penerimaan Barang', pilih PO-nya, isi qty yang benar-benar diterima beserta satuannya.",
+        "Barang masuk 'Karantina QC' dulu bila jenisnya wajib diperiksa. Lolos → stok jadi tersedia; gagal → retur.",
+        "Simpan ke rak lewat 'Penyimpanan' (put-away): pilih bin, isi qty. Total stok tidak berubah, hanya letak fisiknya."
+      ]
+    },
+    {
+      "judul": "Mengeluarkan material untuk produksi",
+      "kata_kunci": ["keluar barang", "pengeluaran", "material issue", "mi", "ambil bahan", "kirim ke produksi"],
+      "modul": ["wh-material-issue", "wh-picklist"],
+      "langkah": [
+        "Permintaan datang dari Produksi/Cutting sebagai draft Material Issue.",
+        "Gudang menyiapkan barang memakai 'Pick List'.",
+        "Konfirmasi di 'Pengeluaran Material' → stok berkurang + jurnal biaya terbentuk otomatis."
+      ]
+    },
+    {
+      "judul": "Stok opname (hitung fisik)",
+      "kata_kunci": ["opname", "hitung stok", "stock opname", "cek fisik", "selisih stok", "audit stok"],
+      "modul": ["wms-stock-hub"],
+      "langkah": [
+        "Buat sesi opname dengan cakupan (semua lokasi / gedung / zona / rak).",
+        "Scan barang satu per satu. Bila menghitung per kemasan, pilih satuannya — sistem mengonversi ke satuan dasar otomatis.",
+        "Selesai menghitung → Submit. Stok BELUM berubah.",
+        "Supervisor menekan Approve → selisih diterapkan ke stok + jurnal penyesuaian dibuat."
+      ]
+    },
+    {
+      "judul": "Pengiriman keluar & surat jalan",
+      "kata_kunci": ["surat jalan", "sj", "kirim barang", "dispatch", "fulfillment", "pengiriman"],
+      "modul": ["fulfillment", "wms-delivery-notes", "wms-cmt-dispatches"],
+      "langkah": [
+        "Pesanan masuk antrean 'Fulfillment' → alokasikan stok.",
+        "Cetak 'Surat Jalan' untuk pengiriman ke pelanggan, atau 'Kirim CMT' untuk material ke vendor jahit.",
+        "Barang keluar → stok berkurang otomatis lewat ledger."
+      ]
+    },
+    {
+      "judul": "Satuan & konversi kemasan",
+      "kata_kunci": ["satuan", "uom", "konversi", "pak", "karton", "rol", "lusin", "kemasan", "pack"],
+      "modul": ["wh-units", "wh-master"],
+      "langkah": [
+        "Setiap barang punya SATU satuan dasar (mis. pcs atau meter) — semua stok & HPP disimpan dalam satuan itu.",
+        "Kemasan (pak/karton/rol) didaftarkan sebagai satuan tambahan beserta isinya, mis. 1 pak = 12 pcs.",
+        "Saat menerima/menghitung, pilih satuan yang dipakai — sistem mengonversi sendiri.",
+        "Mengganti satuan DASAR item yang masih berstok hanya boleh lewat tombol 'Ubah Satuan Dasar' supaya angka stok & HPP ikut dikonversi."
+      ]
+    }
+  ],
+  "fitur": [
+    {"modul": "warehouse-dashboard", "nama": "Dashboard Gudang", "deskripsi": "Ringkasan nilai persediaan, mutasi terbaru, dan barang bermasalah."},
+    {"modul": "wh-master", "nama": "Master Item", "deskripsi": "Daftar induk kain, aksesoris, dan barang jadi beserta satuan, HPP, dan stok minimum."},
+    {"modul": "wms-stock-hub", "nama": "Stok & Akurasi", "deskripsi": "Stok per lokasi, buku besar mutasi, stok opname, dan kesehatan skema stok."},
+    {"modul": "warehouse-smart", "nama": "Alert & Reorder", "deskripsi": "Peringatan stok menipis dan usulan pemesanan ulang."},
+    {"modul": "wh-purchase-orders", "nama": "Purchase Order", "deskripsi": "Pemesanan barang ke supplier."},
+    {"modul": "wh-receiving", "nama": "Penerimaan Barang", "deskripsi": "Mencatat barang datang (GRN) beserta inspeksinya."},
+    {"modul": "wh-putaway", "nama": "Penyimpanan", "deskripsi": "Menempatkan barang yang sudah diterima ke bin/rak tertentu."},
+    {"modul": "wh-quarantine", "nama": "Karantina QC", "deskripsi": "Menahan barang sampai lolos pemeriksaan mutu."},
+    {"modul": "wh-supplier-scorecard", "nama": "Penilaian Supplier", "deskripsi": "Rapor ketepatan waktu & mutu tiap supplier."},
+    {"modul": "wh-material-issue", "nama": "Pengeluaran Material", "deskripsi": "Mengeluarkan bahan ke produksi/cutting."},
+    {"modul": "fulfillment", "nama": "Fulfillment", "deskripsi": "Antrean pesanan siap kirim dan alokasi stoknya."},
+    {"modul": "wh-picklist", "nama": "Pick List", "deskripsi": "Daftar ambil barang untuk petugas gudang."},
+    {"modul": "wms-delivery-notes", "nama": "Surat Jalan", "deskripsi": "Dokumen resmi pengiriman barang keluar."},
+    {"modul": "wms-cmt-dispatches", "nama": "Kirim CMT", "deskripsi": "Pengiriman material ke vendor jahit (CMT)."},
+    {"modul": "wh-returns", "nama": "Retur Fisik", "deskripsi": "Barang kembali dari pelanggan/vendor."},
+    {"modul": "wh-structure", "nama": "Struktur Gudang", "deskripsi": "Gedung, zona, rak, dan bin beserta barcode-nya."},
+    {"modul": "wh-scan", "nama": "Scan Gudang", "deskripsi": "Operasi berbasis barcode untuk semua aktivitas gudang."},
+    {"modul": "wh-units", "nama": "Satuan & Konversi", "deskripsi": "Daftar satuan dan faktor konversi kemasan."},
+    {"modul": "wh-audit", "nama": "Audit Trail", "deskripsi": "Jejak siapa mengubah apa dan kapan."},
+    {"modul": "wms-fabric-rolls", "nama": "Roll Kain", "deskripsi": "Pelacakan kain per roll beserta sisa panjangnya."},
+    {"modul": "wh-accessory-ops", "nama": "Operasi Aksesoris", "deskripsi": "Operasi harian stok aksesoris dari sisi gudang."},
+    {"modul": "warehouse-accessory-requests", "nama": "Inbox Aksesoris", "deskripsi": "Permintaan aksesoris dari bagian lain yang perlu dilayani."}
+  ],
+  "faq": [
+    {
+      "q": "Kenapa stok saya tidak muncul padahal barangnya ada?",
+      "kata_kunci": ["stok tidak muncul", "stok hilang", "stok kosong", "tidak ada stok"],
+      "a": "Stok dicatat per LOKASI. Bila layar yang dibuka memfilter satu gudang, stok yang duduk di gudang lain tidak ikut tampil. Cek 'Stok & Akurasi' → lihat rincian per lokasi. Bila baris stoknya berformat lama, jalankan tab 'Kesehatan Skema' untuk merekonsiliasinya (total on-hand tidak berubah)."
+    },
+    {
+      "q": "Bagaimana cara mencatat barang yang dibeli per pak tapi dipakai per pcs?",
+      "kata_kunci": ["beli per pak", "pakai per pcs", "konversi satuan", "isi per pak"],
+      "a": "Di Master Item isi satuan dasar = pcs, lalu tambahkan kemasan 'pak' dengan isi (mis. 12). Saat penerimaan/opname pilih satuan 'pak' — sistem menyimpannya sebagai pcs. Untuk mengisi banyak item sekaligus, pakai Ekspor/Impor Excel: kolom base_uom, pack_unit, pack_size, display_in_packs."
+    },
+    {
+      "q": "Stok opname sudah di-submit tapi stok belum berubah.",
+      "kata_kunci": ["opname submit", "stok belum berubah", "approve opname"],
+      "a": "Memang begitu rancangannya. Submit hanya mengunci hasil hitungan. Stok baru berubah setelah supervisor/admin gudang menekan Approve, sekaligus membentuk jurnal penyesuaian persediaan."
+    },
+    {
+      "q": "Apa bedanya Penyimpanan (put-away) dengan Penerimaan?",
+      "kata_kunci": ["putaway", "penyimpanan", "beda penerimaan"],
+      "a": "Penerimaan MENAMBAH total stok (barang baru masuk perusahaan). Penyimpanan hanya MEMINDAHKAN barang yang sudah diterima ke rak tertentu — total stok tidak berubah, yang berubah hanya letaknya."
+    }
+  ],
+  "saran": [
+    "Bagaimana alur penerimaan barang dari supplier?",
+    "Bagaimana cara melakukan stok opname?",
+    "Kenapa stok saya tidak muncul padahal barangnya ada?",
+    "Bagaimana mengatur satuan pak dan pcs?"
+  ]
+}

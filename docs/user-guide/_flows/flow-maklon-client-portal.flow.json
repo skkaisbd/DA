@@ -1,0 +1,60 @@
+{
+  "flow_id": "flow-maklon-client-portal",
+  "title": "Alur Client Portal Maklon (Provision Akun -> Klien Login/Ganti Password -> Lihat Order & Upload -> Tracking/Sample/Invoice)",
+  "portal": "maklon",
+  "strategy": "flow-centric v4",
+  "description": "Alur portal eksternal untuk KLIEN maklon CV. Dewi Aditya. Admin Maklon mem-provision akun portal untuk sebuah klien (email + password sekali-pakai, wajib ganti password). Klien login memakai JWT terpisah (audience 'maklon-client'), mengganti password, lalu dapat: melihat dashboard, daftar order (PO) miliknya, detail order + timeline produksi (tracking) + laporan QC, meng-upload lampiran foto, menyetujui/menolak/minta-revisi sample, serta melihat invoice & status pembayaran. Semua endpoint klien di-scope ke client_id token sehingga klien tidak bisa melihat data klien lain.",
+  "modules_touched": ["maklon-clients", "client-portal"],
+  "critical_endpoints": [
+    "/api/dewi/maklon/clients/{client_id}/provision-portal",
+    "/api/dewi/client-portal/auth/login",
+    "/api/dewi/client-portal/auth/change-password",
+    "/api/dewi/client-portal/dashboard",
+    "/api/dewi/client-portal/orders",
+    "/api/dewi/client-portal/orders/{order_id}",
+    "/api/dewi/client-portal/uploads",
+    "/api/dewi/client-portal/samples/{sample_id}/approve"
+  ],
+  "supporting_endpoints": [
+    "/api/dewi/maklon/clients/{client_id}/portal-status",
+    "/api/dewi/maklon/clients/{client_id}/portal-accounts/{account_id}/reset-password",
+    "/api/dewi/maklon/clients/{client_id}/portal-accounts/{account_id}/toggle",
+    "/api/dewi/client-portal/auth/me",
+    "/api/dewi/client-portal/orders/{order_id}/qc",
+    "/api/dewi/client-portal/orders/{order_id}/samples",
+    "/api/dewi/client-portal/samples",
+    "/api/dewi/client-portal/samples/{sample_id}",
+    "/api/dewi/client-portal/samples/{sample_id}/reject",
+    "/api/dewi/client-portal/samples/{sample_id}/revision",
+    "/api/dewi/client-portal/invoices",
+    "/api/dewi/client-portal/invoices/{invoice_id}",
+    "/api/dewi/client-portal/invoices/{invoice_id}/pdf",
+    "/api/dewi/client-portal/profile",
+    "/api/dewi/client-portal/badge-counts"
+  ],
+  "test_script": "tests/flow_maklon_client_portal_test.py",
+  "doc": "docs/user-guide/maklon/flow-maklon-client-portal.md",
+  "db_collections": [
+    "dewi_maklon_clients",
+    "dewi_client_users",
+    "dewi_maklon_pos",
+    "dewi_maklon_samples",
+    "dewi_maklon_sample_revisions",
+    "dewi_maklon_qc_checks",
+    "dewi_maklon_invoices",
+    "client_login_attempts"
+  ],
+  "happy_path_steps": [
+    "Admin Maklon provision akun portal untuk klien (email + password sekali-pakai, must_change_password=true)",
+    "Klien login (JWT audience 'maklon-client') lalu WAJIB ganti password (gate 428 sebelum ganti)",
+    "Klien lihat dashboard + daftar order (PO) miliknya",
+    "Klien lihat detail order + timeline (tracking) + QC + sample",
+    "Klien upload lampiran foto (validasi tipe & ukuran)",
+    "Klien setujui/tolak/minta-revisi sample (hanya saat status submitted/revision_requested)",
+    "Klien lihat invoice & status pembayaran"
+  ],
+  "security_note": "Token klien memakai audience 'maklon-client' (terpisah dari token staf internal). Setiap endpoint di-scope ke client_id → akses order/sample/invoice klien lain menghasilkan 404. Brute-force login: 5 gagal -> lock 15 menit (client_login_attempts). Gate must_change_password: non-/auth route menolak 428 sebelum ganti password.",
+  "qa": "docs/user-guide/_qa/flow-maklon-client-portal_bugs.md",
+  "status": "Done",
+  "verification": "backend API POC ALL PASS (tests/flow_maklon_client_portal_test.py): provision + guard duplikat, client login + wrong-pw 401 + must-change 428, change-password + wrong-old 400, dashboard/orders/order-detail-timeline/qc/samples, isolation cross-client 404, upload 200 + guard 415/400, sample revision->approve + guard not-actionable 400, invoices/profile/badge, token-separation 401. DB pristine setelah cleanup."
+}

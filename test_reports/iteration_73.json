@@ -1,0 +1,95 @@
+{
+  "summary": "SESI #19: Completed comprehensive frontend testing of unified 'PDF & Kop Surat' screen. All core features verified working: single unified screen replaces two old screens, deep link navigation, preview panel with mode toggle, letterhead configuration, table column management, signature blocks (up to 4), logo upload control, save/reset functionality, and cleanup. Backend already verified green by gate scripts.",
+  "backend_issues": {
+    "critical_bugs": [],
+    "flaky_endpoints": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "minor_observations": [
+      {
+        "component": "ManagementSystemHub tabs",
+        "issue": "Hub-level tabs (Perusahaan, API Keys) not visible when using deep link #mgmt-pdf",
+        "impact": "Minor - Deep link works correctly and takes user directly to PDF screen. Hub tabs may be accessible via different navigation path.",
+        "fix_priority": "LOW",
+        "note": "This may be intentional behavior for deep links. Internal PDF tabs (Kop Surat, Kolom Tabel, Tanda Tangan, Footer & Gaya Tabel) all work correctly."
+      }
+    ]
+  },
+  "passed_tests": [
+    "✅ Login with admin@garment.com credentials",
+    "✅ Deep link navigation via #mgmt-pdf works correctly",
+    "✅ PDF Template Studio screen loads successfully (data-testid='pdf-template-studio')",
+    "✅ Single unified tab 'PDF & Kop Surat' exists (old tabs 'PDF: Kolom Tabel' and 'PDF: Surat & TTD' removed)",
+    "✅ Preview panel displays on right side with image preview",
+    "✅ Preview mode toggle: Image mode ↔ PDF mode works",
+    "✅ Global Template selection and loading",
+    "✅ Letterhead (Kop Surat): Company name field accepts input ('PT UJI FRONTEND 19')",
+    "✅ Letterhead: NPWP field accepts input",
+    "✅ Letterhead: 'Ambil identitas dari Pengaturan Perusahaan' toggle works",
+    "✅ Letterhead: Layout selector changes (logo-left, logo-center, logo-right, text-only)",
+    "✅ Letterhead: Title alignment selector works (left, center, right)",
+    "✅ Preview updates after editor changes (debounce ~800ms observed)",
+    "✅ Dirty badge appears when changes are made",
+    "✅ Save button works and shows success",
+    "✅ Clean badge appears after successful save",
+    "✅ Document-specific template: 'Surat Jalan Gudang' (delivery-note) selection",
+    "✅ Table Columns (Kolom Tabel) tab opens",
+    "✅ Column reordering: Move column up/down buttons work",
+    "✅ Column visibility: Hide/show toggle works (tested with 'remarks' column)",
+    "✅ Add new column: Button adds custom column",
+    "✅ New column label can be edited ('Kolom Uji')",
+    "✅ Required column badge displays correctly (data-testid='pdf-kolom-required-no')",
+    "✅ Column changes save successfully",
+    "✅ Signatures (Tanda Tangan) tab opens",
+    "✅ Signature override toggle: 'Pakai blok tanda tangan khusus untuk dokumen ini' works",
+    "✅ Add signature blocks: Successfully added 4th block",
+    "✅ Signature block configuration: Subject field ('Diperiksa')",
+    "✅ Signature name source selector: 'Nama diketik di sini' (custom)",
+    "✅ Custom name field accepts input ('Supervisor QC')",
+    "✅ Blocks per row selector: Changed to 2 blocks per row",
+    "✅ Signature changes save successfully",
+    "✅ Logo upload control exists (data-testid='pdf-kop-logo-input')",
+    "✅ Reset button 'Ikuti Global' works for document-specific overrides",
+    "✅ Cleanup: Global template restored to initial state (cleared company name, NPWP)",
+    "✅ Cleanup: 'Ambil identitas dari Pengaturan Perusahaan' re-enabled",
+    "✅ Cleanup: Document override reset to follow global template",
+    "✅ All internal tabs work: Kop Surat, Kolom Tabel, Tanda Tangan, Footer & Gaya Tabel"
+  ],
+  "test_report_links": [
+    "/root/.emergent/automation_output/20260817_190849/console_20260817_190849.log",
+    ".screenshots/pdf_template_studio_final.png"
+  ],
+  "success_percentage": {
+    "frontend": "100%",
+    "backend": "100% (verified by gate scripts)",
+    "integration": "100%"
+  },
+  "action_item_for_main_agent": "",
+  "updated_files": [],
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_test_itself": false,
+  "test_details": {
+    "test_type": "frontend_only",
+    "test_date": "2026-08-17",
+    "test_environment": "https://da37-cmt-bridge.preview.emergentagent.com",
+    "test_credentials": "admin@garment.com / Admin@123",
+    "deep_link_tested": "#mgmt-pdf",
+    "features_tested": [
+      "Navigation via deep link",
+      "Single unified PDF screen (replaces two old screens)",
+      "Preview panel with Image/PDF mode toggle",
+      "Global template: Letterhead configuration (company name, NPWP, layout, alignment)",
+      "Document-specific template: Table columns (reorder, hide/show, add custom)",
+      "Document-specific template: Signature blocks (override, add up to 4, configure)",
+      "Logo upload control presence",
+      "Save/Reset functionality",
+      "Dirty/Clean state badges",
+      "Cleanup and restoration"
+    ],
+    "backend_verification": "Backend already verified green by scripts/verify_fase_i_pdf_template.py with 8/8 invariants passing (INV-F26: kop+logo from config printed in real PDF, column order/hide applies, 4 TTD blocks printed, 0 overlaps, logo validation, legacy endpoints single source)",
+    "gate_status": "All gate.sh checks VERDICT GREEN per agent note"
+  }
+}
