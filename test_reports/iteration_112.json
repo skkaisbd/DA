@@ -1,0 +1,46 @@
+{
+  "summary": "Backend-only audit-fix verification (iter 111b). Ran the existing 41-test finance suite (41/41 pass) plus a new 29-test suite (tests/test_iter112_audit_fixes.py, 29/29 pass) covering: RBAC gate _require_fin on /api/finance/bank-recon/* (gudang 403 on 11 read+write endpoints, finance/accounting 200, admin 200), adjust period guard (400 'di luar periode sesi'), in-period adjust → JE to session bank account + cash movement + auto-match, legacy /api/rahaza/finance/bank-recon-adjustments post → cash movement (category bank_adjustment, source_module bank_recon, gl_je_id) + balance -2500 + repost 400 (not 500) + type 'other' direction from expense/income account, balance-sheet orphan_account_lines, regression ar-aging & bank-recon summary. DB verified clean before/after; no orphan journal_lines. No backend defects found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "tests/test_iter108_finance.py (cleanup)", "issue": "Suite deleted the QA customer but not the auto-created customer subledger COA `1-1301-QC<SFX>`; 4 leftovers had accumulated across earlier runs (coa_accounts 291→295). FIXED by me: purged the 4 unreferenced leftovers from Mongo and added `db.rahaza_coa_accounts.delete_many({'code': f'1-1301-QC{SFX}'})` to the teardown. COA total is now stable at 292 across runs."},
+      {"endpoint": "tests/test_iter108_finance.py (maklon regen)", "issue": "Each run permanently adds +1 voided maklon_ar_invoice JE (po-mk-demo-2 regeneration). JE count grew 11 → 13 over my two full-suite runs. Owner-accepted per brief, but seed JE count will keep drifting upward on every future run — consider deleting the voided JE created by the run in teardown."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter112_audit_fixes.py",
+    "/app/backend/tests/qa_iter112_dbcount.py",
+    "/app/test_reports/pytest/iter112_full.xml",
+    "/app/test_reports/pytest/iter112_api_results.xml"
+  ],
+  "action_items": [
+    "No functional fixes required for iter 111b — all 6 audit changes verified (item 5 by code review).",
+    "OPTIONAL: /app/memory/test_credentials.md is still a bare template (no accounts listed). Add admin@garment.com / finance@dewiaditya.id / gudang@dewiaditya.id there so future test agents don't rely on the prompt.",
+    "OPTIONAL: make test_iter108_finance.py also void-clean the maklon regeneration JE so seed JE count stops drifting."
+  ],
+  "critical_code_review_comments": [
+    "Verified all 22 @router endpoints in routes/dewi_bank_reconciliation.py go through _require_fin/require_perm (script-checked, no gap). Gate fires before session lookup → 403 not 404, confirmed dynamically for import-bulk/auto-match/adjust/approve/match/internal-check/delete.",
+    "_FIN_ROLES resolves to (superadmin, admin, owner, accounting, staff_keuangan, manager_keuangan, finance, manager, director) — matches spec. /approve stays stricter (finance.approve|finance.manage, no 'manager'/'director' legacy) which is intentional but is an inconsistency worth documenting.",
+    "fulfillment.finalize_fulfillment_dispatch guard is sound: reuses saved_shp['items'] + fg_cogs_consumed_at so consume_fifo is skipped on retry, and post_cogs_shipment is itself idempotent via source_ref 'cogs:{shipment_id}' (_find_existing_je) so a retry cannot double-post COGS.",
+    "rahaza_bank_recon.post_bank_adjustment: `except HTTPException: raise` is placed before the generic handler → 400 no longer leaks as 500 (verified: repost returns 400).",
+    "POST /api/rahaza/cash-accounts ignores a client-supplied `gl_account_code`; the GL code always comes from coa_auto.ensure_subledger_for_entity (1-1200-<CODE>). Not a bug, but the brief's example payload is misleading — sessions correctly pick up the auto-created code.",
+    "routes/dewi_bank_reconciliation.py places `from datetime import ...` after the _require_fin definition (line 26) — works, but move module imports to the top for readability."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter112_audit_fixes.py (new)",
+    "/app/backend/tests/qa_iter112_dbcount.py (new helper: DB snapshot/orphan check)",
+    "/app/backend/tests/test_iter108_finance.py (teardown: delete auto-created 1-1301-QC<SFX> COA)"
+  ],
+  "success_rate": {"backend": "100% (70/70: 41 existing + 29 new)", "frontend": "not tested (backend-only request)"},
+  "seed_data_creation": "Temporary only: 1 cash account QA<TAG> (+ auto COA 1-1200-QA<TAG>), 1 bank_recon session 2026-04, 2 manual txns, 1 session adjustment + 4 legacy adjustments, related JEs/mirror lines/cash movements — ALL deleted in session teardown. Also purged 4 stale QA COA (1-1301-QC*) left by earlier iterations.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "admin@garment.com/Admin@123, finance@dewiaditya.id/Dewi@123 (accounting), gudang@dewiaditya.id/Dewi@123 (admin_gudang) — all logged in successfully; /app/memory/test_credentials.md is empty and should be populated.",
+  "context_for_next_testing_agent": "DB state after my run: rahaza_journal_entries=13 (8 inventory + 1 posted maklon_ar_invoice + 4 voided maklon_ar_invoice), rahaza_journal_lines=19, coa_accounts=292, 0 bank_recon_sessions/txns/matches, 0 cash accounts/movements/adjustments, 0 orphan journal_lines, balance-sheet balanced=true with orphan_account_lines=[]. Voided maklon JEs grow +1 per test_iter108_finance.py run — expected. Reusable suite: /app/backend/tests/test_iter112_audit_fixes.py (self-cleaning; run with -n 0, login rate limit is 10/60s so reuse the session-scoped token fixtures). DB snapshot helper: python3 tests/qa_iter112_dbcount.py.",
+  "rca_of_the_issue": "Only defect found was a test-data leak, not product code: POST /api/rahaza/customers-side flow auto-creates a COA subledger (1-1301-<customer code>) via coa_auto.ensure_subledger_for_entity, and test_iter108_finance.py teardown removed the customer but not that account, so each run left one dangling COA row (4 accumulated). Purged the unreferenced rows (verified 0 JE lines / 0 mirror lines referenced them) and added the delete to the teardown; COA total is now stable at 292 across consecutive runs."
+}

@@ -242,24 +242,33 @@ async def post_bank_adjustment(adjustment_id: str, request: Request):
             }}
         )
         
-        # Update bank account balance
+        # Update bank account balance + mutasi kas internal (H-05: kartu kas harus 1:1 dgn jurnal)
         bank_account_id = adjustment.get("bank_account_id")
         adjustment_type = adjustment.get("adjustment_type")
-        amount = adjustment.get("amount", 0)
-        
-        # Determine if bank account increases or decreases
-        if adjustment_type in ["interest_income"]:
-            # Bank increases
+        amount = float(adjustment.get("amount", 0) or 0)
+        if adjustment_type == "interest_income":
+            direction = "in"
+        elif adjustment_type in ("bank_charge", "service_fee"):
+            direction = "out"
+        elif adjustment.get("expense_account") and not adjustment.get("income_account"):
+            direction = "out"
+        elif adjustment.get("income_account") and not adjustment.get("expense_account"):
+            direction = "in"
+        else:
+            direction = None  # custom Dr/Cr keduanya non-bank → saldo bank tidak berubah
+        if direction:
+            acc_doc = await db.rahaza_cash_accounts.find_one({"id": bank_account_id}, {"_id": 0, "name": 1})
             await db.rahaza_cash_accounts.update_one(
-                {"id": bank_account_id},
-                {"$inc": {"balance": amount}}
-            )
-        elif adjustment_type in ["bank_charge", "service_fee"]:
-            # Bank decreases
-            await db.rahaza_cash_accounts.update_one(
-                {"id": bank_account_id},
-                {"$inc": {"balance": -amount}}
-            )
+                {"id": bank_account_id}, {"$inc": {"balance": amount if direction == "in" else -amount}})
+            await db.rahaza_cash_movements.insert_one({
+                "id": _uid(), "account_id": bank_account_id, "account_name": (acc_doc or {}).get("name"),
+                "direction": direction, "amount": round(amount, 2), "category": "bank_adjustment",
+                "ref_id": adjustment_id, "ref_label": adjustment.get("description") or adjustment_type,
+                "source_module": "bank_recon", "date": str(adjustment.get("adjustment_date") or "")[:10],
+                "notes": adjustment_type, "timestamp": _now(),
+                "created_by": user.get("id"), "created_by_name": user.get("name", ""),
+                "gl_je_id": posting_result.get("je_id"), "gl_je_number": posting_result.get("je_number"),
+                "gl_posted_at": _now()})
         
         await log_activity(user["id"], user.get("name", ""), "post_bank_adjustment", "bank_recon_adjustments",
                           f"Posted {adjustment_type} adjustment: JE {posting_result.get('je_number')}")
@@ -267,6 +276,8 @@ async def post_bank_adjustment(adjustment_id: str, request: Request):
         updated = await db.rahaza_bank_recon_adjustments.find_one({"id": adjustment_id}, {"_id": 0})
         return serialize_doc(updated)
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.exception("Failed to post bank adjustment")
         raise HTTPException(500, str(e))

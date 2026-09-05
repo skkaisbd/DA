@@ -107,6 +107,8 @@ class TestBankReconExtra:
                 requests.delete(f"{R}/sessions/{sid}", headers=H, timeout=60)
         if S.get("acc"):
             db.rahaza_cash_accounts.delete_one({"id": S["acc"]["id"]})
+            if (S["acc"].get("gl_account_code") or "1-1201") != "1-1201":
+                db.rahaza_coa_accounts.delete_one({"code": S["acc"]["gl_account_code"]})
 
 
 class TestRegression:

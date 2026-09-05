@@ -14,6 +14,15 @@ Semua tautan bisa dilepas/dibuat manual.
 from fastapi import APIRouter, Request, HTTPException, Query, UploadFile, File
 from database import get_db
 from auth import require_auth, serialize_doc
+from routes.shared import require_perm, PORTAL_ACCESS, SUPER_ROLES
+
+_FIN_ROLES = tuple(SUPER_ROLES) + tuple(PORTAL_ACCESS.get("finance", ())) + ("finance", "manager", "director")
+
+
+async def _require_fin(request: Request):
+    """Gerbang modul: izin finance.* atau role portal keuangan (selaras dgn PORTAL_ACCESS['finance'])."""
+    return await require_perm(request, "finance.manage", "finance.approve", "finance.read", "fin.bank.manage",
+                              legacy_roles=_FIN_ROLES, message="Akses ditolak: butuh izin keuangan (finance).")
 from datetime import datetime, timezone, date, timedelta
 from typing import Optional
 import calendar
@@ -200,7 +209,7 @@ async def _summary(db, s: dict, gl_lines: list) -> dict:
 @router.get("/sessions")
 async def list_sessions(request: Request, skip: int = 0, limit: int = 20, status: Optional[str] = None,
                         cash_account_id: Optional[str] = None):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     q = {}
     if status:
@@ -214,7 +223,7 @@ async def list_sessions(request: Request, skip: int = 0, limit: int = 20, status
 
 @router.post("/sessions")
 async def create_session(request: Request):
-    user = await require_auth(request)
+    user = await _require_fin(request)
     db = get_db()
     body = await request.json()
     period = body.get("period", "")
@@ -247,7 +256,7 @@ async def create_session(request: Request):
 
 @router.get("/sessions/{session_id}")
 async def get_session(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id)
     gl_lines = await _bank_gl_lines(db, s)
@@ -258,7 +267,7 @@ async def get_session(session_id: str, request: Request):
 
 @router.get("/sessions/{session_id}/gl-lines")
 async def session_gl_lines(session_id: str, request: Request, matched: Optional[bool] = None):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id)
     rows = await _bank_gl_lines(db, s)
@@ -269,7 +278,7 @@ async def session_gl_lines(session_id: str, request: Request, matched: Optional[
 
 @router.get("/sessions/{session_id}/internal-check")
 async def session_internal_check(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id)
     return serialize_doc(await _internal_check(db, s, await _bank_gl_lines(db, s)))
@@ -277,7 +286,7 @@ async def session_internal_check(session_id: str, request: Request):
 
 @router.put("/sessions/{session_id}")
 async def update_session(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -290,7 +299,7 @@ async def update_session(session_id: str, request: Request):
 
 @router.delete("/sessions/{session_id}")
 async def delete_session(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id)
     if s.get("status") == "approved":
@@ -310,7 +319,7 @@ async def delete_session(session_id: str, request: Request):
 @router.get("/sessions/{session_id}/transactions")
 async def list_transactions(session_id: str, request: Request, skip: int = Query(0, ge=0),
                             limit: int = Query(50, ge=1, le=500), matched: Optional[bool] = None):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     q = {"session_id": session_id}
     if matched is not None:
@@ -324,7 +333,7 @@ async def list_transactions(session_id: str, request: Request, skip: int = Query
 
 @router.post("/sessions/{session_id}/transactions")
 async def add_transaction(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -342,7 +351,7 @@ async def add_transaction(session_id: str, request: Request):
 
 @router.post("/sessions/{session_id}/import-bulk")
 async def import_bulk_transactions(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -362,7 +371,7 @@ async def import_bulk_transactions(session_id: str, request: Request):
 
 @router.delete("/sessions/{session_id}/transactions/{txn_id}")
 async def delete_transaction(session_id: str, txn_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     await _release_txn(db, session_id, txn_id)
@@ -406,7 +415,7 @@ async def _link_gl_line(db, s: dict, txn: dict, gl: dict, matched_by: str, score
 @router.post("/sessions/{session_id}/match")
 async def match_transaction(session_id: str, request: Request):
     """Cocokkan manual. Body: {txn_id, target_key} (key baris GL) — kompatibel lama: {gl_entry_id} = je_id."""
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -435,7 +444,7 @@ async def match_transaction(session_id: str, request: Request):
 
 @router.post("/sessions/{session_id}/unmatch")
 async def unmatch_transaction(session_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -453,7 +462,7 @@ def _desc_overlap(a: str, b: str) -> float:
 @router.post("/sessions/{session_id}/auto-match")
 async def auto_match_transactions(session_id: str, request: Request):
     """Arah sama + |Δnominal| ≤ 1.000 + |Δhari| ≤ 3; satu-ke-satu; terbaik = Δnominal → Δhari → keterangan."""
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id, writable=True)
     txns = await db.bank_recon_txns.find({"session_id": session_id, "is_matched": False}, {"_id": 0}).to_list(2000)
@@ -494,7 +503,7 @@ async def auto_match_transactions(session_id: str, request: Request):
 @router.get("/sessions/{session_id}/transactions/{txn_id}/candidates")
 async def gl_candidates(session_id: str, txn_id: str, request: Request):
     """Kandidat baris GL untuk satu mutasi (arah sama), diurutkan Δnominal → Δhari. Untuk pencocokan manual."""
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id)
     txn = await db.bank_recon_txns.find_one({"id": txn_id, "session_id": session_id}, {"_id": 0})
@@ -520,7 +529,7 @@ async def gl_candidates(session_id: str, txn_id: str, request: Request):
 @router.post("/sessions/{session_id}/transactions/{txn_id}/adjust")
 async def adjust_from_txn(session_id: str, txn_id: str, request: Request):
     """Body: {adjustment_type: bank_charge|interest_income|service_fee|other, description?, expense_account?, income_account?}."""
-    user = await require_auth(request)
+    user = await _require_fin(request)
     db = get_db()
     s = await _get_session(db, session_id, writable=True)
     txn = await db.bank_recon_txns.find_one({"id": txn_id, "session_id": session_id}, {"_id": 0})
@@ -535,6 +544,10 @@ async def adjust_from_txn(session_id: str, txn_id: str, request: Request):
         raise HTTPException(400, "Biaya bank adalah uang KELUAR — mutasi ini uang masuk.")
     if atype == "interest_income" and t_dir != "in":
         raise HTTPException(400, "Bunga bank adalah uang MASUK — mutasi ini uang keluar.")
+    p_start, p_end = _period_range(s["period"])
+    if not (p_start <= str(txn.get("txn_date") or "")[:10] <= p_end):
+        raise HTTPException(400, f"Tanggal mutasi {txn.get('txn_date')} di luar periode sesi {s['period']} — "
+                                 "jurnal penyesuaian tidak akan tampak di sesi ini. Koreksi tanggal mutasi dulu.")
     from routes.rahaza_posting import post_bank_recon_adjustment
     adj = {
         "id": _uid(), "bank_account_id": s["cash_account_id"], "bank_account_name": s.get("account_name"),
@@ -575,7 +588,7 @@ async def adjust_from_txn(session_id: str, txn_id: str, request: Request):
 
 @router.get("/sessions/{session_id}/transactions/{txn_id}/settlement-candidates")
 async def settlement_candidates(session_id: str, txn_id: str, request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     txn = await db.bank_recon_txns.find_one({"id": txn_id, "session_id": session_id}, {"_id": 0})
     if not txn:
@@ -604,7 +617,7 @@ async def settlement_candidates(session_id: str, txn_id: str, request: Request):
 
 @router.post("/sessions/{session_id}/link-settlement")
 async def link_settlement(session_id: str, request: Request):
-    user = await require_auth(request)
+    user = await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     body = await request.json()
@@ -652,7 +665,7 @@ async def link_settlement(session_id: str, request: Request):
 @router.get("/gl-entries")
 async def get_gl_entries(request: Request, period: str = Query(...), session_id: Optional[str] = None,
                          gl_account_code: Optional[str] = None):
-    await require_auth(request)
+    await _require_fin(request)
     _validate_period(period)
     db = get_db()
     if session_id:
@@ -709,7 +722,7 @@ def _parse_date(val: str) -> str:
 async def import_csv_file(session_id: str, request: Request, file: UploadFile = File(...)):
     """CSV rekening koran. Kolom Debit/Keluar = uang KELUAR, Kredit/Masuk = uang MASUK (konvensi bank);
     kolom nominal tunggal: positif = masuk, negatif = keluar."""
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     await _get_session(db, session_id, writable=True)
     content = await file.read()
@@ -823,7 +836,7 @@ async def approve_session(session_id: str, request: Request):
 
 @router.get("/summary")
 async def get_summary(request: Request):
-    await require_auth(request)
+    await _require_fin(request)
     db = get_db()
     total = await db.bank_recon_sessions.count_documents({})
     draft = await db.bank_recon_sessions.count_documents({"status": "draft"})

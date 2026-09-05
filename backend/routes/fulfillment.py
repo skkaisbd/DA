@@ -647,6 +647,13 @@ async def finalize_fulfillment_dispatch(db, order_id: str, user: dict) -> dict:
     }
     shipment["dispatched_at"] = _now()
 
+    # Idempoten: bila shipment sudah tersimpan dgn lapisan biaya yang dimakan, pakai itu
+    # (jangan makan lapisan FIFO dua kali saat dipanggil ulang setelah gagal di tengah).
+    saved_shp = await db.rahaza_shipments.find_one({"id": shipment["id"]}, {"_id": 0})
+    if saved_shp and saved_shp.get("fg_cogs_consumed_at"):
+        shipment["items"] = saved_shp.get("items") or shipment.get("items")
+        shipment["fg_cogs_consumed_at"] = saved_shp["fg_cogs_consumed_at"]
+
     # H-07: biaya batch FIFO IKUT KELUAR bersama barang pesanan online (satu kali per shipment).
     # Scan-out WMS mengurangi stok lewat stock_service (bukan qty_ledger.issue_fg), jadi lapisan
     # HPP batch dimakan di sini agar COGS memakai biaya NYATA, bukan snapshot perkiraan.

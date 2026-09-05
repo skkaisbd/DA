@@ -409,6 +409,10 @@ async def balance_sheet(
 
     total_liab_equity = round(total_liabilities + total_equity, 2)
     balanced = round(total_assets, 2) == total_liab_equity
+    # Baris jurnal pada akun yang TIDAK ADA di COA (mis. sub-akun dihapus) → neraca diam-diam tak seimbang.
+    known = {a["code"] for a in accounts}
+    orphan_accounts = [{"code": code, "debit": round(float(v.get("debit") or 0), 2), "credit": round(float(v.get("credit") or 0), 2)}
+                       for code, v in per_acc.items() if code not in known]
 
     return {
         "meta": {"as_of": as_of},
@@ -425,6 +429,7 @@ async def balance_sheet(
         },
         "balanced": balanced,
         "type_warnings": unknown_types,
+        "orphan_account_lines": orphan_accounts,
     }
 
 

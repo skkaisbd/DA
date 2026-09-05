@@ -170,3 +170,45 @@ class TestFulfillmentCogsFifo:
     def test_01_balance_sheet(self):
         r = requests.get(f"{BASE}/api/rahaza/finance/reports/balance-sheet", headers=H, timeout=120)
         assert r.status_code == 200 and r.json().get("balanced") is True
+
+
+class TestRbacAndCleanup:
+    def test_00_non_finance_role_forbidden(self):
+        r = requests.post(f"{BASE}/api/auth/login", json={"email": "gudang@dewiaditya.id", "password": "Dewi@123"}, timeout=60)
+        if r.status_code != 200:
+            return  # akun seed gudang tidak ada — lewati
+        hg = {"Authorization": f"Bearer {r.json()['token']}", "Content-Type": "application/json"}
+        assert requests.get(f"{R}/sessions", headers=hg, timeout=60).status_code == 403
+        assert requests.post(f"{R}/sessions", headers=hg, timeout=60, json={"period": "2026-01", "cash_account_id": "x"}).status_code == 403
+        assert requests.post(f"{R}/sessions/{S['sid']}/auto-match", headers=hg, timeout=60, json={}).status_code == 403
+
+    def test_99_cleanup_test_data(self):
+        """Bersihkan SEMUA jejak uji dari GL/subledger supaya DB seed tetap bersih (temuan audit iter 111)."""
+        je_ids = set()
+        acc = S.get("acc") or {}
+        for j in db.rahaza_journal_entries.find({"$or": [
+                {"source_module": "bank_recon_adjustment", "lines.account_code": acc.get("gl_account_code", "-")},
+                {"source_module": "ap_payment", "lines.account_code": acc.get("gl_account_code", "-")},
+                {"source_module": "cogs_shipment", "source_ref": {"$in": [f"cogs:ship-{SFX}", f"cogs:ship0-{SFX}"]}},
+                {"source_module": "cmt_ap_invoice", "source_ref": {"$regex": f"qa-cmt-rc-{SFX.lower()}"}}]}, {"_id": 0, "id": 1}):
+            je_ids.add(j["id"])
+        if je_ids:
+            db.rahaza_journal_entries.delete_many({"id": {"$in": list(je_ids)}})
+            db.rahaza_journal_lines.delete_many({"je_id": {"$in": list(je_ids)}})
+        if S.get("sid"):
+            db.bank_recon_sessions.delete_one({"id": S["sid"]})
+            db.bank_recon_txns.delete_many({"session_id": S["sid"]})
+            db.bank_recon_matches.delete_many({"session_id": S["sid"]})
+            db.rahaza_bank_recon_adjustments.delete_many({"session_id": S["sid"]})
+        if acc.get("id"):
+            db.rahaza_cash_movements.delete_many({"account_id": acc["id"]})
+            db.rahaza_cash_accounts.delete_one({"id": acc["id"]})
+            if acc.get("gl_account_code") and acc["gl_account_code"] != "1-1201":
+                db.rahaza_coa_accounts.delete_one({"code": acc["gl_account_code"]})
+        pid = f"qa-cmt-rc-{SFX.lower()}"
+        db.dewi_cmt_payments.delete_one({"id": pid})
+        db.dewi_cmt_disbursements.delete_many({"payment_id": pid})
+        db.fg_cost_layers.delete_one({"id": f"ly-{SFX}"})
+        db.fg_cost_consumptions.delete_many({"layer_id": f"ly-{SFX}"})
+        db.rahaza_shipments.delete_many({"id": {"$in": [f"ship-{SFX}", f"ship0-{SFX}"]}})
+        assert db.rahaza_journal_entries.count_documents({"id": {"$in": list(je_ids)}}) == 0

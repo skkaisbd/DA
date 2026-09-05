@@ -172,3 +172,33 @@ class TestRegression:
         assert r.status_code == 200 and r.json().get("balanced") is True, r.text
         assert requests.get(f"{BASE}/api/rahaza/ar-invoices", headers=H, timeout=60).status_code == 200
         assert requests.get(f"{BASE}/api/dewi/maklon/invoices", headers=H, timeout=60).status_code == 200
+
+    def test_zz_cleanup_qa_data(self):
+        """Bersihkan jejak uji (JE + cermin + subledger) agar GL seed tetap bersih. Invoice maklon demo dibiarkan."""
+        acc = S.get("acc") or {}
+        refs = {"$in": [f"cmt_ap:{PAY_ID}", f"wip_fg_job:job-{SFX}"] + ([f"ar:{S['ar']}"] if S.get("ar") else [])}
+        q = {"$or": [{"source_ref": refs}]}
+        if acc.get("gl_account_code"):
+            q["$or"].append({"lines.account_code": acc["gl_account_code"]})
+        if S.get("ar"):
+            inv = db.rahaza_ar_invoices.find_one({"id": S["ar"]}, {"_id": 0, "invoice_number": 1}) or {}
+            if inv.get("invoice_number"):
+                q["$or"].append({"source_module": "ar_payment", "memo": {"$regex": inv["invoice_number"]}})
+        je_ids = [j["id"] for j in db.rahaza_journal_entries.find(q, {"_id": 0, "id": 1})]
+        db.rahaza_journal_entries.delete_many({"id": {"$in": je_ids}})
+        db.rahaza_journal_lines.delete_many({"je_id": {"$in": je_ids}})
+        db.dewi_cmt_payments.delete_one({"id": PAY_ID})
+        db.dewi_cmt_disbursements.delete_many({"payment_id": PAY_ID})
+        if S.get("ar"):
+            db.rahaza_ar_invoices.delete_one({"id": S["ar"]})
+        db.rahaza_customers.delete_many({"id": f"cust-qa-{SFX}"})
+        # iter112: subledger COA pelanggan yang dibuat otomatis juga harus dibersihkan
+        db.rahaza_coa_accounts.delete_many({"code": f"1-1301-QC{SFX}"})
+        if acc.get("id"):
+            db.rahaza_cash_movements.delete_many({"account_id": acc["id"]})
+            db.rahaza_cash_accounts.delete_one({"id": acc["id"]})
+            if (acc.get("gl_account_code") or "1-1201") != "1-1201":
+                db.rahaza_coa_accounts.delete_one({"code": acc["gl_account_code"]})
+        db.fg_cost_layers.delete_one({"id": f"ly-{SFX}"})
+        orphan = db.rahaza_journal_lines.count_documents({"je_id": {"$nin": db.rahaza_journal_entries.distinct("id")}})
+        assert orphan == 0, f"cermin baris yatim: {orphan}"
