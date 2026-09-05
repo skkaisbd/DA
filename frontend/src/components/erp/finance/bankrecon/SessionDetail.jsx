@@ -47,7 +47,15 @@ export function SessionDetail({ sessionId, headers, onBack }) {
     catch (e) { fail(e); } finally { setBusy(false); }
   };
   const autoMatch = () => act(() => axios.post(`${base}/auto-match`, {}, { headers }), 'Auto-match');
-  const approve = () => act(() => axios.post(`${base}/approve`, {}, { headers }), 'Sesi disetujui');
+  const approve = () => {
+    const sm = session.summary || {};
+    if (!sm.explained) {
+      const ok = window.confirm(`Selisih ${fmt(sm.unexplained || 0)} belum terjelaskan (GL disesuaikan ${fmt(sm.adjusted_gl_balance || 0)} vs rekening koran ${fmt(sm.statement_closing || 0)}).\n\nTetap setujui sesi ini? Selisih akan dicatat pada ringkasan persetujuan.`);
+      if (!ok) return;
+      return act(() => axios.post(`${base}/approve`, { confirm_unexplained: true }, { headers }), 'Sesi disetujui');
+    }
+    return act(() => axios.post(`${base}/approve`, {}, { headers }), 'Sesi disetujui');
+  };
   const saveClosing = () => act(() => axios.put(base, { closing_balance: parseFloat(closing) || 0 }, { headers }), 'Saldo akhir disimpan');
   const onMatch = (txn, g) => act(() => axios.post(`${base}/match`, { txn_id: txn.id, target_key: g.key }, { headers }), 'Dicocokkan');
   const onUnmatch = (txn) => act(() => axios.post(`${base}/unmatch`, { txn_id: txn.id }, { headers }), 'Tautan dilepas');
@@ -96,7 +104,8 @@ export function SessionDetail({ sessionId, headers, onBack }) {
           <Button size="sm" variant="outline" data-testid="recon-closing-save" onClick={saveClosing} disabled={busy}>Simpan</Button>
         </div>
       )}
-      <ReconSummary summary={session.summary} />
+      <ReconSummary summary={readOnly && session.approved_summary ? session.approved_summary : session.summary}
+        approved={readOnly ? { at: session.approved_at, by: session.approved_by_name, withUnexplained: session.approved_with_unexplained } : null} />
       {showImport && !readOnly && <ImportPanel sessionId={sessionId} headers={headers} onDone={() => { setShowImport(false); load(); }} />}
 
       <Tabs defaultValue="bank">

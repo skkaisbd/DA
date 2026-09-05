@@ -68,8 +68,7 @@ class TestBankReconExtra:
         assert "items" in r.json()
         out_txn = db.bank_recon_txns.find_one({"session_id": sid, "direction": "out"}, {"_id": 0})
         r2 = requests.get(f"{R}/sessions/{sid}/transactions/{out_txn['id']}/settlement-candidates", headers=H, timeout=60)
-        # NOTE: GET has no direction guard (minor); link-settlement must reject money-out
-        assert r2.status_code in (200, 400), f"{r2.status_code} {r2.text[:200]}"
+        assert r2.status_code == 400 and "MASUK" in r2.text, f"{r2.status_code} {r2.text[:200]}"
         rl = requests.post(f"{R}/sessions/{sid}/link-settlement", headers=H, timeout=60,
                            json={"txn_id": out_txn["id"], "settlement_doc_id": "x"})
         assert rl.status_code == 400 and "MASUK" in rl.text, rl.text[:200]
@@ -79,10 +78,35 @@ class TestBankReconExtra:
         assert r3.status_code in (400, 404), f"{r3.status_code} {r3.text[:200]}"
         print("settlements in db:", db.marketing_settlements.count_documents({}))
 
+    def test_04_approve_unexplained_requires_confirm(self):
+        sid = S["sid"]
+        # hapus semua mutasi agar unmatched_count = 0, lalu set closing ≠ saldo GL → explained=false
+        for t in db.bank_recon_txns.find({"session_id": sid}, {"_id": 0, "id": 1}):
+            requests.delete(f"{R}/sessions/{sid}/transactions/{t['id']}", headers=H, timeout=60)
+        requests.put(f"{R}/sessions/{sid}", headers=H, timeout=60, json={"closing_balance": 987654321})
+        d = requests.get(f"{R}/sessions/{sid}", headers=H, timeout=60).json()
+        assert d["summary"]["explained"] is False
+        r = requests.post(f"{R}/sessions/{sid}/approve", headers=H, timeout=60, json={})
+        assert r.status_code == 409, f"{r.status_code} {r.text[:300]}"
+        assert r.json()["detail"]["code"] == "unexplained_difference"
+        r = requests.post(f"{R}/sessions/{sid}/approve", headers=H, timeout=60, json={"confirm_unexplained": True, "note": "uji"})
+        assert r.status_code == 200, r.text
+        j = r.json()
+        assert j["status"] == "approved" and j["approved_with_unexplained"] is True
+        assert j["approved_summary"]["explained"] is False and j["approval_note"] == "uji"
+        S["approved"] = True
+
     def test_99_cleanup(self):
         sid = S.get("sid")
         if sid:
-            requests.delete(f"{R}/sessions/{sid}", headers=H, timeout=60)
+            if S.get("approved"):
+                db.bank_recon_sessions.delete_one({"id": sid})
+                db.bank_recon_txns.delete_many({"session_id": sid})
+                db.bank_recon_matches.delete_many({"session_id": sid})
+            else:
+                requests.delete(f"{R}/sessions/{sid}", headers=H, timeout=60)
+        if S.get("acc"):
+            db.rahaza_cash_accounts.delete_one({"id": S["acc"]["id"]})
 
 
 class TestRegression:

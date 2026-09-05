@@ -580,6 +580,9 @@ async def settlement_candidates(session_id: str, txn_id: str, request: Request):
     txn = await db.bank_recon_txns.find_one({"id": txn_id, "session_id": session_id}, {"_id": 0})
     if not txn:
         raise HTTPException(404, "Transaksi tidak ditemukan.")
+    t_dir = txn.get("direction") or ("in" if txn.get("type", "debit") == "debit" else "out")
+    if t_dir != "in":
+        raise HTTPException(400, "Pencairan marketplace adalah uang MASUK — baris mutasi ini adalah uang keluar.")
     amount = float(txn.get("amount") or 0)
     rows = await db.marketing_settlements.find(
         {"$or": [{"bank_txn_id": None}, {"bank_txn_id": {"$exists": False}}, {"bank_txn_id": txn_id}]},
@@ -800,9 +803,21 @@ async def approve_session(session_id: str, request: Request):
     if s.get("unmatched_count", 0) > 0:
         raise HTTPException(400, f"Masih ada {s['unmatched_count']} mutasi bank yang belum dicocokkan. Selesaikan dulu sebelum approve.")
     summary = await _summary(db, s, await _bank_gl_lines(db, s))
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    if not summary["explained"] and not body.get("confirm_unexplained"):
+        raise HTTPException(409, {
+            "code": "unexplained_difference", "unexplained": summary["unexplained"],
+            "message": f"Selisih Rp {summary['unexplained']:,.0f} belum terjelaskan (saldo GL disesuaikan "
+                       f"{summary['adjusted_gl_balance']:,.0f} vs rekening koran {summary['statement_closing']:,.0f}). "
+                       "Kirim confirm_unexplained=true untuk tetap menyetujui."})
     await db.bank_recon_sessions.update_one({"id": session_id}, {"$set": {
         "status": "approved", "approved_at": _now(), "approved_by": user["id"], "approved_by_name": user.get("name", ""),
-        "approved_summary": summary}})
+        "approved_summary": summary, "approved_with_unexplained": not summary["explained"],
+        "approval_note": (body.get("note") or "").strip()}})
     return serialize_doc(await db.bank_recon_sessions.find_one({"id": session_id}, {"_id": 0}))
 
 
